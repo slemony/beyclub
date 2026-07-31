@@ -1,0 +1,72 @@
+name: Refresh tournament data
+
+# BBXHub recomputes every Friday, so we pick it up on Saturday morning MYT.
+#
+# Scrape, commit, build and publish all happen in this one workflow on purpose.
+# A commit pushed with GITHUB_TOKEN does not trigger other workflows, so a
+# scrape-only job would update the repository and never reach the live site.
+on:
+  schedule:
+    - cron: '0 2 * * 6' # Sat 02:00 UTC = 10:00 MYT
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Pushing as a real account keeps the repository "active": GitHub
+          # disables scheduled workflows in public repos after 60 days of
+          # inactivity, and the workflow's own runs do not reset that clock.
+          token: ${{ secrets.DATA_PAT || github.token }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Exits non-zero on a parse failure or a collapse in coverage, leaving the
+      # committed dataset in place rather than publishing an empty one.
+      - name: Scrape BBXHub
+        run: npm run refresh:tournament
+
+      - name: Commit if the data moved
+        run: |
+          if git diff --quiet -- public/data/tournament.json; then
+            echo "No change in tournament data."
+            exit 0
+          fi
+          git config user.name  "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add public/data/tournament.json
+          git commit -m "Refresh tournament data from BBXHub"
+          git push
+
+      - run: npm run build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: refresh
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
