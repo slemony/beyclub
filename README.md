@@ -25,20 +25,15 @@ npm run deploy   # build, then publish dist/ to the gh-pages branch
 
 Pages serves from the `gh-pages` branch. The app uses `HashRouter` and a relative Vite `base`, so it works under any repository path without extra configuration.
 
-### Enabling the workflows
-
-Two workflows are ready but **not committed** — pushing workflow files needs the `workflow` OAuth scope, so `.github/` is listed in `.git/info/exclude`:
+### The workflows
 
 - `deploy.yml` — publishes on every push to `main`.
 - `tournament.yml` — refreshes tournament data weekly (see below).
+- `stock.yml` — refreshes KGB stock twice daily (see below).
 
-```bash
-gh auth refresh -s workflow                          # grant the scope (opens a browser)
-sed -i '' '/^\.github\/$/d' .git/info/exclude        # stop ignoring it locally
-git add .github && git commit -m "Add Pages workflows" && git push
-```
+Pushing workflow files needs the `workflow` OAuth scope. If a push is rejected for lacking it, run `gh auth refresh -s workflow` and try again.
 
-Then set **Settings → Pages → Source** to **GitHub Actions**. Until you do, Pages keeps serving the `gh-pages` branch and neither workflow changes what visitors see — confirm with `gh api repos/:owner/:repo/pages` that `build_type` reads `workflow`.
+Set **Settings → Pages → Source** to **GitHub Actions**. Until you do, Pages keeps serving the `gh-pages` branch and no workflow changes what visitors see — confirm with `gh api repos/:owner/:repo/pages` that `build_type` reads `workflow`.
 
 ### Refreshing tournament data
 
@@ -53,6 +48,16 @@ Two things keep it running unattended:
 - Add a fine-grained PAT with `contents: write` as the **`DATA_PAT`** secret. GitHub disables scheduled workflows in public repositories after 60 days of inactivity, and a workflow's own runs do not reset that clock — pushing as a real account does. Without the secret the workflow still works, it just stops holding off that timer.
 - The scraper exits non-zero on a parse failure or a collapse in coverage and leaves the committed dataset alone, so a bad scrape can never publish an empty tier list.
 
+### Refreshing stock
+
+```bash
+npm run refresh:stock   # rewrite public/data/stock.json from kelabgasingbeyblade.my
+```
+
+`stock.yml` runs this at 09:00 and 21:00 MYT and, like the tournament job, commits, builds and publishes in one run. The whole catalogue costs five requests: KGB's `/shop` listing already carries title, category, price, image and an in-stock button, so only the dozen products sold in several sizes need their own page fetched for the availability their card omits.
+
+The scraper leaves `stock.json` untouched when nothing has changed, which is what makes the commit step a no-op and what makes `updatedAt` mean **when stock last changed** rather than when it was last checked. It exits non-zero if a card parses incompletely, if no bey survives the parse, or if the catalogue shrinks by more than a quarter.
+
 ## Roadmap
 
 Requirements and acceptance criteria for every stage live in [claude-project-master-plan.md](claude-project-master-plan.md).
@@ -61,8 +66,8 @@ Requirements and acceptance criteria for every stage live in [claude-project-mas
 |---|---|---|
 | 0 | App skeleton, glass theme, navigation, Pages deploy | Done |
 | 1 | Competitive tier data (Taiwan + Japan) with sources | Done |
-| 2 | KGB stock tracker via scheduled scrape | Next |
-| 3 | Facebook news feeds | Planned |
+| 2 | KGB stock tracker via scheduled scrape | Done |
+| 3 | Facebook news feeds | Next |
 | 4 | Malaysian competitions calendar | Planned |
 | 5 | Where to buy & play directory | Planned |
 | 6 | Community board | Planned |
@@ -85,4 +90,6 @@ English blade names in [`src/data/bladeNamesEn.json`](src/data/bladeNamesEn.json
 
 Bit profiles in [`public/data/part-notes.json`](public/data/part-notes.json) — stats, weight, pros and cons — are BeyClub's own writing, shown under an "our own view" badge. They describe parts; they never affect a ranking.
 
-Stock data will be scraped from [Kelab Gasing Beyblade](https://kelabgasingbeyblade.my/) by a scheduled job. Facebook content is displayed through official page embeds — never scraped. No source's images are hotlinked; Japanese entries inherit artwork from the shared catalogue by product code.
+Stock comes from [Kelab Gasing Beyblade](https://kelabgasingbeyblade.my/) and is **prices and availability only** — the tier shown against a listing is our own blended ranking, which KGB neither supplies nor endorses. The two are joined on the product code in each shop URL: 85 of 86 bey products match the catalogue outright, and the rest resolve through the Taiwan sheet's sub-codes, which is how a Random Booster can list the five blades you might actually pull, each with its own grade. A booster is graded on the strongest blade in the box and the card says so; a product whose contents nobody has rated gets no verdict, on the same principle that leaves an unrated part unranked rather than last.
+
+Facebook content is displayed through official page embeds — never scraped. No source's images are hotlinked; Japanese entries inherit artwork from the shared catalogue by product code.

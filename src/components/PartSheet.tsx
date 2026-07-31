@@ -6,9 +6,10 @@ import Sheet from './Sheet'
 import sourceNotes from '../data/sourceNotes.json'
 import { BUY_VERDICTS, explainVerdict } from '../lib/buyRec'
 import { parseCombo, type Build } from '../lib/combo'
+import { formatMYR } from '../lib/stock'
 import { TIER_COLORS, TYPE_COLORS, TYPE_LABELS, tierLabel } from '../lib/tiers'
 import type { PartIndex } from '../lib/partIndex'
-import type { Part, PartNotes } from '../lib/types'
+import type { Part, PartNotes, StockProduct } from '../lib/types'
 
 const NOTE_TRANSLATIONS = sourceNotes as Record<string, string>
 
@@ -16,6 +17,8 @@ type Props = {
   stack: Part[]
   index: PartIndex | null
   notes: Record<string, PartNotes>
+  /** KGB listings that carry this blade. Empty when the shop feed is unavailable. */
+  listings?: (part: Part) => StockProduct[]
   onOpen: (part: Part) => void
   onBack: () => void
   onClose: () => void
@@ -79,7 +82,15 @@ function lookupNotes(notes: Record<string, PartNotes>, part: Part): PartNotes | 
 }
 
 /** iOS-style detail sheet with a navigation stack between related parts. */
-export default function PartSheet({ stack, index, notes, onOpen, onBack, onClose }: Props) {
+export default function PartSheet({
+  stack,
+  index,
+  notes,
+  listings,
+  onOpen,
+  onBack,
+  onClose,
+}: Props) {
   const part = stack[stack.length - 1] ?? null
   if (!part) return null
 
@@ -92,6 +103,7 @@ export default function PartSheet({ stack, index, notes, onOpen, onBack, onClose
   const editorial = lookupNotes(notes, part)
   const sourceComments = [...recommended.notes, ...community.notes]
   const previous = stack.length > 1 ? stack[stack.length - 2] : null
+  const forSale = listings?.(part) ?? []
 
   return (
     <Sheet
@@ -148,6 +160,34 @@ export default function PartSheet({ stack, index, notes, onOpen, onBack, onClose
               />
             )}
           </div>
+        </section>
+      )}
+
+      {/* A grade a reader cannot act on is trivia. This is the one place the
+          ranking meets a price, so it sits above the build advice. */}
+      {forSale.length > 0 && (
+        <section className="sheet-block">
+          <h3>Where to buy</h3>
+          {forSale.map((product) => (
+            <a
+              className="buy-row"
+              key={product.slug}
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="buy-row-main">
+                <span className="chip-code">{product.code ?? product.title}</span>
+                <span className="buy-row-sub">{product.kgbCategory} · Kelab Gasing Beyblade</span>
+              </span>
+              <span className="buy-row-end">
+                <span className="stock-price">{formatMYR(product.priceMYR)}</span>
+                <span className={product.inStock ? 'stock-status in' : 'stock-status out'}>
+                  {product.inStock ? 'In stock' : 'Sold out'}
+                </span>
+              </span>
+            </a>
+          ))}
         </section>
       )}
 

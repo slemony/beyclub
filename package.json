@@ -11,6 +11,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "refresh:tournament": "node --experimental-strip-types scripts/fetch-tournament.mjs",
+    "refresh:stock": "node scripts/fetch-stock.mjs",
     "deploy": "npm run build && gh-pages -d dist -b gh-pages --dotfiles"
   },
   "dependencies": {

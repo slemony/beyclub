@@ -144,6 +144,41 @@ export type TournamentFile = {
   unmatched: { name: string; count: number }[]
 }
 
+/** The filter groups on the Stock page, folded from KGB's own category labels. */
+export type StockGroup = 'bey' | 'stadium' | 'launcher' | 'case' | 'merch'
+
+/** One listing in the KGB shop, as written by scripts/fetch-stock.mjs. */
+export type StockProduct = {
+  slug: string
+  url: string
+  title: string
+  /**
+   * Product code parsed from the slug, e.g. "BX-48" — the hook the tier list
+   * hangs on. Absent on merchandise, which has no code to match.
+   */
+  code?: string
+  /** KGB's own label, e.g. "Random Booster". Finer than `group`. */
+  kgbCategory: string
+  group: StockGroup
+  priceMYR: number
+  inStock: boolean
+  img?: string
+}
+
+export type StockFile = {
+  /**
+   * When the shelf last moved — not when it was last checked. The refresh job
+   * leaves the file alone when nothing changed, so that it commits only on a
+   * real change.
+   */
+  updatedAt: string
+  source: { name: string; url: string; currency: string }
+  coverage: { products: number; inStock: number; pages: number }
+  products: StockProduct[]
+  /** True when served from cache after a failed refresh. */
+  stale?: boolean
+}
+
 export type Dataset = {
   parts: Part[]
   /** Coverage and provenance of the placement data behind the ranking. */

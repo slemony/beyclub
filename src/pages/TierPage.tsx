@@ -9,8 +9,9 @@ import TierTable from '../components/TierTable'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
 import { searchParts } from '../lib/search'
+import { buildStockIndex, loadStock } from '../lib/stock'
 import { CATEGORY_LABELS, comparePartsInTier, tierRank } from '../lib/tiers'
-import type { Dataset, Part, PartCategory, PartNotes } from '../lib/types'
+import type { Dataset, Part, PartCategory, PartNotes, StockProduct } from '../lib/types'
 
 type Filter = PartCategory | 'all'
 
@@ -25,6 +26,7 @@ export default function TierPage() {
   const [query, setQuery] = useState('')
   const [stack, setStack] = useState<Part[]>([])
   const [showSources, setShowSources] = useState(false)
+  const [listings, setListings] = useState<StockProduct[]>([])
 
   // Tapping the tab you are already on should hand back a clean list rather
   // than the search you left behind. Keyed on the location rather than the
@@ -56,6 +58,14 @@ export default function TierPage() {
     loadPartNotes().then(setNotes).catch(() => setNotes({}))
   }, [])
 
+  // Prices are a bonus on this page, so a shop that cannot be reached costs the
+  // "Where to buy" block and nothing else.
+  useEffect(() => {
+    loadStock()
+      .then((s) => setListings(s.products))
+      .catch(() => setListings([]))
+  }, [])
+
   /**
    * A handful of bits have no placement record, so the feed never spells their
    * code out — but our own notes do. Filling the name in here means every part
@@ -72,6 +82,7 @@ export default function TierPage() {
   }, [data, notes])
 
   const index = useMemo(() => buildPartIndex(parts), [parts])
+  const stockIndex = useMemo(() => buildStockIndex(listings, parts), [listings, parts])
 
   const visible = useMemo(() => {
     const inCategory = category === 'all' ? parts : parts.filter((p) => p.cat === category)
@@ -173,6 +184,7 @@ export default function TierPage() {
         stack={stack}
         index={index}
         notes={notes}
+        listings={stockIndex.listingsFor}
         onOpen={openPart}
         onBack={() => setStack((prev) => prev.slice(0, -1))}
         onClose={() => setStack([])}

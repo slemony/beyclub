@@ -109,10 +109,11 @@ English blade names (`src/data/bladeNamesEn.json`, 71 entries) were derived from
 
 **Functional requirements**
 - FR2.1 GitHub Action on a cron (twice daily) plus manual dispatch: a Node script fetches the KGB category pages, parses name / price / URL / availability, and writes `public/data/stock.json` with an `updatedAt` field; commits only when the data changed.
-- FR2.2 Stock page reads `stock.json` with a category filter (Bey, Stadium, Launcher, Case, Collab).
-- FR2.3 Each bey cross-references Stage 1 tier data by product code (BX-/UX-/CX-) and shows a flag: Competitive pick, Sleeper, Not for competitive, or No data.
+- FR2.2 Stock page reads `stock.json` with a category filter. Built as Bey, Stadium, Launcher, Case, Merch — KGB files collab beys (BXG-, the Marvel and Star Wars releases) as ordinary Starters, so a Collab tab would have been empty while apparel and pillows had nowhere to go.
+- FR2.3 Each bey cross-references Stage 1 tier data by product code (BX-/UX-/CX-). Delivered richer than a flag: the code resolves to the catalogue parts inside the product, via the Taiwan sheet's sub-codes for multi-blade products, so a card shows real grades — and a Random Booster shows every blade it can yield. Unrated contents produce no verdict rather than a bad one.
 - FR2.4 Cards link to the KGB product page and show price in RM plus last-updated time in Malaysian time.
 - FR2.5 Scraper fails loudly in CI on parse errors; the site keeps serving the previous JSON.
+- FR2.6 The link runs both ways: a part's detail sheet lists every KGB product carrying that blade, with price and availability. A grade a reader cannot act on is trivia.
 
 **Acceptance criteria**
 - AC2.1 Running the scraper locally produces valid `stock.json` matching live listings for five spot-checked products.
@@ -228,7 +229,7 @@ English blade names (`src/data/bladeNamesEn.json`, 71 entries) were derived from
 |---|---|
 | 0 — Skeleton & deployment | Done — all AC met except AC0.5 (needs the GitHub repo to exist) |
 | 1 — Tier data (TW + JP) | Done — all AC met. Revised into a tier-list table with build details, buy verdicts and part-to-part navigation |
-| 2 — KGB stock tracker | Not started |
+| 2 — KGB stock tracker | Done — all AC met. Extended beyond FR2.3's flag: a product resolves to the actual parts inside it, so a Random Booster lists every blade it can yield, and the tier page gained the reverse link — where to buy the part you are reading about |
 | 3 — Facebook news | Not started |
 | 4 — Competitions calendar | Not started |
 | 5 — Buy / play directory | Not started |
