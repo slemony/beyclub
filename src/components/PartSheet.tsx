@@ -116,7 +116,13 @@ export default function PartSheet({
         <div>
           <p className="sheet-id">{part.id}</p>
           <h2 className="sheet-name">{part.nameEn ?? part.name}</h2>
-          {part.nameEn && part.nameEn !== part.name && <p className="sheet-alt">{part.name}</p>}
+          {/* The alt line exists to keep a blade's original Chinese name in view
+              next to its translation. A ratchet, bit or assist has no such
+              pair — its "name" is just its id spelled out (輔助H / Heavy), so
+              showing it here would repeat the id line as a third variant. */}
+          {part.cat === 'blade' && part.nameEn && part.nameEn !== part.name && (
+            <p className="sheet-alt">{part.name}</p>
+          )}
         </div>
       </div>
 
@@ -160,34 +166,6 @@ export default function PartSheet({
               />
             )}
           </div>
-        </section>
-      )}
-
-      {/* A grade a reader cannot act on is trivia. This is the one place the
-          ranking meets a price, so it sits above the build advice. */}
-      {forSale.length > 0 && (
-        <section className="sheet-block">
-          <h3>Where to buy</h3>
-          {forSale.map((product) => (
-            <a
-              className="buy-row"
-              key={product.slug}
-              href={product.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="buy-row-main">
-                <span className="chip-code">{product.code ?? product.title}</span>
-                <span className="buy-row-sub">{product.kgbCategory} · Kelab Gasing Beyblade</span>
-              </span>
-              <span className="buy-row-end">
-                <span className="stock-price">{formatMYR(product.priceMYR)}</span>
-                <span className={product.inStock ? 'stock-status in' : 'stock-status out'}>
-                  {product.inStock ? 'In stock' : 'Sold out'}
-                </span>
-              </span>
-            </a>
-          ))}
         </section>
       )}
 
@@ -289,6 +267,34 @@ export default function PartSheet({
               <p className="sheet-text">{editorial.technique}</p>
             </>
           )}
+        </section>
+      )}
+
+      {/* A grade a reader cannot act on is trivia. This is the one place the
+          ranking meets a price, so it follows straight after our own notes. */}
+      {forSale.length > 0 && (
+        <section className="sheet-block">
+          <h3>Where to buy</h3>
+          {forSale.map((product) => (
+            <a
+              className="buy-row"
+              key={product.slug}
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="buy-row-main">
+                <span className="chip-code">{product.code ?? product.title}</span>
+                <span className="buy-row-sub">{product.kgbCategory} · Kelab Gasing Beyblade</span>
+              </span>
+              <span className="buy-row-end">
+                <span className="stock-price">{formatMYR(product.priceMYR)}</span>
+                <span className={product.inStock ? 'stock-status in' : 'stock-status out'}>
+                  {product.inStock ? 'In stock' : 'Sold out'}
+                </span>
+              </span>
+            </a>
+          ))}
         </section>
       )}
 

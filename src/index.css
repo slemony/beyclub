@@ -905,6 +905,21 @@ button {
 
 /* ── Stock listings ────────────────────────────────────────── */
 
+.sort-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.sort-row .build-label {
+  flex-shrink: 0;
+}
+
+.sort-row .chip-row {
+  margin-bottom: 0;
+}
+
 .stock-bar {
   display: flex;
   align-items: center;

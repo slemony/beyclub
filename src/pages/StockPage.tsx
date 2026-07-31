@@ -5,8 +5,9 @@ import Sheet from '../components/Sheet'
 import StockCard from '../components/StockCard'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
-import { buildStockIndex, loadStock } from '../lib/stock'
-import type { Dataset, Part, PartNotes, StockFile, StockGroup } from '../lib/types'
+import { buildStockIndex, gradedOn, loadStock } from '../lib/stock'
+import { tierRank } from '../lib/tiers'
+import type { Dataset, Part, PartNotes, StockFile, StockGroup, StockProduct } from '../lib/types'
 
 type Filter = StockGroup | 'all'
 
@@ -30,6 +31,20 @@ const GROUP_ORDER: Record<StockGroup, number> = {
   merch: 4,
 }
 
+type SortKey = 'default' | 'tier' | 'buy' | 'price'
+
+const SORTS: SortKey[] = ['default', 'tier', 'buy', 'price']
+
+const SORT_LABELS: Record<SortKey, string> = {
+  default: 'Featured',
+  tier: 'Tier',
+  buy: 'Worth buying',
+  price: 'Price',
+}
+
+/** Same order the part sheet's own verdict reads in — best case first. */
+const BUY_RANK: Record<string, number> = { yes: 0, maybe: 1, no: 2, '': 3 }
+
 const when = (iso?: string) =>
   iso
     ? new Date(iso).toLocaleString('en-MY', {
@@ -48,6 +63,7 @@ export default function StockPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [group, setGroup] = useState<Filter>('all')
+  const [sort, setSort] = useState<SortKey>('default')
   const [showSoldOut, setShowSoldOut] = useState(false)
   const [stack, setStack] = useState<Part[]>([])
   const [showSource, setShowSource] = useState(false)
@@ -88,17 +104,48 @@ export default function StockPage() {
     [stock, parts],
   )
 
+  /**
+   * The part each product is judged on, computed once per stock/rating change
+   * rather than inside the sort comparator — that runs O(n log n) times.
+   */
+  const bestBySlug = useMemo(() => {
+    const map = new Map<string, Part | undefined>()
+    for (const p of stock?.products ?? []) map.set(p.slug, gradedOn(stockIndex.contents(p)))
+    return map
+  }, [stock, stockIndex])
+
+  const featuredOrder = useCallback(
+    (a: StockProduct, b: StockProduct) =>
+      Number(b.inStock) - Number(a.inStock) ||
+      GROUP_ORDER[a.group] - GROUP_ORDER[b.group] ||
+      a.title.localeCompare(b.title),
+    [],
+  )
+
   const visible = useMemo(() => {
     const products = (stock?.products ?? []).filter(
       (p) => (group === 'all' || p.group === group) && (showSoldOut || p.inStock),
     )
-    return products.sort(
-      (a, b) =>
-        Number(b.inStock) - Number(a.inStock) ||
-        GROUP_ORDER[a.group] - GROUP_ORDER[b.group] ||
-        a.title.localeCompare(b.title),
-    )
-  }, [stock, group, showSoldOut])
+
+    if (sort === 'tier') {
+      return products.sort(
+        (a, b) =>
+          tierRank(bestBySlug.get(a.slug)?.tier ?? '-') - tierRank(bestBySlug.get(b.slug)?.tier ?? '-') ||
+          featuredOrder(a, b),
+      )
+    }
+    if (sort === 'buy') {
+      return products.sort(
+        (a, b) =>
+          BUY_RANK[bestBySlug.get(a.slug)?.buy ?? ''] - BUY_RANK[bestBySlug.get(b.slug)?.buy ?? ''] ||
+          featuredOrder(a, b),
+      )
+    }
+    if (sort === 'price') {
+      return products.sort((a, b) => a.priceMYR - b.priceMYR || featuredOrder(a, b))
+    }
+    return products.sort(featuredOrder)
+  }, [stock, group, showSoldOut, sort, bestBySlug, featuredOrder])
 
   const available = useMemo(
     () => (stock?.products ?? []).filter((p) => group === 'all' || p.group === group).length,
@@ -175,6 +222,23 @@ export default function StockPage() {
             {GROUP_LABELS[f]}
           </button>
         ))}
+      </div>
+
+      <div className="sort-row">
+        <span className="build-label">Sort</span>
+        <div className="chip-row" role="tablist" aria-label="Sort by">
+          {SORTS.map((s) => (
+            <button
+              key={s}
+              role="tab"
+              aria-selected={sort === s}
+              className={sort === s ? 'filter-chip active' : 'filter-chip'}
+              onClick={() => setSort(s)}
+            >
+              {SORT_LABELS[s]}
+            </button>
+          ))}
+        </div>
       </div>
 
       {stock && (
