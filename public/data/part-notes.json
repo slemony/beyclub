@@ -1,6 +1,6 @@
 {
   "note": "BeyClub's own editorial notes. These are our read on each part, not the Taiwanese or Japanese sources' opinion, and are shown in the app under a 'BeyClub notes' heading. Keyed by 'category:id'. Parts without an entry simply omit the section.",
-  "updatedAt": "2026-07-31",
+  "updatedAt": "2026-08-01",
   "notes": {
     "blade:UX-03": {
       "pros": [
@@ -1190,6 +1190,87 @@
           "burst": 58
         }
       }
+    },
+    "bit:D": {
+      "summary": "A Basic Line defence bit — a cone tip studded with tiny spheres that lets the bey drift while holding position better than Needle or High Needle.",
+      "pros": [
+        "Better stamina than Needle-family defence bits",
+        "Keeps moving instead of locking in place"
+      ],
+      "cons": [
+        "Low burst resistance"
+      ]
+    },
+    "bit:DS": {
+      "summary": "A reinforced take on Spike — the same sharp tip, but backed by a wider disk that pushes the combo back upright after a hit.",
+      "pros": [
+        "Disk helps recover balance after being knocked off-centre",
+        "Some life-after-death from the disk's smooth rim"
+      ],
+      "cons": [
+        "Still a spike tip underneath — limited stability on its own"
+      ]
+    },
+    "bit:FF": {
+      "summary": "Flat's Xtreme Dash specialist. Same flat-with-dimple shape, but the shaft spins free of the ratchet so less stamina bleeds away while dashing.",
+      "pros": [
+        "Free-spinning shaft loses less stamina during Xtreme Dash",
+        "Flat contact keeps it aggressive on the rail"
+      ],
+      "cons": [
+        "Same core limitations as a plain Flat bit otherwise"
+      ]
+    },
+    "bit:GU": {
+      "summary": "A Custom Line balance bit — a geared, rounded tip aimed at all-round movement rather than excelling in one stat.",
+      "pros": [
+        "Balance-type versatility"
+      ],
+      "cons": [
+        "Doesn't lead in any single stat"
+      ]
+    },
+    "bit:NR": {
+      "summary": "A compact stamina bit with a reduced 10-tooth gear for controlled, reliable movement on the Xtreme Line — the standout part of its CX-18 release.",
+      "pros": [
+        "Strong stamina despite its small size",
+        "Reliable, controlled Xtreme Line behaviour",
+        "Also useful on balance builds for survivability"
+      ],
+      "cons": [
+        "Fewer gear teeth than Accel-type bits means a slower Xtreme Dash"
+      ]
+    },
+    "bit:RA": {
+      "summary": "A rubber-tipped attack bit built for the Xtreme Dash — a wide guard lifts it above the rails, and the rubber gives it real burst resistance at the cost of almost all stamina.",
+      "pros": [
+        "High friction rubber tip gives strong burst resistance",
+        "Wide guard helps it ride the Xtreme rail cleanly"
+      ],
+      "cons": [
+        "Incredibly low stamina from the high-friction tip"
+      ]
+    },
+    "bit:WW": {
+      "summary": "Wedge's defence-oriented sibling — the same small sharp tip for stamina, plus a wall rim meant to push the combo upright, but a heavier 16-tooth gear trades some of that stamina for dash speed.",
+      "pros": [
+        "Wall rim aids recovery back to upright",
+        "Sharp tip carries real stamina potential"
+      ],
+      "cons": [
+        "Not a strong pick in a standard defence combo",
+        "Considered one of the weaker Custom Line bits by the community"
+      ]
+    },
+    "bit:Y": {
+      "summary": "A low-friction stamina bit — a cone-shaped POM tip that trades knock-out resistance and stability for extended spin time.",
+      "pros": [
+        "High stamina from the low-friction POM tip"
+      ],
+      "cons": [
+        "Lower knock-out resistance",
+        "Less stable than grippier tips"
+      ]
     }
   }
 }
