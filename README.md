@@ -17,9 +17,24 @@ Designed at a 390px viewport first — use a phone-sized device frame when worki
 
 ## Deployment
 
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes `dist/` to GitHub Pages. Enable Pages in the repository settings with **Source: GitHub Actions**.
+Live at **https://slemony.github.io/beyclub/**
 
-The app uses `HashRouter` and a relative Vite `base`, so it works under any repository path without extra configuration.
+```bash
+npm run deploy   # build, then publish dist/ to the gh-pages branch
+```
+
+Pages serves from the `gh-pages` branch. The app uses `HashRouter` and a relative Vite `base`, so it works under any repository path without extra configuration.
+
+### Enabling automatic deploys
+
+A workflow that deploys on every push to `main` is ready at `.github/workflows/deploy.yml`, but it is **not committed** — pushing workflow files needs the `workflow` OAuth scope. To switch to automatic deploys:
+
+```bash
+gh auth refresh -s workflow          # grant the scope (opens a browser)
+git add .github && git commit -m "Add Pages deploy workflow" && git push
+```
+
+Then set **Settings → Pages → Source** to **GitHub Actions**.
 
 ## Roadmap
 
