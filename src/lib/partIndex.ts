@@ -1,6 +1,6 @@
 import { comboPartCodes, parseCombo } from './combo'
-import { normalize } from './tiers'
-import type { ComboStat, Part, PartCategory } from './types'
+import { normalize } from './text'
+import type { Part, PartCategory } from './types'
 
 /**
  * Lookup layer over a loaded dataset: turns the bare part codes inside build
@@ -12,13 +12,11 @@ export type PartIndex = {
   resolve: (code: string, expected: PartCategory) => Part | undefined
   /** Blades whose recommended or community build names this part. */
   bladesUsing: (part: Part) => Part[]
-  /** Tournament combos that included this part. */
-  combosUsing: (part: Part) => ComboStat[]
 }
 
 const CATEGORY_FALLBACKS: PartCategory[] = ['ratchet', 'bit', 'assist', 'blade']
 
-export function buildPartIndex(parts: Part[], combos: ComboStat[]): PartIndex {
+export function buildPartIndex(parts: Part[]): PartIndex {
   const byKey = new Map<string, Part>()
   for (const part of parts) {
     byKey.set(`${normalize(part.id)}|${part.cat}`, part)
@@ -47,17 +45,6 @@ export function buildPartIndex(parts: Part[], combos: ComboStat[]): PartIndex {
     return { blade, codes }
   })
 
-  const combosByCode = new Map<string, ComboStat[]>()
-  for (const combo of combos) {
-    for (const code of [combo.ratchet, combo.bit]) {
-      if (!code) continue
-      const key = normalize(code)
-      const list = combosByCode.get(key)
-      if (list) list.push(combo)
-      else combosByCode.set(key, [combo])
-    }
-  }
-
   return {
     resolve(code, expected) {
       const key = normalize(code)
@@ -78,11 +65,6 @@ export function buildPartIndex(parts: Part[], combos: ComboStat[]): PartIndex {
       if (part.cat === 'blade') return []
       const key = normalize(part.id)
       return bladeUsage.filter((u) => u.codes.has(key)).map((u) => u.blade)
-    },
-
-    combosUsing(part) {
-      if (part.cat === 'blade') return combos.filter((c) => c.bladeId === part.id)
-      return combosByCode.get(normalize(part.id)) ?? []
     },
   }
 }

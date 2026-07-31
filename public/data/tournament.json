@@ -1,0 +1,2303 @@
+{
+  "fetchedAt": "2026-07-31T06:53:41.098Z",
+  "source": {
+    "name": "BBXHub",
+    "url": "https://bbxhub.net/",
+    "upstream": "WBO Winning Combinations at Organized Events, plus German Blader League",
+    "upstreamUrl": "https://worldbeyblade.org/Thread-Winning-Combinations-at-WBO-Organized-Events-Beyblade-X-BBX",
+    "coverage": {
+      "events": 3589,
+      "combos": 36819
+    },
+    "windows": {
+      "allTime": {
+        "from": null,
+        "to": null,
+        "events": 3589,
+        "combos": 36819
+      },
+      "recent90": {
+        "from": "2026-04-24",
+        "to": "2026-07-23",
+        "events": 648,
+        "combos": 6261
+      }
+    }
+  },
+  "parts": [
+    {
+      "cat": "ratchet",
+      "key": "1-60",
+      "name": "1-60",
+      "allTime": 7595,
+      "recent90": 1620
+    },
+    {
+      "cat": "ratchet",
+      "key": "9-60",
+      "name": "9-60",
+      "allTime": 7278,
+      "recent90": 1318
+    },
+    {
+      "cat": "blade",
+      "key": "魔導神杖",
+      "name": "WizardRod",
+      "allTime": 5995,
+      "recent90": 1155,
+      "firsts": 2056,
+      "topRatchet": "1-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "ratchet",
+      "key": "3-60",
+      "name": "3-60",
+      "allTime": 5163,
+      "recent90": 708
+    },
+    {
+      "cat": "bit",
+      "key": "R",
+      "name": "Rush",
+      "allTime": 4687,
+      "recent90": 920
+    },
+    {
+      "cat": "bit",
+      "key": "H",
+      "name": "Hexa",
+      "allTime": 4453,
+      "recent90": 1016
+    },
+    {
+      "cat": "bit",
+      "key": "LR",
+      "name": "Low Rush",
+      "allTime": 4424,
+      "recent90": 904
+    },
+    {
+      "cat": "blade",
+      "key": "鮫鯊狂鱗",
+      "name": "SharkScale",
+      "allTime": 3852,
+      "recent90": 1241,
+      "firsts": 1364,
+      "topRatchet": "1-70",
+      "topBit": "LR"
+    },
+    {
+      "cat": "ratchet",
+      "key": "5-60",
+      "name": "5-60",
+      "allTime": 3194,
+      "recent90": 254
+    },
+    {
+      "cat": "blade",
+      "key": "鳳凰飛翼",
+      "name": "PhoenixWing",
+      "allTime": 3193,
+      "recent90": 264,
+      "firsts": 1025,
+      "topRatchet": "3-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "blade",
+      "key": "蒼穹龍騎士",
+      "name": "CobaltDragoon",
+      "allTime": 2556,
+      "recent90": 344,
+      "firsts": 848,
+      "topRatchet": "5-60",
+      "topBit": "E"
+    },
+    {
+      "cat": "bit",
+      "key": "E",
+      "name": "Elevate",
+      "allTime": 2410,
+      "recent90": 403
+    },
+    {
+      "cat": "bit",
+      "key": "K",
+      "name": "Kick",
+      "allTime": 2370,
+      "recent90": 643
+    },
+    {
+      "cat": "bit",
+      "key": "B",
+      "name": "Ball",
+      "allTime": 2342,
+      "recent90": 104
+    },
+    {
+      "cat": "ratchet",
+      "key": "7-60",
+      "name": "7-60",
+      "allTime": 2314,
+      "recent90": 444
+    },
+    {
+      "cat": "bit",
+      "key": "FB",
+      "name": "Free Ball",
+      "allTime": 2247,
+      "recent90": 738
+    },
+    {
+      "cat": "bit",
+      "key": "L",
+      "name": "Level",
+      "allTime": 2087,
+      "recent90": 409
+    },
+    {
+      "cat": "blade",
+      "key": "空力天馬",
+      "name": "AeroPegasus",
+      "allTime": 1847,
+      "recent90": 636,
+      "firsts": 662,
+      "topRatchet": "1-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "blade",
+      "key": "飛龍懸浮",
+      "name": "WyvernHover",
+      "allTime": 1794,
+      "recent90": 313,
+      "firsts": 591,
+      "topRatchet": "9-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "ratchet",
+      "key": "1-70",
+      "name": "1-70",
+      "allTime": 1679,
+      "recent90": 521
+    },
+    {
+      "cat": "blade",
+      "key": "霜輝銀狼",
+      "name": "SilverWolf",
+      "allTime": 1643,
+      "recent90": 277,
+      "firsts": 507,
+      "topRatchet": "9-60",
+      "topBit": "FB"
+    },
+    {
+      "cat": "bit",
+      "key": "P",
+      "name": "Point",
+      "allTime": 1491,
+      "recent90": 104
+    },
+    {
+      "cat": "blade",
+      "key": "暴龍霸擊",
+      "name": "TyrannoBeat",
+      "allTime": 1196,
+      "recent90": 84,
+      "firsts": 370,
+      "topRatchet": "1-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "bit",
+      "key": "T",
+      "name": "Taper",
+      "allTime": 828,
+      "recent90": 87
+    },
+    {
+      "cat": "assist",
+      "key": "輔助H",
+      "name": "Heavy",
+      "allTime": 827,
+      "recent90": 182
+    },
+    {
+      "cat": "bit",
+      "key": "LO",
+      "name": "Low Orb",
+      "allTime": 824,
+      "recent90": 194
+    },
+    {
+      "cat": "bit",
+      "key": "LF",
+      "name": "Low Flat",
+      "allTime": 707,
+      "recent90": 27
+    },
+    {
+      "cat": "ratchet",
+      "key": "6-60",
+      "name": "6-60",
+      "allTime": 675,
+      "recent90": 164
+    },
+    {
+      "cat": "ratchet",
+      "key": "1-50",
+      "name": "1-50",
+      "allTime": 668,
+      "recent90": 502
+    },
+    {
+      "cat": "ratchet",
+      "key": "7-70",
+      "name": "7-70",
+      "allTime": 646,
+      "recent90": 146
+    },
+    {
+      "cat": "ratchet",
+      "key": "9-70",
+      "name": "9-70",
+      "allTime": 643,
+      "recent90": 113
+    },
+    {
+      "cat": "blade",
+      "key": "魔像奇岩",
+      "name": "GolemRock",
+      "allTime": 586,
+      "recent90": 117,
+      "firsts": 164,
+      "topRatchet": "9-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "隕星龍騎士",
+      "name": "MeteorDragoon",
+      "allTime": 578,
+      "recent90": 290,
+      "firsts": 191,
+      "topRatchet": "7-60",
+      "topBit": "L"
+    },
+    {
+      "cat": "blade",
+      "key": "蒼龍爆刃",
+      "name": "DranBuster",
+      "allTime": 578,
+      "recent90": 33,
+      "firsts": 185,
+      "topRatchet": "1-60",
+      "topBit": "LF"
+    },
+    {
+      "cat": "blade",
+      "key": "騎士圓甲",
+      "name": "KnightMail",
+      "allTime": 570,
+      "recent90": 45,
+      "firsts": 172,
+      "topRatchet": "1-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "blade",
+      "key": "鮫鯊鋒鰭",
+      "name": "SharkEdge",
+      "allTime": 554,
+      "recent90": 28,
+      "firsts": 163,
+      "topRatchet": "3-60",
+      "topBit": "LF"
+    },
+    {
+      "cat": "ratchet",
+      "key": "4-50",
+      "name": "4-50",
+      "allTime": 537,
+      "recent90": 83
+    },
+    {
+      "cat": "blade",
+      "key": "惡魔紅鐮",
+      "name": "HellsScythe",
+      "allTime": 482,
+      "recent90": 27,
+      "firsts": 144,
+      "topRatchet": "9-60",
+      "topBit": "B"
+    },
+    {
+      "cat": "bit",
+      "key": "W",
+      "name": "Wedge",
+      "allTime": 480,
+      "recent90": 110
+    },
+    {
+      "cat": "ratchet",
+      "key": "4-60",
+      "name": "4-60",
+      "allTime": 473,
+      "recent90": 14
+    },
+    {
+      "cat": "bit",
+      "key": "F",
+      "name": "Flat",
+      "allTime": 453,
+      "recent90": 21
+    },
+    {
+      "cat": "bit",
+      "key": "J",
+      "name": "Jolt",
+      "allTime": 451,
+      "recent90": 184
+    },
+    {
+      "cat": "blade",
+      "key": "天蠍長矛",
+      "name": "ScorpioSpear",
+      "allTime": 431,
+      "recent90": 39,
+      "firsts": 129,
+      "topRatchet": "9-60",
+      "topBit": "FB"
+    },
+    {
+      "cat": "bit",
+      "key": "O",
+      "name": "Orb",
+      "allTime": 410,
+      "recent90": 30
+    },
+    {
+      "cat": "blade",
+      "key": "天馬爆擊",
+      "name": "PegasusBlast Wheel",
+      "allTime": 351,
+      "recent90": 53,
+      "firsts": 45,
+      "topRatchet": "9-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "assist",
+      "key": "輔助W",
+      "name": "Wheel",
+      "allTime": 344,
+      "recent90": 58
+    },
+    {
+      "cat": "blade",
+      "key": "衝擊龍神",
+      "name": "ImpactDrake",
+      "allTime": 332,
+      "recent90": 33,
+      "firsts": 101,
+      "topRatchet": "9-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "bit",
+      "key": "UN",
+      "name": "Under Needle",
+      "allTime": 316,
+      "recent90": 55
+    },
+    {
+      "cat": "blade",
+      "key": "蒼龍神劍",
+      "name": "DranSword",
+      "allTime": 306,
+      "recent90": 18,
+      "firsts": 93,
+      "topRatchet": "3-60",
+      "topBit": "F"
+    },
+    {
+      "cat": "blade",
+      "key": "巨鯨怒濤",
+      "name": "WhaleWave",
+      "allTime": 296,
+      "recent90": 18,
+      "firsts": 85,
+      "topRatchet": "9-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "ratchet",
+      "key": "3-80",
+      "name": "3-80",
+      "allTime": 268,
+      "recent90": 19
+    },
+    {
+      "cat": "ratchet",
+      "key": "3-70",
+      "name": "3-70",
+      "allTime": 266,
+      "recent90": 45
+    },
+    {
+      "cat": "blade",
+      "key": "時鐘幻象",
+      "name": "ClockMirage",
+      "allTime": 265,
+      "recent90": 73,
+      "firsts": 79,
+      "topRatchet": "4-55",
+      "topBit": "LO"
+    },
+    {
+      "cat": "bit",
+      "key": "U",
+      "name": "Unite",
+      "allTime": 260,
+      "recent90": 40
+    },
+    {
+      "cat": "blade",
+      "key": "幻獸刺心",
+      "name": "UnicornSting",
+      "allTime": 256,
+      "recent90": 29,
+      "firsts": 75,
+      "topRatchet": "9-60",
+      "topBit": "B"
+    },
+    {
+      "cat": "ratchet",
+      "key": "5-70",
+      "name": "5-70",
+      "allTime": 254,
+      "recent90": 21
+    },
+    {
+      "cat": "blade",
+      "key": "騎士重盾",
+      "name": "KnightShield",
+      "allTime": 234,
+      "recent90": 19,
+      "firsts": 79,
+      "topRatchet": "5-60",
+      "topBit": "O"
+    },
+    {
+      "cat": "ratchet",
+      "key": "1-80",
+      "name": "1-80",
+      "allTime": 221,
+      "recent90": 58
+    },
+    {
+      "cat": "ratchet",
+      "key": "4-55",
+      "name": "4-55",
+      "allTime": 209,
+      "recent90": 37
+    },
+    {
+      "cat": "blade",
+      "key": "武士星劍",
+      "name": "SamuraiSaber",
+      "allTime": 205,
+      "recent90": 12,
+      "firsts": 53,
+      "topRatchet": "9-60",
+      "topBit": "L"
+    },
+    {
+      "cat": "bit",
+      "key": "RA",
+      "name": "Rubber Accel",
+      "allTime": 201,
+      "recent90": 31
+    },
+    {
+      "cat": "blade",
+      "key": "古屍詛咒",
+      "name": "MummyCurse",
+      "allTime": 193,
+      "recent90": 70,
+      "firsts": 68,
+      "topRatchet": "1-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "暴龍咆哮",
+      "name": "TyrannoRoar",
+      "allTime": 190,
+      "recent90": 11,
+      "firsts": 52,
+      "topRatchet": "3-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "blade",
+      "key": "武士魂斬",
+      "name": "SamuraiCalibur",
+      "allTime": 174,
+      "recent90": 34,
+      "firsts": 48,
+      "topRatchet": "1-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "ratchet",
+      "key": "9-80",
+      "name": "9-80",
+      "allTime": 173,
+      "recent90": 11
+    },
+    {
+      "cat": "blade",
+      "key": "惡魔鎖鏈",
+      "name": "HellsChain",
+      "allTime": 172,
+      "recent90": 5,
+      "firsts": 47,
+      "topRatchet": "5-60",
+      "topBit": "B"
+    },
+    {
+      "cat": "blade",
+      "key": "蒼龍突擊",
+      "name": "DranStrike",
+      "allTime": 154,
+      "recent90": 152,
+      "firsts": 50,
+      "topRatchet": "3-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "blade",
+      "key": "蒼穹龍神",
+      "name": "CobaltDrake",
+      "allTime": 144,
+      "recent90": 11,
+      "firsts": 39,
+      "topRatchet": "9-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "blade",
+      "key": "魔導幻箭",
+      "name": "WizardArrow",
+      "allTime": 144,
+      "recent90": 9,
+      "firsts": 32,
+      "topRatchet": "4-80",
+      "topBit": "B"
+    },
+    {
+      "cat": "bit",
+      "key": "HN",
+      "name": "High Needle",
+      "allTime": 143,
+      "recent90": 2
+    },
+    {
+      "cat": "bit",
+      "key": "C",
+      "name": "Cyclone",
+      "allTime": 140,
+      "recent90": 6
+    },
+    {
+      "cat": "ratchet",
+      "key": "5-80",
+      "name": "5-80",
+      "allTime": 139,
+      "recent90": 9
+    },
+    {
+      "cat": "ratchet",
+      "key": "4-80",
+      "name": "4-80",
+      "allTime": 129,
+      "recent90": 5
+    },
+    {
+      "cat": "assist",
+      "key": "輔助J",
+      "name": "Jaggy",
+      "allTime": 129,
+      "recent90": 8
+    },
+    {
+      "cat": "blade",
+      "key": "蒼龍利刃",
+      "name": "DranDagger",
+      "allTime": 118,
+      "recent90": 16,
+      "firsts": 39,
+      "topRatchet": "4-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "bit",
+      "key": "GP",
+      "name": "Gear Point",
+      "allTime": 115,
+      "recent90": 4
+    },
+    {
+      "cat": "blade",
+      "key": "惡魔重錘",
+      "name": "HellsHammer",
+      "allTime": 114,
+      "recent90": 20,
+      "firsts": 29,
+      "topRatchet": "3-60",
+      "topBit": "P"
+    },
+    {
+      "cat": "bit",
+      "key": "N",
+      "name": "Needle",
+      "allTime": 114,
+      "recent90": 5
+    },
+    {
+      "cat": "assist",
+      "key": "輔助S",
+      "name": "Slash",
+      "allTime": 112,
+      "recent90": 14
+    },
+    {
+      "cat": "ratchet",
+      "key": "7-55",
+      "name": "7-55",
+      "allTime": 110,
+      "recent90": 40
+    },
+    {
+      "cat": "bit",
+      "key": "GF",
+      "name": "Gear Flat",
+      "allTime": 99,
+      "recent90": 7
+    },
+    {
+      "cat": "bit",
+      "key": "UF",
+      "name": "Under Flat",
+      "allTime": 90,
+      "recent90": 15
+    },
+    {
+      "cat": "blade",
+      "key": "赫燃天鳳",
+      "name": "CrimsonGaruda",
+      "allTime": 86,
+      "recent90": 16,
+      "firsts": 25,
+      "topRatchet": "1-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "blade",
+      "key": "王蛇鞭尾",
+      "name": "ViperTail",
+      "allTime": 82,
+      "recent90": 0,
+      "firsts": 16,
+      "topRatchet": "3-60",
+      "topBit": "T"
+    },
+    {
+      "cat": "bit",
+      "key": "DB",
+      "name": "Disk Ball",
+      "allTime": 80,
+      "recent90": 7
+    },
+    {
+      "cat": "blade",
+      "key": "騎士長槍",
+      "name": "KnightLance",
+      "allTime": 78,
+      "recent90": 9,
+      "firsts": 29,
+      "topRatchet": "3-60",
+      "topBit": "T"
+    },
+    {
+      "cat": "bit",
+      "key": "HT",
+      "name": "High Taper",
+      "allTime": 77,
+      "recent90": 7
+    },
+    {
+      "cat": "bit",
+      "key": "WB",
+      "name": "Wall Ball",
+      "allTime": 74,
+      "recent90": 16
+    },
+    {
+      "cat": "bit",
+      "key": "D",
+      "name": "Dot",
+      "allTime": 73,
+      "recent90": 7
+    },
+    {
+      "cat": "bit",
+      "key": "Z",
+      "name": "Zap",
+      "allTime": 73,
+      "recent90": 11
+    },
+    {
+      "cat": "ratchet",
+      "key": "2-60",
+      "name": "2-60",
+      "allTime": 72,
+      "recent90": 6
+    },
+    {
+      "cat": "bit",
+      "key": "A",
+      "name": "Accel",
+      "allTime": 71,
+      "recent90": 5
+    },
+    {
+      "cat": "ratchet",
+      "key": "0-70",
+      "name": "0-70",
+      "allTime": 65,
+      "recent90": 9
+    },
+    {
+      "cat": "ratchet",
+      "key": "0-80",
+      "name": "0-80",
+      "allTime": 63,
+      "recent90": 3
+    },
+    {
+      "cat": "ratchet",
+      "key": "0-60",
+      "name": "0-60",
+      "allTime": 63,
+      "recent90": 11
+    },
+    {
+      "cat": "bit",
+      "key": "GB",
+      "name": "Gear Ball",
+      "allTime": 61,
+      "recent90": 8
+    },
+    {
+      "cat": "blade",
+      "key": "雄獅巔峰",
+      "name": "LeonCrest",
+      "allTime": 59,
+      "recent90": 8,
+      "firsts": 17,
+      "topRatchet": "7-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "鳳凰尾翼",
+      "name": "PhoenixRudder",
+      "allTime": 58,
+      "recent90": 13,
+      "firsts": 17,
+      "topRatchet": "9-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "皓戰猛虎",
+      "name": "WeissTiger",
+      "allTime": 58,
+      "recent90": 11,
+      "firsts": 12,
+      "topRatchet": "3-60",
+      "topBit": "P"
+    },
+    {
+      "cat": "blade",
+      "key": "蒼龍勇氣",
+      "name": "DranBrave Slash",
+      "allTime": 55,
+      "recent90": 3,
+      "firsts": 7,
+      "topRatchet": "3-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "assist",
+      "key": "輔助F",
+      "name": "Free",
+      "allTime": 55,
+      "recent90": 14
+    },
+    {
+      "cat": "bit",
+      "key": "BS",
+      "name": "Bound Spike",
+      "allTime": 53,
+      "recent90": 8
+    },
+    {
+      "cat": "blade",
+      "key": "大蛇簇擁",
+      "name": "OrochiCluster",
+      "allTime": 50,
+      "recent90": 11,
+      "firsts": 10,
+      "topRatchet": "7-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "blade",
+      "key": "雷霆天龍",
+      "name": "Lightning L-Drago",
+      "allTime": 49,
+      "recent90": 7,
+      "firsts": 20,
+      "topRatchet": "7-60",
+      "topBit": "L"
+    },
+    {
+      "cat": "bit",
+      "key": "G",
+      "name": "Glide",
+      "allTime": 49,
+      "recent90": 1
+    },
+    {
+      "cat": "bit",
+      "key": "Q",
+      "name": "Quake",
+      "allTime": 48,
+      "recent90": 2
+    },
+    {
+      "cat": "blade",
+      "key": "柯博文",
+      "name": "Optimus Primal",
+      "allTime": 47,
+      "recent90": 5,
+      "firsts": 10,
+      "topRatchet": "1-60",
+      "topBit": "LF"
+    },
+    {
+      "cat": "blade",
+      "key": "三角強襲",
+      "name": "TriceraPress",
+      "allTime": 45,
+      "recent90": 9,
+      "firsts": 12,
+      "topRatchet": "7-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "ratchet",
+      "key": "4-70",
+      "name": "4-70",
+      "allTime": 45,
+      "recent90": 11
+    },
+    {
+      "cat": "blade",
+      "key": "極狐九尾",
+      "name": "FoxBrush Jaggy",
+      "allTime": 44,
+      "recent90": 8,
+      "firsts": 2,
+      "topRatchet": "3-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "ratchet",
+      "key": "6-70",
+      "name": "6-70",
+      "allTime": 43,
+      "recent90": 20
+    },
+    {
+      "cat": "blade",
+      "key": "獨角極變",
+      "name": "UnicornDelta PeakHeavy",
+      "allTime": 42,
+      "recent90": 42,
+      "firsts": 14,
+      "topRatchet": "3-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "bit",
+      "key": "NR",
+      "name": "Narrow",
+      "allTime": 41,
+      "recent90": 40
+    },
+    {
+      "cat": "ratchet",
+      "key": "7-80",
+      "name": "7-80",
+      "allTime": 40,
+      "recent90": 11
+    },
+    {
+      "cat": "bit",
+      "key": "TP",
+      "name": "Trans Point",
+      "allTime": 39,
+      "recent90": 2
+    },
+    {
+      "cat": "blade",
+      "key": "龍王閃擊",
+      "name": "BahamutBlitz BreakHeavy",
+      "allTime": 38,
+      "recent90": 24,
+      "firsts": 4,
+      "topRatchet": "1-50",
+      "topBit": "LR"
+    },
+    {
+      "cat": "bit",
+      "key": "S",
+      "name": "Spike",
+      "allTime": 38,
+      "recent90": 1
+    },
+    {
+      "cat": "bit",
+      "key": "TK",
+      "name": "Trans Kick",
+      "allTime": 38,
+      "recent90": 7
+    },
+    {
+      "cat": "blade",
+      "key": "幽靈元魂",
+      "name": "GhostCircle",
+      "allTime": 37,
+      "recent90": 12,
+      "firsts": 8,
+      "topRatchet": "9-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "bit",
+      "key": "GN",
+      "name": "Gear Needle",
+      "allTime": 37,
+      "recent90": 1
+    },
+    {
+      "cat": "blade",
+      "key": "焰神滅世",
+      "name": "SolEclipse Heavy",
+      "allTime": 35,
+      "recent90": 6,
+      "firsts": 9,
+      "topRatchet": "9-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "bit",
+      "key": "V",
+      "name": "Vortex",
+      "allTime": 35,
+      "recent90": 8
+    },
+    {
+      "cat": "blade",
+      "key": "鳳凰翔羽",
+      "name": "PhoenixFeather",
+      "allTime": 32,
+      "recent90": 5,
+      "firsts": 5,
+      "topRatchet": "3-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "魔導至尊",
+      "name": "WizardArc Round",
+      "allTime": 32,
+      "recent90": 2,
+      "firsts": 1,
+      "topRatchet": "4-55",
+      "topBit": "LO"
+    },
+    {
+      "cat": "blade",
+      "key": "猛瑪長牙",
+      "name": "MammothTusk",
+      "allTime": 31,
+      "recent90": 6,
+      "firsts": 11,
+      "topRatchet": "9-60",
+      "topBit": "T"
+    },
+    {
+      "cat": "blade",
+      "key": "帝王威能",
+      "name": "EmperorMight Heavy",
+      "allTime": 31,
+      "recent90": 6,
+      "firsts": 6,
+      "topRatchet": "7-60",
+      "topBit": "L"
+    },
+    {
+      "cat": "ratchet",
+      "key": "8-70",
+      "name": "8-70",
+      "allTime": 31,
+      "recent90": 24
+    },
+    {
+      "cat": "ratchet",
+      "key": "3-85",
+      "name": "3-85",
+      "allTime": 30,
+      "recent90": 6
+    },
+    {
+      "cat": "blade",
+      "key": "忍者闇影",
+      "name": "ShinobiShadow",
+      "allTime": 29,
+      "recent90": 7,
+      "firsts": 4,
+      "topRatchet": "3-60",
+      "topBit": "W"
+    },
+    {
+      "cat": "blade",
+      "key": "戰犀重角",
+      "name": "RhinoHorn",
+      "allTime": 28,
+      "recent90": 6,
+      "firsts": 10,
+      "topRatchet": "3-80",
+      "topBit": "S"
+    },
+    {
+      "cat": "blade",
+      "key": "雄獅獵爪",
+      "name": "LeonClaw",
+      "allTime": 28,
+      "recent90": 3,
+      "firsts": 7,
+      "topRatchet": "5-60",
+      "topBit": "P"
+    },
+    {
+      "cat": "blade",
+      "key": "飛龍旋翼",
+      "name": "WyvernGale",
+      "allTime": 28,
+      "recent90": 2,
+      "firsts": 8,
+      "topRatchet": "9-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "翼龍",
+      "name": "Quetzalcoatlus",
+      "allTime": 28,
+      "recent90": 2,
+      "firsts": 5,
+      "topRatchet": "9-60",
+      "topBit": "R"
+    },
+    {
+      "cat": "bit",
+      "key": "I",
+      "name": "Ignition",
+      "allTime": 28,
+      "recent90": 21
+    },
+    {
+      "cat": "blade",
+      "key": "護城龍神",
+      "name": "ShelterDrake",
+      "allTime": 27,
+      "recent90": 4,
+      "firsts": 5,
+      "topRatchet": "9-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "玄冥戰甲",
+      "name": "BlackShell",
+      "allTime": 25,
+      "recent90": 6,
+      "firsts": 10,
+      "topRatchet": "7-60",
+      "topBit": "LF"
+    },
+    {
+      "cat": "assist",
+      "key": "輔助B",
+      "name": "Bumper",
+      "allTime": 25,
+      "recent90": 6
+    },
+    {
+      "cat": "ratchet",
+      "key": "9-65",
+      "name": "9-65",
+      "allTime": 23,
+      "recent90": 11
+    },
+    {
+      "cat": "bit",
+      "key": "GR",
+      "name": "Gear Rush",
+      "allTime": 23,
+      "recent90": 4
+    },
+    {
+      "cat": "blade",
+      "key": "紅浩克",
+      "name": "Red Hulk",
+      "allTime": 22,
+      "recent90": 10,
+      "firsts": 5,
+      "topRatchet": "7-70",
+      "topBit": "R"
+    },
+    {
+      "cat": "assist",
+      "key": "輔助R",
+      "name": "Round",
+      "allTime": 22,
+      "recent90": 3
+    },
+    {
+      "cat": "assist",
+      "key": "輔助T",
+      "name": "Turn",
+      "allTime": 22,
+      "recent90": 1
+    },
+    {
+      "cat": "ratchet",
+      "key": "2-70",
+      "name": "2-70",
+      "allTime": 21,
+      "recent90": 8
+    },
+    {
+      "cat": "ratchet",
+      "key": "6-80",
+      "name": "6-80",
+      "allTime": 21,
+      "recent90": 1
+    },
+    {
+      "cat": "blade",
+      "key": "邪神狂怒",
+      "name": "RagnaRage FlowHeavy",
+      "allTime": 20,
+      "recent90": 15,
+      "firsts": 5,
+      "topRatchet": "9-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "bit",
+      "key": "FF",
+      "name": "Free Flat",
+      "allTime": 20,
+      "recent90": 20
+    },
+    {
+      "cat": "blade",
+      "key": "鳳凰閃焰",
+      "name": "PhoenixFlare Heavy",
+      "allTime": 18,
+      "recent90": 7,
+      "firsts": 1,
+      "topRatchet": "9-60",
+      "topBit": "L"
+    },
+    {
+      "cat": "bit",
+      "key": "MN",
+      "name": "Metal Needle",
+      "allTime": 18,
+      "recent90": 0
+    },
+    {
+      "cat": "blade",
+      "key": "翼龍神翼",
+      "name": "PteraSwing",
+      "allTime": 17,
+      "recent90": 4,
+      "firsts": 7,
+      "topRatchet": "1-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "忍者刺刀",
+      "name": "ShinobiKnife",
+      "allTime": 17,
+      "recent90": 1,
+      "firsts": 4,
+      "topRatchet": "3-60",
+      "topBit": "L"
+    },
+    {
+      "cat": "blade",
+      "key": "鱷魚粉碎",
+      "name": "CrocCrunch",
+      "allTime": 16,
+      "recent90": 8,
+      "firsts": 6,
+      "topRatchet": "3-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "bit",
+      "key": "Y",
+      "name": "Yielding",
+      "allTime": 16,
+      "recent90": 12
+    },
+    {
+      "cat": "blade",
+      "key": "武士鋼鐵",
+      "name": "SamuraiSteel",
+      "allTime": 15,
+      "recent90": 0,
+      "firsts": 3,
+      "topRatchet": "5-80",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "英仙幽冥",
+      "name": "PerseusDark Bumper",
+      "allTime": 14,
+      "recent90": 5,
+      "firsts": 7,
+      "topRatchet": "9-60",
+      "topBit": "P"
+    },
+    {
+      "cat": "blade",
+      "key": "惡魔勇氣",
+      "name": "HellsBrave Jaggy",
+      "allTime": 14,
+      "recent90": 3,
+      "firsts": 5,
+      "topRatchet": "3-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "bit",
+      "key": "M",
+      "name": "Merge",
+      "allTime": 14,
+      "recent90": 3
+    },
+    {
+      "cat": "blade",
+      "key": "戰神伏特",
+      "name": "ValkyrieVolt Heavy",
+      "allTime": 13,
+      "recent90": 3,
+      "firsts": 2,
+      "topRatchet": "7-60",
+      "topBit": "L"
+    },
+    {
+      "cat": "blade",
+      "key": "魔獸護甲",
+      "name": "SphinxCowl",
+      "allTime": 13,
+      "recent90": 1,
+      "firsts": 3,
+      "topRatchet": "5-60",
+      "topBit": "GP"
+    },
+    {
+      "cat": "blade",
+      "key": "銀狼狩獵",
+      "name": "WolfHunt Heavy",
+      "allTime": 13,
+      "recent90": 3,
+      "firsts": 0,
+      "topRatchet": "5-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "blade",
+      "key": "鮫鯊撕裂",
+      "name": "SharkGill",
+      "allTime": 12,
+      "recent90": 2,
+      "firsts": 4,
+      "topRatchet": "7-60",
+      "topBit": "LF"
+    },
+    {
+      "cat": "bit",
+      "key": "WW",
+      "name": "Wall Wedge",
+      "allTime": 11,
+      "recent90": 4
+    },
+    {
+      "cat": "blade",
+      "key": "騎士堡壘",
+      "name": "KnightFortress GuardVertical",
+      "allTime": 10,
+      "recent90": 6,
+      "firsts": 2,
+      "topRatchet": "8-70",
+      "topBit": "H"
+    },
+    {
+      "cat": "assist",
+      "key": "輔助A",
+      "name": "A",
+      "allTime": 10,
+      "recent90": 0
+    },
+    {
+      "cat": "blade",
+      "key": "魔犬烈焰",
+      "name": "CerberusFlame Wheel",
+      "allTime": 9,
+      "recent90": 2,
+      "firsts": 2,
+      "topRatchet": "7-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "神力聖劍",
+      "name": "XenoXcalibur",
+      "allTime": 8,
+      "recent90": 1,
+      "firsts": 2,
+      "topRatchet": "3-60",
+      "topBit": "LF"
+    },
+    {
+      "cat": "blade",
+      "key": "海妖扭動",
+      "name": "KrakenWriggle Slash",
+      "allTime": 8,
+      "recent90": 4,
+      "firsts": 1,
+      "topRatchet": "3-85",
+      "topBit": "O"
+    },
+    {
+      "cat": "blade",
+      "key": "天翼戰神",
+      "name": "VictoryValkyrie",
+      "allTime": 7,
+      "recent90": 2,
+      "firsts": 1,
+      "topRatchet": "3-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "滄龍",
+      "name": "TriceraSpiky",
+      "allTime": 6,
+      "recent90": 0,
+      "firsts": 0,
+      "topRatchet": "3-60",
+      "topBit": "LF"
+    },
+    {
+      "cat": "ratchet",
+      "key": "2-80",
+      "name": "2-80",
+      "allTime": 6,
+      "recent90": 1
+    },
+    {
+      "cat": "blade",
+      "key": "戰羊阻截",
+      "name": "GoatTackle",
+      "allTime": 4,
+      "recent90": 1,
+      "firsts": 1,
+      "topRatchet": "7-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "blade",
+      "key": "魔犬幽冥",
+      "name": "CerberusEclipse Massive",
+      "allTime": 4,
+      "recent90": 1,
+      "firsts": 2,
+      "topRatchet": "1-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "焰神勇氣",
+      "name": "FoxBrave Jaggy",
+      "allTime": 4,
+      "recent90": 0,
+      "firsts": 1,
+      "topRatchet": "3-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "惡魔至尊",
+      "name": "HellsArc Turn",
+      "allTime": 3,
+      "recent90": 0,
+      "firsts": 1,
+      "topRatchet": "7-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "blade",
+      "key": "雄獅獠牙",
+      "name": "LeonFang Heavy",
+      "allTime": 3,
+      "recent90": 1,
+      "firsts": 1,
+      "topRatchet": "9-60",
+      "topBit": "H"
+    },
+    {
+      "cat": "ratchet",
+      "key": "5-50",
+      "name": "5-50",
+      "allTime": 3,
+      "recent90": 0
+    },
+    {
+      "cat": "bit",
+      "key": "GU",
+      "name": "Gear Unite",
+      "allTime": 3,
+      "recent90": 3
+    },
+    {
+      "cat": "assist",
+      "key": "輔助C",
+      "name": "Charge",
+      "allTime": 3,
+      "recent90": 1
+    },
+    {
+      "cat": "assist",
+      "key": "輔助M",
+      "name": "Massive",
+      "allTime": 3,
+      "recent90": 0
+    },
+    {
+      "cat": "assist",
+      "key": "輔助D",
+      "name": "D",
+      "allTime": 3,
+      "recent90": 0
+    },
+    {
+      "cat": "blade",
+      "key": "惡魔幽冥",
+      "name": "HellsEclipse Dual",
+      "allTime": 1,
+      "recent90": 1,
+      "firsts": 1,
+      "topRatchet": "5-70",
+      "topBit": "L"
+    },
+    {
+      "cat": "blade",
+      "key": "腕龍鞭擊",
+      "name": "BrachioWhip OuterHeavy",
+      "allTime": 1,
+      "recent90": 1,
+      "firsts": 1,
+      "topRatchet": "1-50",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "戰犀獵魂",
+      "name": "RhinoReaper",
+      "allTime": 1,
+      "recent90": 0,
+      "firsts": 0,
+      "topRatchet": "3-60",
+      "topBit": "LR"
+    },
+    {
+      "cat": "blade",
+      "key": "雄鹿鹿角",
+      "name": "StagAntler Round",
+      "allTime": 1,
+      "recent90": 0,
+      "firsts": 0,
+      "topRatchet": "9-70",
+      "topBit": "LO"
+    },
+    {
+      "cat": "blade",
+      "key": "惡魔獵魂",
+      "name": "HellsReaper Slash",
+      "allTime": 1,
+      "recent90": 0,
+      "firsts": 0,
+      "topRatchet": "7-60",
+      "topBit": "K"
+    },
+    {
+      "cat": "ratchet",
+      "key": "6-50",
+      "name": "6-50",
+      "allTime": 1,
+      "recent90": 0
+    },
+    {
+      "cat": "ratchet",
+      "key": "8-60",
+      "name": "8-60",
+      "allTime": 1,
+      "recent90": 0
+    },
+    {
+      "cat": "ratchet",
+      "key": "3-30",
+      "name": "3-30",
+      "allTime": 1,
+      "recent90": 0
+    },
+    {
+      "cat": "ratchet",
+      "key": "3-90",
+      "name": "3-90",
+      "allTime": 1,
+      "recent90": 0
+    },
+    {
+      "cat": "ratchet",
+      "key": "3-65",
+      "name": "3-65",
+      "allTime": 1,
+      "recent90": 0
+    },
+    {
+      "cat": "ratchet",
+      "key": "9-90",
+      "name": "9-90",
+      "allTime": 1,
+      "recent90": 0
+    },
+    {
+      "cat": "ratchet",
+      "key": "6-90",
+      "name": "6-90",
+      "allTime": 1,
+      "recent90": 1
+    },
+    {
+      "cat": "assist",
+      "key": "輔助K",
+      "name": "K",
+      "allTime": 1,
+      "recent90": 1
+    },
+    {
+      "cat": "blade",
+      "key": "金剛王",
+      "name": "Bumblebee",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "達斯維達",
+      "name": "Darth Vader",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "烈焰飛鳳S",
+      "name": "DranzerSpiral",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "銀牙烈虎",
+      "name": "DrigerSlash",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "鋼鐵人",
+      "name": "Iron Man",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "路克天行者",
+      "name": "Luke Skywalker",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "密卡登",
+      "name": "Megatron",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "星區長吉迪恩",
+      "name": "Moff Gideon",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "蜘蛛人",
+      "name": "Spider-Man",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "天王星",
+      "name": "Starscream",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "薩諾斯",
+      "name": "Thanos",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "曼達洛人",
+      "name": "The Mandalorian",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    },
+    {
+      "cat": "blade",
+      "key": "猛毒",
+      "name": "Venom",
+      "allTime": 0,
+      "recent90": 0,
+      "firsts": 0
+    }
+  ],
+  "unmatched": [
+    {
+      "name": "EmperorBlast Heavy",
+      "count": 279
+    },
+    {
+      "name": "ValkyrieBlast Heavy",
+      "count": 111
+    },
+    {
+      "name": "EmperorBlast Wheel",
+      "count": 61
+    },
+    {
+      "name": "ValkyrieBlast Wheel",
+      "count": 60
+    },
+    {
+      "name": "SolBlast Heavy",
+      "count": 36
+    },
+    {
+      "name": "HellsBlast Heavy",
+      "count": 32
+    },
+    {
+      "name": "BiteCroc",
+      "count": 31
+    },
+    {
+      "name": "WolfBlast Heavy",
+      "count": 29
+    },
+    {
+      "name": "EmperorBrave Heavy",
+      "count": 23
+    },
+    {
+      "name": "EmperorDelta PeakHeavy",
+      "count": 20
+    },
+    {
+      "name": "ValkyrieBlast Jaggy",
+      "count": 19
+    },
+    {
+      "name": "CerberusBlast Wheel",
+      "count": 19
+    },
+    {
+      "name": "DranBlast Heavy",
+      "count": 17
+    },
+    {
+      "name": "EmperorBlast Free",
+      "count": 15
+    },
+    {
+      "name": "PhoenixBlast Heavy",
+      "count": 15
+    },
+    {
+      "name": "EmperorEclipse Heavy",
+      "count": 15
+    },
+    {
+      "name": "EmperorBlitz BreakHeavy",
+      "count": 12
+    },
+    {
+      "name": "CerberusBlast Heavy",
+      "count": 12
+    },
+    {
+      "name": "BahamutBlast Heavy",
+      "count": 10
+    },
+    {
+      "name": "WolfBlast Free",
+      "count": 10
+    },
+    {
+      "name": "EmperorFlare Heavy",
+      "count": 10
+    },
+    {
+      "name": "DranBlast Wheel",
+      "count": 10
+    },
+    {
+      "name": "FoxBlast Heavy",
+      "count": 8
+    },
+    {
+      "name": "ValkyrieBlast Free",
+      "count": 8
+    },
+    {
+      "name": "EmperorRage FlowHeavy",
+      "count": 7
+    },
+    {
+      "name": "SolBlast Wheel",
+      "count": 7
+    },
+    {
+      "name": "RhinoBlast Wheel",
+      "count": 6
+    },
+    {
+      "name": "WizardBlast Wheel",
+      "count": 6
+    },
+    {
+      "name": "PerseusBrave Slash",
+      "count": 6
+    },
+    {
+      "name": "EmperorBlast Jaggy",
+      "count": 5
+    },
+    {
+      "name": "ValkyrieDelta PeakHeavy",
+      "count": 5
+    },
+    {
+      "name": "Yell Kong",
+      "count": 5
+    },
+    {
+      "name": "WizardBlast Heavy",
+      "count": 5
+    },
+    {
+      "name": "ValkyrieEclipse Heavy",
+      "count": 4
+    },
+    {
+      "name": "BahamutDelta PeakHeavy",
+      "count": 4
+    },
+    {
+      "name": "EmperorFortress GuardWheel",
+      "count": 4
+    },
+    {
+      "name": "RhinoBlast Jaggy",
+      "count": 4
+    },
+    {
+      "name": "PegasusBrave Assault",
+      "count": 3
+    },
+    {
+      "name": "UnicornBlast Heavy",
+      "count": 3
+    },
+    {
+      "name": "ValkyrieBlitz BreakHeavy",
+      "count": 3
+    },
+    {
+      "name": "BahamutBlast Wheel",
+      "count": 3
+    },
+    {
+      "name": "PerseusBlast Slash",
+      "count": 3
+    },
+    {
+      "name": "PerseusBlast Jaggy",
+      "count": 3
+    },
+    {
+      "name": "Tide Whale",
+      "count": 3
+    },
+    {
+      "name": "SolBlast D",
+      "count": 2
+    },
+    {
+      "name": "UnicornRage FlowHeavy",
+      "count": 2
+    },
+    {
+      "name": "WolfDelta PeakHeavy",
+      "count": 2
+    },
+    {
+      "name": "BahamutRage FlowHeavy",
+      "count": 2
+    },
+    {
+      "name": "EmperorBlast Slash",
+      "count": 2
+    },
+    {
+      "name": "WolfBlast Wheel",
+      "count": 2
+    },
+    {
+      "name": "ValkyrieDelta FlowHeavy",
+      "count": 2
+    },
+    {
+      "name": "DranEclipse Heavy",
+      "count": 2
+    },
+    {
+      "name": "EmperorDelta FlowHeavy",
+      "count": 2
+    },
+    {
+      "name": "HellsBlast Turn",
+      "count": 2
+    },
+    {
+      "name": "PegasusMight Wheel",
+      "count": 2
+    },
+    {
+      "name": "EmperorHunt Free",
+      "count": 2
+    },
+    {
+      "name": "DranArc Slash",
+      "count": 2
+    },
+    {
+      "name": "DranDark Jaggy",
+      "count": 2
+    },
+    {
+      "name": "SolBlast Jaggy",
+      "count": 2
+    },
+    {
+      "name": "PegasusEclipse Heavy",
+      "count": 2
+    },
+    {
+      "name": "ValkyrieFortress FJ",
+      "count": 2
+    },
+    {
+      "name": "EmperorFortress FlowWheel",
+      "count": 2
+    },
+    {
+      "name": "WizardBlast Slash",
+      "count": 2
+    },
+    {
+      "name": "HellsBlast Slash",
+      "count": 2
+    },
+    {
+      "name": "RhinoBlast Slash",
+      "count": 1
+    },
+    {
+      "name": "ValkyrieArc",
+      "count": 1
+    },
+    {
+      "name": "Reaper Incendio",
+      "count": 1
+    },
+    {
+      "name": "PegasusVolt Jaggy",
+      "count": 1
+    },
+    {
+      "name": "FoxBlast Slash",
+      "count": 1
+    },
+    {
+      "name": "WolfMight Free",
+      "count": 1
+    },
+    {
+      "name": "Arc Wizard Bumper",
+      "count": 1
+    },
+    {
+      "name": "PegasusBrave A",
+      "count": 1
+    },
+    {
+      "name": "HornetRage FlowHeavy",
+      "count": 1
+    },
+    {
+      "name": "RhinoFortress GuardWheel",
+      "count": 1
+    },
+    {
+      "name": "Antler Stag Charge",
+      "count": 1
+    },
+    {
+      "name": "Fang Leon Slash",
+      "count": 1
+    },
+    {
+      "name": "LeonFortress Guard",
+      "count": 1
+    },
+    {
+      "name": "Antler Stag Vertical",
+      "count": 1
+    },
+    {
+      "name": "WizardMight Heavy",
+      "count": 1
+    },
+    {
+      "name": "EmperorBlitz Heavy",
+      "count": 1
+    },
+    {
+      "name": "PegasusRage FlowKnuckle",
+      "count": 1
+    },
+    {
+      "name": "KnightBlitz PeakOdd",
+      "count": 1
+    },
+    {
+      "name": "EmperorReaper Free",
+      "count": 1
+    },
+    {
+      "name": "PegasusBlitz FlowMassive",
+      "count": 1
+    },
+    {
+      "name": "PegasusDelta PeakHeavy",
+      "count": 1
+    },
+    {
+      "name": "ValkyrieFortress GuardKnuckle",
+      "count": 1
+    },
+    {
+      "name": "HellsDelta PeakHeavy",
+      "count": 1
+    },
+    {
+      "name": "StagMight Free",
+      "count": 1
+    },
+    {
+      "name": "KrakenFlare Heavy",
+      "count": 1
+    },
+    {
+      "name": "DranDelta PeakHeavy",
+      "count": 1
+    },
+    {
+      "name": "EmperorBlitz BH",
+      "count": 1
+    },
+    {
+      "name": "Aesprika: (Hasbro) Yellow Shelter Drake",
+      "count": 1
+    },
+    {
+      "name": "WizardBrave Round",
+      "count": 1
+    },
+    {
+      "name": "HellsFlame",
+      "count": 1
+    },
+    {
+      "name": "RhinoArc",
+      "count": 1
+    },
+    {
+      "name": "FoxFlame Slash",
+      "count": 1
+    },
+    {
+      "name": "PerseusBrave",
+      "count": 1
+    },
+    {
+      "name": "HellsArc Jaggy",
+      "count": 1
+    },
+    {
+      "name": "DranBlast A",
+      "count": 1
+    },
+    {
+      "name": "DranBlast Round",
+      "count": 1
+    },
+    {
+      "name": "EmperorFortress GuardHeavy",
+      "count": 1
+    },
+    {
+      "name": "PegasusFang Turn",
+      "count": 1
+    },
+    {
+      "name": "UnicornRage FlowFree",
+      "count": 1
+    },
+    {
+      "name": "EmperorBlitz FK",
+      "count": 1
+    },
+    {
+      "name": "FoxFlare Heavy",
+      "count": 1
+    },
+    {
+      "name": "Kraken Wriggle Free",
+      "count": 1
+    },
+    {
+      "name": "Sol Eclipse Turn",
+      "count": 1
+    },
+    {
+      "name": "Hells Hunt D",
+      "count": 1
+    },
+    {
+      "name": "UnicornBlitz PeakHeavy",
+      "count": 1
+    },
+    {
+      "name": "WolfBlast Knuckle",
+      "count": 1
+    },
+    {
+      "name": "Meteroid Dragoon",
+      "count": 1
+    },
+    {
+      "name": "Ring Aether",
+      "count": 1
+    },
+    {
+      "name": "DranArc",
+      "count": 1
+    },
+    {
+      "name": "DranArc Bumper",
+      "count": 1
+    },
+    {
+      "name": "HellsArc",
+      "count": 1
+    },
+    {
+      "name": "CerberusBlast Jaggy",
+      "count": 1
+    },
+    {
+      "name": "CerberusBlast",
+      "count": 1
+    },
+    {
+      "name": "PerseusBlast Turn",
+      "count": 1
+    },
+    {
+      "name": "PegasusBrave Jaggy",
+      "count": 1
+    },
+    {
+      "name": "FortBlast Heavy",
+      "count": 1
+    },
+    {
+      "name": "ValkyrieBlast Turn",
+      "count": 1
+    },
+    {
+      "name": "Wriggle Wizard Wheel",
+      "count": 1
+    },
+    {
+      "name": "WizardReaper Round",
+      "count": 1
+    },
+    {
+      "name": "BahamutDark Slash",
+      "count": 1
+    },
+    {
+      "name": "KnightWriggle Knuckle",
+      "count": 1
+    },
+    {
+      "name": "Fang Leon Heavy",
+      "count": 1
+    },
+    {
+      "name": "BahamutDelta BreakHeavy",
+      "count": 1
+    },
+    {
+      "name": "EmperorDelta FH",
+      "count": 1
+    },
+    {
+      "name": "BahamutBlast Free",
+      "count": 1
+    },
+    {
+      "name": "EmperorFort Heavy",
+      "count": 1
+    },
+    {
+      "name": "EmperorBlitz BreakJaggy",
+      "count": 1
+    },
+    {
+      "name": "Senn: (Hasbro) Ridge Triceratops",
+      "count": 1
+    },
+    {
+      "name": "BrachioBlitz OuterHeavy",
+      "count": 1
+    },
+    {
+      "name": "EmperorWhip FlowWheel",
+      "count": 1
+    },
+    {
+      "name": "Savage Bear",
+      "count": 0
+    },
+    {
+      "name": "Shockwave",
+      "count": 0
+    },
+    {
+      "name": "Talon Ptera",
+      "count": 0
+    },
+    {
+      "name": "Trypio",
+      "count": 0
+    },
+    {
+      "name": "Bite Croc",
+      "count": 0
+    },
+    {
+      "name": "Steel Samurai",
+      "count": 0
+    }
+  ]
+}

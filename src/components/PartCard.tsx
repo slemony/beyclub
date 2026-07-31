@@ -1,4 +1,5 @@
 import PartImage from './PartImage'
+import { UNRATED } from '../lib/rating'
 import { BUY_LABELS, TIER_COLORS, TYPE_COLORS, TYPE_LABELS, tierLabel } from '../lib/tiers'
 import type { Part } from '../lib/types'
 
@@ -29,14 +30,18 @@ export default function PartCard({ part, onOpen }: Props) {
             </span>
           )}
           {part.buy && <span className="chip chip-dim">{BUY_LABELS[part.buy]}</span>}
-          {part.stats && (
+          {part.rating?.tournament && (
             <span className="chip chip-dim">
-              {part.stats.wins.toLocaleString()} wins · {part.stats.firsts} 🥇
+              {part.rating.tournament.allTime.toLocaleString()} placements
             </span>
           )}
+          {part.rating?.capped &&
+            (part.tier === UNRATED ? (
+              <span className="chip chip-unproven">Nobody has rated this</span>
+            ) : (
+              <span className="chip chip-unproven">No tournament record</span>
+            ))}
         </span>
-
-        {part.credit && <span className="part-credit">via {part.credit.author}</span>}
       </span>
     </button>
   )

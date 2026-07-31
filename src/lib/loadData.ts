@@ -1,36 +1,57 @@
 import bladeNamesEn from '../data/bladeNamesEn.json'
 import bladeNamesZhEn from '../data/bladeNamesZhEn.json'
-import { calculateBuyRec, getBuyRec } from './buyRec'
+import partOverrides from '../data/partOverrides.json'
+import { calculateBuyRec } from './buyRec'
 import { parseCSV } from './csv'
+import { blendRating, tournamentScore } from './rating'
 import { ENDPOINTS } from './sources'
+import { baseName, normalize } from './text'
 import type {
-  BuyAdvice,
-  ComboStat,
   Dataset,
   Part,
   PartCategory,
   PartNotes,
   PartType,
-  SourceId,
+  RatingSources,
+  TournamentFile,
+  TournamentRecord,
 } from './types'
 
 const EN_NAMES = bladeNamesEn as Record<string, string>
 const ZH_EN_NAMES = bladeNamesZhEn as Record<string, string>
-const CACHE_VERSION = 'v1'
+
+/** Per-row corrections for sheet quirks — see the note in the file itself. */
+type Override = { id?: string; nameEn?: string; blade?: string }
+const OVERRIDES = partOverrides as Record<string, Override | string>
+const overrideFor = (id: string): Override =>
+  typeof OVERRIDES[id] === 'object' ? (OVERRIDES[id] as Override) : {}
+
+// v3: one blended list rather than three switchable ones.
+const CACHE_KEY = 'beyclub:tiers:v3'
+
+/**
+ * The per-source caches this replaced, plus the switcher's last selection.
+ *
+ * The tournament entry embedded a whole combo table, so leaving these behind
+ * costs a returning user close to a megabyte of unreachable data — and the
+ * write below swallows a quota error by design, which would silently disable
+ * the offline fallback for exactly the people who have used the app before.
+ */
+const RETIRED_KEYS = [
+  'beyclub:tiers:v1:community',
+  'beyclub:tiers:v1:tournament',
+  'beyclub:tiers:v1:japan',
+  'beyclub:source',
+]
 
 /**
  * The sheet lists colour variants and repackages under their own product codes
  * (BX-35-04 is a Wizard Rod booster), so an id lookup alone misses most English
- * names. Falling back to the Chinese name — with variant suffixes like (綠)
- * stripped — covers those.
+ * names. Falling back to the blade's base Chinese name covers those.
  */
 function englishName(id: string, zhName: string): string | undefined {
-  const direct = EN_NAMES[id]
-  if (direct) return direct
-  const base = zhName.replace(/[（(].*?[)）]/g, '').replace(/\s.*$/, '').trim()
-  return ZH_EN_NAMES[base]
+  return EN_NAMES[id] ?? ZH_EN_NAMES[baseName(zhName)]
 }
-const cacheKey = (source: SourceId) => `beyclub:tiers:${CACHE_VERSION}:${source}`
 
 /** Sheets are edited constantly; bust any intermediary cache. */
 async function fetchCsv(url: string): Promise<string[][]> {
@@ -47,38 +68,33 @@ function toCategory(raw: string): PartCategory | null {
   return null
 }
 
-/**
- * The community sheet stores buy advice in Chinese or as a bare mark; anything
- * we don't recognise becomes "no opinion" rather than a wrong recommendation.
- */
-function toBuyAdvice(raw: string): BuyAdvice {
-  const v = raw.toLowerCase()
-  if (v === 'yes' || v.includes('推薦購買') || v.includes('✅')) return 'yes'
-  if (v === 'maybe' || v.includes('視情況') || v.includes('⚠')) return 'maybe'
-  if (v === 'no' || v.includes('不推薦') || v.includes('❌')) return 'no'
-  return ''
+/** A part as the Taiwan sheet describes it, before any ranking is applied. */
+type Raw = Omit<Part, 'tier' | 'buy'> & {
+  communityTier: string
+  key: string
 }
 
-/** Blade database — the community tier list. */
-async function loadCommunityParts(): Promise<Part[]> {
+/**
+ * The Taiwan catalogue: which parts exist, what they look like and what they
+ * ship with. Its tier column becomes one input to the blend rather than the
+ * final word.
+ */
+async function loadCatalogue(): Promise<Raw[]> {
   const [blades, parts] = await Promise.all([
     fetchCsv(ENDPOINTS.blades),
     fetchCsv(ENDPOINTS.parts),
   ])
 
-  const out: Part[] = []
+  const out: Raw[] = []
   const seen = new Set<string>()
 
-  // Parts catalogue first: blades reference these for their stock part grades.
-  // Sheet columns: name, category, img, tier
-  const partTiers = new Map<string, string>()
+  // Parts catalogue: ratchets, bits and assist blades. Columns: name, category,
+  // image, tier.
   for (const row of parts.slice(1)) {
     const id = cell(row, 0)
     const cat = toCategory(cell(row, 1))
     const tier = cell(row, 3)
     if (!id || !cat || !tier) continue
-
-    partTiers.set(`${id}|${cat}`, tier)
 
     const key = `${id}|${cat}`
     if (seen.has(key)) continue
@@ -90,8 +106,8 @@ async function loadCommunityParts(): Promise<Part[]> {
       name: cat === 'assist' ? id.replace(/^輔助/, '') : id,
       cat,
       type: cat as PartType,
-      tier,
-      buy: getBuyRec(tier),
+      communityTier: tier,
+      key: id,
       img: cell(row, 2) || undefined,
     })
   }
@@ -104,40 +120,25 @@ async function loadCommunityParts(): Promise<Part[]> {
     const tier = cell(row, 4)
     if (!id || !cat || !tier) continue
 
-    // Colour variants share a product code (BX-35-04); keep the first listing.
     const key = `${id}|${cat}`
     if (seen.has(key)) continue
     seen.add(key)
 
-    const stockRatchet = cell(row, 6)
-    const stockBit = cell(row, 8)
-    const assist = cell(row, 10)
-
-    // The catalogue is the better grade source; the blade row is the fallback.
-    const ratchetTier = partTiers.get(`${stockRatchet}|ratchet`) || cell(row, 7)
-    const bitTier = partTiers.get(`${stockBit}|bit`) || cell(row, 9)
-    const assistTier = partTiers.get(`${assist}|assist`)
-
-    // The sheet leaves its buy column blank and expects it to be computed.
-    const declaredBuy = toBuyAdvice(cell(row, 5))
-    const buy =
-      declaredBuy ||
-      (cat === 'blade'
-        ? calculateBuyRec(tier, ratchetTier, bitTier, assistTier)
-        : getBuyRec(tier))
+    const name = cell(row, 1) || id
+    const fix = overrideFor(id)
 
     out.push({
-      id,
-      name: cell(row, 1) || id,
-      nameEn: englishName(id, cell(row, 1)),
+      id: fix.id ?? id,
+      name,
+      nameEn: fix.nameEn ?? englishName(id, name),
       cat,
       type: (cell(row, 3) || cat) as PartType,
-      tier,
-      buy,
-      stockRatchet: stockRatchet || undefined,
-      stockBit: stockBit || undefined,
-      ratchetTier: ratchetTier || undefined,
-      bitTier: bitTier || undefined,
+      communityTier: tier,
+      // Colour variants and metal coatings share one blade's record.
+      key: fix.blade ?? baseName(name),
+      stockRatchet: cell(row, 6) || undefined,
+      stockBit: cell(row, 8) || undefined,
+      stockAssist: cell(row, 10) || undefined,
       product: cell(row, 11) || undefined,
       img: cell(row, 12) || undefined,
       combo: [cell(row, 13), cell(row, 14)].filter(Boolean).join('\n') || undefined,
@@ -148,147 +149,26 @@ async function loadCommunityParts(): Promise<Part[]> {
   return out
 }
 
-/** Aggregated combo results, newest-weighted by the source's own ranking. */
-async function loadComboStats(): Promise<ComboStat[]> {
-  const rows = await fetchCsv(ENDPOINTS.comboStats)
-  const head = rows[0].map((h) => h.trim().toLowerCase())
-  const col = (name: string) => head.indexOf(name)
-
-  const iRank = col('site_recommendation_rank')
-  const iBladeId = col('site_blade_id')
-  const iBladeName = col('site_blade_name')
-  const iRatchet = col('ratchet')
-  const iBit = col('bit')
-  const iWins = col('total_wins')
-  const iFirst = col('first_count')
-  const iSecond = col('second_count')
-  const iThird = col('third_count')
-  const iRate = col('champion_rate')
-  const iLast = col('last_date')
-  const iKey = col('site_combo_key')
-
-  const num = (row: string[], i: number) => {
-    const v = Number(cell(row, i))
-    return Number.isFinite(v) ? v : 0
-  }
-
-  return rows
-    .slice(1)
-    .filter((row) => cell(row, iBladeId))
-    .map((row) => ({
-      key: cell(row, iKey) || `${cell(row, iBladeId)}|${cell(row, iRatchet)}|${cell(row, iBit)}`,
-      bladeId: cell(row, iBladeId),
-      bladeName: cell(row, iBladeName),
-      ratchet: cell(row, iRatchet),
-      bit: cell(row, iBit),
-      wins: num(row, iWins),
-      firsts: num(row, iFirst),
-      seconds: num(row, iSecond),
-      thirds: num(row, iThird),
-      championRate: cell(row, iRate) ? num(row, iRate) : null,
-      lastDate: cell(row, iLast),
-      rank: num(row, iRank),
-    }))
-    .sort((a, b) => a.rank - b.rank)
-}
-
-/**
- * Tournament view: parts ranked by how often they actually placed, rather than
- * by anyone's opinion. Tiers are assigned by share of total wins so the scale
- * stays comparable to the community list.
- */
-function partsFromCombos(combos: ComboStat[], community: Part[]): Part[] {
-  const byBlade = new Map<string, { wins: number; firsts: number; last: string }>()
-
-  for (const c of combos) {
-    const agg = byBlade.get(c.bladeId) ?? { wins: 0, firsts: 0, last: '' }
-    agg.wins += c.wins
-    agg.firsts += c.firsts
-    if (c.lastDate > agg.last) agg.last = c.lastDate
-    byBlade.set(c.bladeId, agg)
-  }
-
-  const lookup = new Map(community.filter((p) => p.cat === 'blade').map((p) => [p.id, p]))
-  const top = Math.max(...[...byBlade.values()].map((a) => a.wins), 1)
-
-  return [...byBlade.entries()]
-    .map(([id, agg]) => {
-      const base = lookup.get(id)
-      const share = agg.wins / top
-      const tier =
-        share >= 0.5 ? 'X' : share >= 0.25 ? 'S' : share >= 0.1 ? 'A' : share >= 0.04 ? 'B' : 'C'
-
-      return {
-        id,
-        name: base?.name ?? id,
-        nameEn: englishName(id, base?.name ?? ''),
-        cat: 'blade' as PartCategory,
-        type: (base?.type ?? 'balance') as PartType,
-        tier,
-        // Same package grading as the community view, so a blade doesn't read
-        // "worth buying" on one tab and "situational" on another.
-        buy: calculateBuyRec(tier, base?.ratchetTier, base?.bitTier),
-        img: base?.img,
-        stockRatchet: base?.stockRatchet,
-        stockBit: base?.stockBit,
-        ratchetTier: base?.ratchetTier,
-        bitTier: base?.bitTier,
-        combo: base?.combo,
-        communityCombo: base?.communityCombo,
-        stats: {
-          wins: agg.wins,
-          firsts: agg.firsts,
-          championRate: null,
-          lastSeen: agg.last,
-        },
-      }
-    })
-    .sort((a, b) => (b.stats?.wins ?? 0) - (a.stats?.wins ?? 0))
+/** Placement counts, already keyed onto our catalogue by the refresh script. */
+async function loadTournament(): Promise<TournamentFile> {
+  const res = await fetch(`${import.meta.env.BASE_URL}data/tournament.json`)
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+  return (await res.json()) as TournamentFile
 }
 
 type JapanFile = {
-  curatedAt: string
-  source: { author: string; sourceName: string; sourceUrl: string }
-  parts: (Part & { productCode: string | null })[]
+  parts: { productCode: string | null; tier: string; nameEn?: string; credit?: Part['credit'] }[]
 }
 
 /**
- * Hand-curated Japanese list. The file itself holds only rankings and credits;
- * images and part types are inherited from the shared catalogue by product
- * code, so we never hotlink the original author's images.
+ * Hand-curated Japanese rankings. The file holds only grades and credits, so
+ * each entry is joined to the catalogue by product code — we never hotlink the
+ * original author's images.
  */
-async function loadJapan(community: Part[]): Promise<Part[]> {
+async function loadJapan(): Promise<JapanFile> {
   const res = await fetch(`${import.meta.env.BASE_URL}data/tiers-jp.json`)
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-  const json = (await res.json()) as JapanFile
-
-  const byCode = new Map<string, Part>()
-  for (const p of community) {
-    if (p.cat !== 'blade') continue
-    // Sheet ids may carry a variant suffix (UX-15-01); index the base code too.
-    const base = p.id.split('-').slice(0, 2).join('-')
-    if (!byCode.has(base)) byCode.set(base, p)
-    byCode.set(p.id, p)
-  }
-
-  return json.parts.map((p) => {
-    const match = p.productCode ? byCode.get(p.productCode) : undefined
-    return {
-      ...p,
-      // Prefer the catalogue's English name: the curated file keys on the base
-      // product code (UX-15) while the catalogue lists variants (UX-15-01).
-      nameEn: p.nameEn ?? match?.nameEn ?? (p.productCode ? EN_NAMES[p.productCode] : undefined),
-      img: match?.img,
-      type: match?.type ?? p.type,
-      buy: calculateBuyRec(p.tier, match?.ratchetTier, match?.bitTier),
-      stockRatchet: match?.stockRatchet,
-      stockBit: match?.stockBit,
-      ratchetTier: match?.ratchetTier,
-      bitTier: match?.bitTier,
-      combo: match?.combo,
-      communityCombo: match?.communityCombo,
-    }
-  })
+  return (await res.json()) as JapanFile
 }
 
 /** BeyClub's editorial notes, keyed "category:id". */
@@ -299,48 +179,160 @@ export async function loadPartNotes(): Promise<Record<string, PartNotes>> {
   return json.notes ?? {}
 }
 
-function readCache(source: SourceId): Dataset | null {
+/**
+ * Merges the catalogue, the placement record and the Japanese list into one
+ * ranking.
+ *
+ * Ratings are keyed by blade rather than by product code: 魔導神杖, 魔導神杖(綠)
+ * and 魔導神杖 金屬塗層:燦金 are one blade sold four ways, and if each variant
+ * looked for its own tournament record three of them would come back empty and
+ * read as untested.
+ */
+function merge(raw: Raw[], tournament: TournamentFile, japan: JapanFile): Part[] {
+  const records = new Map<string, TournamentRecord & { topRatchet?: string; topBit?: string }>()
+  const tops: Record<string, { allTime: number; recent90: number }> = {}
+
+  for (const p of tournament.parts) {
+    const top = (tops[p.cat] ??= { allTime: 0, recent90: 0 })
+    top.allTime = Math.max(top.allTime, p.allTime)
+    top.recent90 = Math.max(top.recent90, p.recent90)
+  }
+
+  // Ratchets, bits and assist blades are catalogued only by code, so "Flat" and
+  // "Free Ball" were unfindable. The placement feed spells them out.
+  const spelledOut = new Map<string, string>()
+
+  for (const p of tournament.parts) {
+    records.set(`${p.cat}|${p.key}`, {
+      allTime: p.allTime,
+      recent90: p.recent90,
+      firsts: p.firsts,
+      topRatchet: p.topRatchet,
+      topBit: p.topBit,
+      score: tournamentScore(p, tops[p.cat]),
+    })
+    // A ratchet's "name" is just its code again; only spell out real words.
+    if (p.cat !== 'blade' && p.name && p.name !== p.key) spelledOut.set(`${p.cat}|${p.key}`, p.name)
+  }
+
+  const blades = raw.filter((p) => p.cat === 'blade')
+
+  const byId = new Map(blades.map((p) => [p.id, p]))
+  const byName = new Map<string, Raw>()
+  for (const p of blades) {
+    const en = p.nameEn && normalize(p.nameEn)
+    if (en && !byName.has(en)) byName.set(en, p)
+  }
+
+  /**
+   * A base product code is not a blade. BX-50 covers five different blades and
+   * BX-24 another five, so resolving "Heavens Ring" through BX-50 alone would
+   * stamp its grade — and its author's name — onto whichever of the five the
+   * sheet happens to list first. Match the name we were given, and only fall
+   * back to the code when it identifies exactly one blade.
+   */
+  const byBaseCode = new Map<string, Raw | null>()
+  for (const p of blades) {
+    const base = p.id.split('-').slice(0, 2).join('-')
+    if (!byBaseCode.has(base)) byBaseCode.set(base, p)
+    else if (byBaseCode.get(base)?.key !== p.key) byBaseCode.set(base, null)
+  }
+
+  const japanByKey = new Map<string, { tier: string; credit?: Part['credit'] }>()
+  for (const entry of japan.parts) {
+    const code = entry.productCode
+    const match =
+      (entry.nameEn ? byName.get(normalize(entry.nameEn)) : undefined) ??
+      (code ? (byId.get(code) ?? byBaseCode.get(code) ?? undefined) : undefined)
+    if (match && !japanByKey.has(match.key)) japanByKey.set(match.key, entry)
+  }
+
+  const rated = raw.map((p) => {
+    const sources: RatingSources = {
+      community: p.communityTier === '-' ? undefined : p.communityTier,
+      japan: japanByKey.get(p.key)?.tier,
+      tournament: records.get(`${p.cat}|${p.key}`),
+    }
+    return { part: p, rating: blendRating(sources), credit: japanByKey.get(p.key)?.credit }
+  })
+
+  // Stock part grades have to come from the blend too, or a blade's buy verdict
+  // would weigh our tier against BeyTier's — two scales that were never
+  // measured the same way.
+  // Normalised, because the sheet's stock-part columns are hand-typed and every
+  // other code lookup in the app (partIndex.resolve, PartChip) tolerates the
+  // same drift in case, spacing and hyphens.
+  const tierOf = new Map(
+    rated.map(({ part, rating }) => [`${part.cat}|${normalize(part.id)}`, rating.tier]),
+  )
+  const grade = (cat: PartCategory, code?: string) =>
+    code ? tierOf.get(`${cat}|${normalize(code)}`) : undefined
+
+  return rated.map(({ part, rating, credit }) => {
+    const ratchetTier = grade('ratchet', part.stockRatchet)
+    const bitTier = grade('bit', part.stockBit)
+    // The blades sheet names an assist blade by its bare initial while the parts
+    // catalogue keys them "輔助A", so this lookup found nothing and the fourth
+    // term of the buy verdict never fired.
+    const assistTier = grade('assist', part.stockAssist && `輔助${part.stockAssist}`)
+
+    return {
+      ...part,
+      nameEn: part.nameEn ?? spelledOut.get(`${part.cat}|${part.id}`),
+      tier: rating.tier,
+      rating,
+      credit,
+      ratchetTier,
+      bitTier,
+      // Always computed from the grades this app blends, never read from a
+      // source. A blade nobody has graded still drops out of the average rather
+      // than out of the verdict — you are buying a box, and a box of good parts
+      // is worth buying whether or not the blade in it has been assessed.
+      buy:
+        part.cat === 'blade'
+          ? calculateBuyRec(rating.tier, ratchetTier, bitTier, assistTier)
+          : calculateBuyRec(rating.tier),
+    }
+  })
+}
+
+function readCache(): Dataset | null {
   try {
-    const raw = localStorage.getItem(cacheKey(source))
+    const raw = localStorage.getItem(CACHE_KEY)
     return raw ? (JSON.parse(raw) as Dataset) : null
   } catch {
     return null
   }
 }
 
-function writeCache(source: SourceId, data: Dataset) {
-  try {
-    localStorage.setItem(cacheKey(source), JSON.stringify(data))
-  } catch {
-    // Quota exceeded or private mode — cache is a nicety, not a requirement.
-  }
-}
-
 /**
- * Loads a dataset, falling back to the last good copy when the network fails so
- * the page always has something to render.
+ * Loads the merged dataset, falling back to the last good copy when the network
+ * fails so the page always has something to render.
  */
-export async function loadDataset(source: SourceId): Promise<Dataset> {
+export async function loadDataset(): Promise<Dataset> {
   try {
-    let parts: Part[] = []
-    let combos: ComboStat[] = []
+    const [raw, tournament, japan] = await Promise.all([
+      loadCatalogue(),
+      loadTournament(),
+      loadJapan(),
+    ])
 
-    if (source === 'community') {
-      parts = await loadCommunityParts()
-    } else if (source === 'tournament') {
-      const [community, stats] = await Promise.all([loadCommunityParts(), loadComboStats()])
-      combos = stats
-      parts = partsFromCombos(stats, community)
-    } else {
-      const community = await loadCommunityParts()
-      parts = await loadJapan(community)
+    const data: Dataset = {
+      parts: merge(raw, tournament, japan),
+      tournament: tournament.source,
+      fetchedAt: new Date().toISOString(),
+      stale: false,
     }
 
-    const data: Dataset = { parts, combos, fetchedAt: new Date().toISOString(), stale: false }
-    writeCache(source, data)
+    try {
+      for (const key of RETIRED_KEYS) localStorage.removeItem(key)
+      localStorage.setItem(CACHE_KEY, JSON.stringify(data))
+    } catch {
+      // Quota exceeded or private mode — cache is a nicety, not a requirement.
+    }
     return data
   } catch (err) {
-    const cached = readCache(source)
+    const cached = readCache()
     if (cached) return { ...cached, stale: true }
     throw err
   }

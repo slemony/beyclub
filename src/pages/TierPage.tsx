@@ -1,25 +1,22 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import Attribution from '../components/Attribution'
+import { useLocation } from 'react-router-dom'
+import Attribution, { RankingToggle, StaleNotice } from '../components/Attribution'
 import PageHeader from '../components/PageHeader'
 import PartCard from '../components/PartCard'
 import PartSheet from '../components/PartSheet'
-import SourceBar from '../components/SourceBar'
+import Sheet from '../components/Sheet'
 import TierTable from '../components/TierTable'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
-import { SOURCES } from '../lib/sources'
-import { CATEGORY_LABELS, normalize, tierRank } from '../lib/tiers'
-import type { Dataset, Part, PartCategory, PartNotes, SourceId } from '../lib/types'
+import { searchParts } from '../lib/search'
+import { CATEGORY_LABELS, comparePartsInTier, tierRank } from '../lib/tiers'
+import type { Dataset, Part, PartCategory, PartNotes } from '../lib/types'
 
 type Filter = PartCategory | 'all'
 
-const FILTERS: Filter[] = ['all', 'blade', 'ratchet', 'bit']
-const SOURCE_KEY = 'beyclub:source'
+const FILTERS: Filter[] = ['all', 'blade', 'ratchet', 'bit', 'assist']
 
 export default function TierPage() {
-  const [source, setSource] = useState<SourceId>(
-    () => (localStorage.getItem(SOURCE_KEY) as SourceId) || 'community',
-  )
   const [data, setData] = useState<Dataset | null>(null)
   const [notes, setNotes] = useState<Record<string, PartNotes>>({})
   const [error, setError] = useState<string | null>(null)
@@ -27,13 +24,18 @@ export default function TierPage() {
   const [category, setCategory] = useState<Filter>('all')
   const [query, setQuery] = useState('')
   const [stack, setStack] = useState<Part[]>([])
+  const [showSources, setShowSources] = useState(false)
+
+  // Tapping the tab you are already on should hand back a clean list rather
+  // than the search you left behind. Keyed on the location rather than the
+  // pathname, which does not change when the tab reopens itself.
+  const { key: visit } = useLocation()
+  useEffect(() => setQuery(''), [visit])
 
   useEffect(() => {
     let cancelled = false
-    setLoading(true)
-    setError(null)
 
-    loadDataset(source)
+    loadDataset()
       .then((d) => {
         if (!cancelled) setData(d)
       })
@@ -47,35 +49,34 @@ export default function TierPage() {
     return () => {
       cancelled = true
     }
-  }, [source])
+  }, [])
 
-  // Editorial notes are static and shared across sources — fetch once.
+  // Editorial notes are static — fetch once.
   useEffect(() => {
     loadPartNotes().then(setNotes).catch(() => setNotes({}))
   }, [])
 
-  useEffect(() => {
-    localStorage.setItem(SOURCE_KEY, source)
-  }, [source])
+  /**
+   * A handful of bits have no placement record, so the feed never spells their
+   * code out — but our own notes do. Filling the name in here means every part
+   * is searchable and readable by name, not just the ones that win.
+   */
+  const parts = useMemo(() => {
+    if (!data) return []
+    if (!Object.keys(notes).length) return data.parts
+    return data.parts.map((p) => {
+      if (p.nameEn) return p
+      const label = notes[`${p.cat}:${p.id}`]?.profile?.label
+      return label ? { ...p, nameEn: label } : p
+    })
+  }, [data, notes])
 
-  const index = useMemo(
-    () => (data ? buildPartIndex(data.parts, data.combos) : null),
-    [data],
-  )
+  const index = useMemo(() => buildPartIndex(parts), [parts])
 
   const visible = useMemo(() => {
-    if (!data) return []
-    const q = normalize(query)
-    return data.parts.filter((p) => {
-      if (category !== 'all' && p.cat !== category) return false
-      if (!q) return true
-      return (
-        normalize(p.id).includes(q) ||
-        normalize(p.name).includes(q) ||
-        (p.nameEn ? normalize(p.nameEn).includes(q) : false)
-      )
-    })
-  }, [data, category, query])
+    const inCategory = category === 'all' ? parts : parts.filter((p) => p.cat === category)
+    return searchParts(inCategory, query)
+  }, [parts, category, query])
 
   const grouped = useMemo(() => {
     const map = new Map<string, Part[]>()
@@ -84,6 +85,7 @@ export default function TierPage() {
       if (list) list.push(p)
       else map.set(p.tier, [p])
     }
+    for (const list of map.values()) list.sort(comparePartsInTier)
     return [...map.entries()].sort((a, b) => tierRank(a[0]) - tierRank(b[0]))
   }, [visible])
 
@@ -97,15 +99,27 @@ export default function TierPage() {
     })
   }, [])
 
-  const meta = SOURCES[source]
   const searching = query.trim().length > 0
 
   return (
     <>
-      <PageHeader title="Tier List" sub="Who ranks what, and on what evidence" />
+      <PageHeader
+        title="Tier List"
+        sub="Tournament results, Taiwan and Japan — blended"
+        action={<RankingToggle open={showSources} onToggle={() => setShowSources((v) => !v)} />}
+      />
 
-      <SourceBar active={source} onChange={setSource} />
-      <Attribution meta={meta} fetchedAt={data?.fetchedAt} stale={data?.stale} />
+      {data?.stale && <StaleNotice fetchedAt={data.fetchedAt} />}
+
+      {showSources && (
+        <Sheet label="How this is ranked" onClose={() => setShowSources(false)}>
+          <Attribution
+            tournament={data?.tournament}
+            fetchedAt={data?.fetchedAt}
+            stale={data?.stale}
+          />
+        </Sheet>
+      )}
 
       <div className="filter-row">
         <input
@@ -113,7 +127,7 @@ export default function TierPage() {
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search part ID or name…"
+          placeholder="Search — try “aero, cx13”"
           aria-label="Search parts"
         />
       </div>
@@ -132,11 +146,11 @@ export default function TierPage() {
         ))}
       </div>
 
-      {loading && <div className="glass notice">Loading {meta.label.toLowerCase()} data…</div>}
+      {loading && <div className="glass notice">Loading tier data…</div>}
 
       {error && !data && (
         <div className="glass notice notice-error">
-          Couldn't load this dataset — {error}. Check your connection and try again.
+          Couldn't load the tier data — {error}. Check your connection and try again.
         </div>
       )}
 
@@ -157,7 +171,6 @@ export default function TierPage() {
 
       <PartSheet
         stack={stack}
-        combos={data?.combos ?? []}
         index={index}
         notes={notes}
         onOpen={openPart}

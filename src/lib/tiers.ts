@@ -1,7 +1,7 @@
-import type { PartCategory } from './types'
+import type { Part, PartCategory } from './types'
 
+/** Every category is graded on this one scale, so grades compare directly. */
 export const BLADE_TIERS = ['X', 'S+', 'S', 'A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'E+', 'E']
-export const PART_TIERS = ['X', 'S', 'A', 'B', 'C', 'D', 'E']
 
 /** Same scale as the source site so rankings read identically across both. */
 export const TIER_COLORS: Record<string, string> = {
@@ -60,12 +60,25 @@ export function tierRank(tier: string): number {
   return i === -1 ? 999 : i
 }
 
+/** A tier row reads blade first — that is the part a buyer chooses around. */
+const CATEGORY_ORDER: Record<PartCategory, number> = { blade: 0, ratchet: 1, bit: 2, assist: 3 }
+
+/**
+ * Within one tier: category first, then strongest to the left.
+ *
+ * Grades are coarse — a whole row shares one — so the blended score underneath
+ * is what actually separates them. The name breaks the remaining ties, which is
+ * most of the unrated row, where every score is zero.
+ */
+export function comparePartsInTier(a: Part, b: Part): number {
+  return (
+    CATEGORY_ORDER[a.cat] - CATEGORY_ORDER[b.cat] ||
+    (b.rating?.score ?? 0) - (a.rating?.score ?? 0) ||
+    (a.nameEn ?? a.name).localeCompare(b.nameEn ?? b.name)
+  )
+}
+
 /** The sheet uses "-" for parts nobody has graded yet. */
 export function tierLabel(tier: string): string {
   return tier === '-' ? 'Unrated' : tier
-}
-
-/** Case/space/hyphen-insensitive so "UX-03", "ux03" and "UX 03" all match. */
-export function normalize(s: string): string {
-  return s.toLowerCase().replace(/[\s-]/g, '')
 }

@@ -1,4 +1,5 @@
 import PartImage from './PartImage'
+import { UNRATED } from '../lib/rating'
 import type { Part } from '../lib/types'
 
 type Props = { part: Part; onOpen: (part: Part) => void }
@@ -14,8 +15,16 @@ export default function PartTile({ part, onOpen }: Props) {
   const label = part.nameEn ?? part.name
   const buy = BUY_DOT[part.buy]
 
+  const unrated = part.tier === UNRATED
+  const unproven = part.rating?.capped
+  const title = unrated
+    ? `${label} — nobody has rated this`
+    : unproven
+      ? `${label} — no tournament record yet`
+      : label
+
   return (
-    <button className="part-tile" onClick={() => onOpen(part)} title={label}>
+    <button className="part-tile" onClick={() => onOpen(part)} title={title}>
       <span className="tile-img-wrap">
         <PartImage src={part.img} alt={label} size={54} />
         {buy && <span className={buy.className} role="img" aria-label={buy.label} />}

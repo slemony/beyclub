@@ -1,12 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="BeyClub">
+  <!-- "BC" set in Zen Dots, the wordmark face, with the outlines extracted to
+       paths. An icon is drawn by the OS and by browsers that never load our
+       webfont, so a font-family here would silently fall back to whatever is
+       installed locally. -->
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#4da3ff"/>
-      <stop offset="1" stop-color="#8be8ff"/>
-    </linearGradient>
+    <clipPath id="card">
+      <rect width="128" height="128" rx="28"/>
+    </clipPath>
   </defs>
-  <rect width="128" height="128" rx="28" fill="#0a0c11"/>
-  <path d="M30 30 L58 30 L98 98 L70 98 Z" fill="url(#g)"/>
-  <path d="M98 30 L70 30 L30 98 L58 98 Z" fill="#ff3d5e" opacity="0.92"/>
-  <circle cx="64" cy="64" r="8" fill="#0a0c11" stroke="#e8f4ff" stroke-width="3"/>
+
+  <rect width="128" height="128" rx="28" fill="#4a5058"/>
+
+  <g clip-path="url(#card)" stroke="#f4f1ea" stroke-width="1" opacity="0.14">
+    <path d="M16 0V128M32 0V128M48 0V128M64 0V128M80 0V128M96 0V128M112 0V128"/>
+    <path d="M0 16H128M0 32H128M0 48H128M0 64H128M0 80H128M0 96H128M0 112H128"/>
+  </g>
+
+  <path fill="#f4f1ea" fill-rule="evenodd" d="M18.0 82.89L18.0 45.27L49.76 45.17Q56.03 45.17 59.07 47.78Q62.1 50.39 62.1 55.61Q62.1 60.83 58.62 63.26Q60.94 64.53 62.05 66.61Q63.16 68.69 63.16 71.97Q63.16 77.29 60.12 80.06Q57.09 82.83 50.81 82.83L18.0 82.89Z M48.75 51.92L26.44 51.92L26.44 60.36L48.75 60.36Q53.56 60.36 53.56 56.03Q53.56 51.92 48.75 51.92Z M49.81 67.11L26.44 67.11L26.44 76.08L49.81 76.08Q54.61 76.08 54.61 71.54Q54.61 67.11 49.81 67.11Z M90.48 83.15Q80.04 83.15 74.5 78.32Q68.96 73.5 68.96 64.0Q68.96 54.56 74.5 49.7Q80.04 44.85 90.48 44.9L109.47 45.01L109.47 51.76L91.06 51.76Q84.2 51.76 80.88 54.66Q77.56 57.56 77.56 64.0Q77.56 70.44 80.88 73.36Q84.2 76.29 91.06 76.29L110.0 76.29L110.0 83.15L90.48 83.15Z"/>
 </svg>

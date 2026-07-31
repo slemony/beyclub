@@ -1,0 +1,1944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BEYBLADE X — 轴体百科</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #f5c518;
+    --accent2: #ff4d4d;
+    --accent3: #4d9fff;
+    --text: #e8e8f0;
+    --text-dim: #7a7a9a;
+    --red: #ff4444;
+    --green: #44dd88;
+    --yellow: #f5c518;
+    --blue: #4d9fff;
+    --purple: #b44dff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans SC', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(245,197,24,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(77,159,255,0.04) 0%, transparent 50%),
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 60px 20px 40px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(245,197,24,0.06) 0%, transparent 100%);
+  }
+
+  .logo-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .logo-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+  }
+  .logo-divider.right {
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 96px);
+    letter-spacing: 8px;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(245,197,24,0.3), 0 0 80px rgba(245,197,24,0.1);
+    line-height: 1;
+  }
+
+  .subtitle {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  /* CONTROLS */
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+  }
+
+  .controls-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--text-dim); }
+
+  .filter-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 16px;
+    color: var(--text-dim);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  /* MAIN */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 40px 0 20px;
+  }
+
+  .section-tag {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    padding: 4px 12px;
+    border-radius: 2px;
+  }
+
+  .tag-bx { background: rgba(255,77,77,0.15); color: var(--red); border: 1px solid rgba(255,77,77,0.3); }
+  .tag-bx-basic { background: rgba(245,197,24,0.15); color: var(--yellow); border: 1px solid rgba(245,197,24,0.3); }
+  .tag-ux { background: rgba(77,159,255,0.15); color: var(--blue); border: 1px solid rgba(77,159,255,0.3); }
+  .tag-cx { background: rgba(180,77,255,0.15); color: var(--purple); border: 1px solid rgba(180,77,255,0.3); }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--text);
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    max-width: 800px;
+    padding-left: 4px;
+    border-left: 2px solid var(--border);
+    padding-left: 12px;
+  }
+
+  /* GRID */
+  .bits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  /* CARD */
+  .bit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all 0.25s;
+    cursor: default;
+    position: relative;
+  }
+
+  .bit-card:hover {
+    border-color: rgba(245,197,24,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(245,197,24,0.1);
+  }
+
+  .bit-card.hidden { display: none; }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .bit-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    flex-shrink: 0;
+    border: 2px solid;
+    background: var(--bg);
+  }
+
+  .card-title-block { flex: 1; min-width: 0; }
+
+  .bit-abbr {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .bit-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .bit-name-cn {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+    opacity: 0.7;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+
+  .meta-tag {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  .tag-attack { background: rgba(255,77,77,0.2); color: #ff8888; border: 1px solid rgba(255,77,77,0.3); }
+  .tag-stamina { background: rgba(68,221,136,0.2); color: #55ee99; border: 1px solid rgba(68,221,136,0.3); }
+  .tag-defense { background: rgba(77,159,255,0.2); color: #88bbff; border: 1px solid rgba(77,159,255,0.3); }
+  .tag-balance { background: rgba(245,197,24,0.2); color: #f5c518; border: 1px solid rgba(245,197,24,0.3); }
+  .tag-special { background: rgba(180,77,255,0.2); color: #dd88ff; border: 1px solid rgba(180,77,255,0.3); }
+  .tag-weight { background: rgba(120,120,150,0.2); color: #aaaacc; border: 1px solid rgba(120,120,150,0.3); }
+
+  .card-body { padding: 14px 16px 16px; }
+
+  .card-image {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    background: #0d0d16;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(245,197,24,0.2));
+    transition: transform 0.3s;
+  }
+
+  .bit-card:hover .card-image img {
+    transform: scale(1.08);
+  }
+
+  .img-fallback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    opacity: 0.3;
+    gap: 6px;
+  }
+  .img-fallback-icon { font-size: 36px; }
+  .img-fallback-text { font-size: 10px; letter-spacing: 2px; color: var(--text-dim); font-family: 'Rajdhani', sans-serif; }
+
+  /* Stat bars */
+  .stat-bars { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-label-sm {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    width: 50px;
+    flex-shrink: 0;
+  }
+
+  .stat-bar-track {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  .fill-attack { background: linear-gradient(90deg, #ff4444, #ff7777); }
+  .fill-stamina { background: linear-gradient(90deg, #22cc66, #44ff88); }
+  .fill-defense { background: linear-gradient(90deg, #2266ff, #4499ff); }
+  .fill-burst { background: linear-gradient(90deg, #cc6600, #ff9900); }
+
+  .stat-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+    width: 28px;
+    text-align: right;
+  }
+
+  .desc {
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: rgba(232,232,240,0.75);
+    margin-bottom: 12px;
+  }
+
+  .pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .pro-con-block { background: rgba(255,255,255,0.03); border-radius: 4px; padding: 8px 10px; }
+
+  .pro-con-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .pro-con-title.pro { color: var(--green); }
+  .pro-con-title.con { color: var(--red); }
+
+  .pro-con-list { list-style: none; }
+  .pro-con-list li {
+    font-size: 11px;
+    color: rgba(232,232,240,0.65);
+    line-height: 1.5;
+    padding-left: 12px;
+    position: relative;
+  }
+  .pro-con-list li::before { content: '·'; position: absolute; left: 3px; color: var(--text-dim); }
+
+  .tier-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+
+  .tier-S { color: #ffd700; border-color: #ffd700; background: rgba(255,215,0,0.1); }
+  .tier-A { color: #4dff88; border-color: #4dff88; background: rgba(77,255,136,0.1); }
+  .tier-B { color: #4d9fff; border-color: #4d9fff; background: rgba(77,159,255,0.1); }
+  .tier-C { color: #ff884d; border-color: #ff884d; background: rgba(255,136,77,0.1); }
+  .tier-D { color: #aa4444; border-color: #aa4444; background: rgba(170,68,68,0.1); }
+
+  /* Footer */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 32px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  footer span { color: var(--accent); }
+
+  /* Count badge */
+  .count-badge {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-left: auto;
+  }
+
+  .count-badge b { color: var(--accent); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .bits-grid { grid-template-columns: 1fr; }
+    .pros-cons { grid-template-columns: 1fr; }
+    h1 { font-size: 52px; }
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .bit-card {
+    animation: fadeInUp 0.3s ease both;
+  }
+
+  .bit-card:nth-child(1) { animation-delay: 0.02s; }
+  .bit-card:nth-child(2) { animation-delay: 0.04s; }
+  .bit-card:nth-child(3) { animation-delay: 0.06s; }
+  .bit-card:nth-child(4) { animation-delay: 0.08s; }
+  .bit-card:nth-child(5) { animation-delay: 0.10s; }
+  .bit-card:nth-child(6) { animation-delay: 0.12s; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-line">
+    <div class="logo-divider"></div>
+    <div style="font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:5px;color:var(--text-dim);text-transform:uppercase;">Takara Tomy · 2023–2026</div>
+    <div class="logo-divider right"></div>
+  </div>
+  <h1>BEYBLADE X</h1>
+  <div class="subtitle">轴体完全百科 · Bits Encyclopedia</div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">44</div><div class="stat-label">Total Bits</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Systems</div></div>
+    <div class="stat"><div class="stat-num">2023</div><div class="stat-label">Series Start</div></div>
+    <div class="stat"><div class="stat-num">Jul 2026</div><div class="stat-label">Updated</div></div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="controls-inner">
+    <input class="search-box" type="text" placeholder="搜索轴体名称 / Search bits..." id="searchInput">
+    <div class="filter-btns">
+      <button class="filter-btn active" data-filter="all">全部</button>
+      <button class="filter-btn" data-filter="attack">攻击</button>
+      <button class="filter-btn" data-filter="stamina">体力</button>
+      <button class="filter-btn" data-filter="defense">防御</button>
+      <button class="filter-btn" data-filter="balance">平衡</button>
+      <button class="filter-btn" data-filter="bx">BX Line</button>
+      <button class="filter-btn" data-filter="ux">UX Line</button>
+      <button class="filter-btn" data-filter="cx">CX Line</button>
+    </div>
+    <div class="count-badge" id="countBadge">显示 <b>44</b> 个轴体</div>
+  </div>
+</div>
+
+<main id="mainContent">
+
+<!-- ===== BX LINE: XTREME GEAR SPORTS ===== -->
+<div class="section-header" data-section="bx">
+  <span class="section-tag tag-bx">BX Line</span>
+  <div class="section-title">XTREME GEAR SPORTS</div>
+  <div class="section-line"></div>
+</div>
+<p class="section-desc">最初发布的核心轴体系列，奠定了 Beyblade X 的基础 Meta。这些轴体设计简洁但各有明确定位，是理解整个系统的起点。</p>
+
+<div class="bits-grid" id="bitsGrid">
+
+<!-- FLAT -->
+<div class="bit-card" data-type="attack" data-line="bx" data-name="flat 平底 f">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/3/3e/BX-01_Flat_Bit.png" alt="Flat Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>⬤</div><div class=\'img-fallback-text\'>FLAT</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff6644;border-color:#ff6644;">F</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff6644;">FLAT</div>
+      <div class="bit-name">F · 平底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-attack">攻击</span>
+        <span class="meta-tag tag-weight">≈0.6g</span>
+        <span class="meta-tag tag-bx" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-01</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:88%"></div></div><span class="stat-val">88</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:35%"></div></div><span class="stat-val">35</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:40%"></div></div><span class="stat-val">40</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:70%"></div></div><span class="stat-val">70</span></div>
+    </div>
+    <p class="desc">平面底部直接接触场地，摩擦力大，走位激烈。是触发 Xtreme Dash 最稳定的轴体，新手进攻入门首选。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>触发Xtreme Dash最稳定</li><li>操作容错率高</li><li>适配大多数攻击Blade</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>体力极差</li><li>被耗体力战术反制</li><li>后期爆发力减弱</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAPER -->
+<div class="bit-card" data-type="balance" data-line="bx" data-name="taper 锥底 t">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/7/7e/BX-02_Taper_Bit.png" alt="Taper Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>◬</div><div class=\'img-fallback-text\'>TAPER</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#f5c518;border-color:#f5c518;">T</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#f5c518;">TAPER</div>
+      <div class="bit-name">T · 锥底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-balance">平衡</span>
+        <span class="meta-tag tag-weight">≈0.7g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-02</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:60%"></div></div><span class="stat-val">60</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:60%"></div></div><span class="stat-val">60</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:45%"></div></div><span class="stat-val">45</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:80%"></div></div><span class="stat-val">80</span></div>
+    </div>
+    <p class="desc">半平面锥形设计，攻守兼顾的平衡型轴体。体力比 Flat 明显更好，防爆能力达 80 分。适合需要一定稳定性的攻击组合。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>攻守平衡适应性强</li><li>防爆能力出色</li><li>体力比Flat好很多</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>攻击力不如Flat</li><li>两头不够极端</li><li>Meta中存在感中等</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- BALL -->
+<div class="bit-card" data-type="stamina defense" data-line="bx" data-name="ball 球底 b">
+  <div class="tier-badge tier-S">S</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/1/10/BX-03_Ball_Bit.png" alt="Ball Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>●</div><div class=\'img-fallback-text\'>BALL</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#44dd88;border-color:#44dd88;">B</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#44dd88;">BALL</div>
+      <div class="bit-name">B · 球底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-stamina">体力</span>
+        <span class="meta-tag tag-defense">防御</span>
+        <span class="meta-tag tag-weight">≈0.9g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-03</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:20%"></div></div><span class="stat-val">20</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:92%"></div></div><span class="stat-val">92</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:80%"></div></div><span class="stat-val">80</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:60%"></div></div><span class="stat-val">60</span></div>
+    </div>
+    <p class="desc">球形接触面提供最稳定的旋转支撑点。几乎可以搭配任何 Blade 取得稳定成绩，是竞技玩家的必备轴体，S 级稳居 Meta 顶端。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>最强一致性</li><li>适配所有Blade</li><li>竞技容错率极高</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>无进攻能力</li><li>需要配合强力Blade</li><li>偶尔被重型攻击KO</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- NEEDLE -->
+<div class="bit-card" data-type="defense" data-line="bx" data-name="needle 尖底 n">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/b/b5/BX-04_Needle_Bit.png" alt="Needle Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>▼</div><div class=\'img-fallback-text\'>NEEDLE</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#4d9fff;border-color:#4d9fff;">N</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#4d9fff;">NEEDLE</div>
+      <div class="bit-name">N · 尖底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-defense">防御</span>
+        <span class="meta-tag tag-weight">≈0.5g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-04</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:15%"></div></div><span class="stat-val">15</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:75%"></div></div><span class="stat-val">75</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:60%"></div></div><span class="stat-val">60</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:65%"></div></div><span class="stat-val">65</span></div>
+    </div>
+    <p class="desc">极小接触面减少摩擦，让陀螺保持中心稳定旋转。防守定心性强，体力表现不错，但抗 KO 能力是最大弱点。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>定心稳，体力好</li><li>摩擦损耗小</li><li>轻量化设计</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>抗KO能力弱</li><li>被强攻轻易弹飞</li><li>无进攻威胁</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- HIGH NEEDLE -->
+<div class="bit-card" data-type="defense" data-line="bx" data-name="high needle 高尖底 hn">
+  <div class="tier-badge tier-S">S</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/8/8e/BX-13_High_Needle_Bit.png" alt="High Needle Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>▲</div><div class=\'img-fallback-text\'>HIGH NEEDLE</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#4d9fff;border-color:#4d9fff;">HN</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#4d9fff;">HIGH NEEDLE</div>
+      <div class="bit-name">HN · 高尖底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-defense">防御</span>
+        <span class="meta-tag tag-weight">≈0.6g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-13</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:15%"></div></div><span class="stat-val">15</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:85%"></div></div><span class="stat-val">85</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:88%"></div></div><span class="stat-val">88</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:65%"></div></div><span class="stat-val">65</span></div>
+    </div>
+    <p class="desc">Needle 的加高版本，更高重心带来更强的稳定性。防御组合顶级之选，与 Ball 并列 S Tier，一致性极高，竞技比赛高频用轴。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>防守一致性顶级</li><li>稳定性比Needle更强</li><li>竞技赛场高胜率</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>被正面强攻仍有KO风险</li><li>无任何攻击能力</li><li>依赖Blade重量配合</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOW FLAT -->
+<div class="bit-card" data-type="attack" data-line="bx" data-name="low flat 低平底 lf">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/2/2f/BX-14_Low_Flat_Bit.png" alt="Low Flat Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>⬛</div><div class=\'img-fallback-text\'>LOW FLAT</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff4444;border-color:#ff4444;">LF</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff4444;">LOW FLAT</div>
+      <div class="bit-name">LF · 低平底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-attack">攻击</span>
+        <span class="meta-tag tag-weight">≈0.6g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-14</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:95%"></div></div><span class="stat-val">95</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:15%"></div></div><span class="stat-val">15</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:25%"></div></div><span class="stat-val">25</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:40%"></div></div><span class="stat-val">40</span></div>
+    </div>
+    <p class="desc">比 Flat 更低，Xtreme Dash 触发率极高，走位更激进。上限高但容错率极低，自 KO 风险大，是技术型选手的专用轴体。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>攻击上限最高</li><li>Xtreme Dash触发频率强</li><li>高手场可以发挥最大价值</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>自KO风险极高</li><li>体力极差</li><li>新手不推荐</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ORB -->
+<div class="bit-card" data-type="stamina" data-line="bx" data-name="orb 球珠底 o">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/9/9f/BX-16_Orb_Bit.png" alt="Orb Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>⭕</div><div class=\'img-fallback-text\'>ORB</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#44dd88;border-color:#44dd88;">O</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#44dd88;">ORB</div>
+      <div class="bit-name">O · 球珠底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-stamina">体力</span>
+        <span class="meta-tag tag-weight">≈0.9g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-16</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:88%"></div></div><span class="stat-val">88</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:70%"></div></div><span class="stat-val">70</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">比 Ball 更大的球形接触面，体力更偏向纯粹的耐久方向。在体力型场景中是 Ball 的有力竞争者，抗 KO 能力也比 Ball 强。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>体力极出色</li><li>抗KO比Ball稍强</li><li>纯体力场景出色</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>完全无进攻能力</li><li>竞技灵活性不如Ball</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- POINT -->
+<div class="bit-card" data-type="defense" data-line="bx" data-name="point 点底 p">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/5/59/BX-15_Point_Bit.png" alt="Point Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>•</div><div class=\'img-fallback-text\'>POINT</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#88aaff;border-color:#88aaff;">P</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#88aaff;">POINT</div>
+      <div class="bit-name">P · 点底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-defense">防御</span>
+        <span class="meta-tag tag-weight">≈0.5g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-15</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:68%"></div></div><span class="stat-val">68</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:50%"></div></div><span class="stat-val">50</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:60%"></div></div><span class="stat-val">60</span></div>
+    </div>
+    <p class="desc">极小接触点设计，摩擦几乎为零。理论上体力极好，但实战稳定性不一致，被撞容易崩轨道，竞技表现中规中矩。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>摩擦损耗低</li><li>保持中心能力强</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>实战表现不稳定</li><li>被撞容易失去轨道</li><li>竞技位置被Ball/HN挤压</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- SPIKE -->
+<div class="bit-card" data-type="defense" data-line="bx" data-name="spike 刺底 s">
+  <div class="tier-badge tier-D">D</div>
+  <div class="card-image">
+    <img src="https://static.wikia.nocookie.net/beyblade/images/4/4a/BX-19_Spike_Bit.png" alt="Spike Bit"
+      onerror="this.parentNode.innerHTML='<div class=\'img-fallback\'><div class=\'img-fallback-icon\'>⬡</div><div class=\'img-fallback-text\'>SPIKE</div></div>'">
+  </div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#aa4444;border-color:#aa4444;">S</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#aa4444;">SPIKE</div>
+      <div class="bit-name">S · 刺底</div>
+      <div class="card-meta">
+        <span class="meta-tag tag-defense">防御</span>
+        <span class="meta-tag tag-weight">≈0.5g</span>
+        <span class="meta-tag" style="background:rgba(255,77,77,0.1);color:#ff6666;border:1px solid rgba(255,77,77,0.2);font-size:10px;padding:2px 7px;">BX-19</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:5%"></div></div><span class="stat-val">5</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:55%"></div></div><span class="stat-val">55</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:15%"></div></div><span class="stat-val">15</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:20%"></div></div><span class="stat-val">20</span></div>
+    </div>
+    <p class="desc">细尖刺设计，防爆仅 20 分，抗 KO 能力是所有轴体中最差。轻轻一碰就会被弹出，几乎没有竞技价值。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>…体力还行？</li><li>外观设计独特</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>抗KO能力最差</li><li>防爆仅20分</li><li>竞技完全不可用</li></ul></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end bx grid -->
+
+
+<!-- ===== BX LINE: BASIC LINE ===== -->
+<div class="section-header" data-section="bx-basic">
+  <span class="section-tag tag-bx-basic">Basic Line</span>
+  <div class="section-title">BASIC UPGRADES</div>
+  <div class="section-line"></div>
+</div>
+<p class="section-desc">在原版核心轴体基础上衍生出的升级/变体系列，每个轴体都基于既有概念进行改良，引入 Gear 加重机制和全新形态。</p>
+
+<div class="bits-grid">
+
+<!-- RUSH -->
+<div class="bit-card" data-type="attack" data-line="bx" data-name="rush 冲刺底 r">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚡</div><div class="img-fallback-text">RUSH</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff7744;border-color:#ff7744;">R</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff7744;">RUSH</div>
+      <div class="bit-name">R · 冲刺底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-weight">≈0.7g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-20</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:78%"></div></div><span class="stat-val">78</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:40%"></div></div><span class="stat-val">40</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:65%"></div></div><span class="stat-val">65</span></div>
+    </div>
+    <p class="desc">走位比 Flat 更有规律性的进攻轴，特定配置下表现不错，但整体灵活性不如 Flat。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>走位相对可预测</li><li>体力比Flat稍好</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>攻击不如Flat极端</li><li>竞技位置较尴尬</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- HIGH TAPER -->
+<div class="bit-card" data-type="balance" data-line="bx" data-name="high taper 高锥底 ht">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">◬</div><div class="img-fallback-text">HIGH TAPER</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#f5c518;border-color:#f5c518;">HT</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#f5c518;">HIGH TAPER</div>
+      <div class="bit-name">HT · 高锥底</div>
+      <div class="card-meta"><span class="meta-tag tag-balance">平衡</span><span class="meta-tag tag-weight">≈0.8g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-21</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:55%"></div></div><span class="stat-val">55</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:65%"></div></div><span class="stat-val">65</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:72%"></div></div><span class="stat-val">72</span></div>
+    </div>
+    <p class="desc">Taper 加高版本，重心更高带来略有不同的攻守平衡点。体力比 Taper 稍好，但高重心在被强攻时稳定性略差。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>体力比Taper稍好</li><li>攻守兼顾</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>高重心受强攻时稳定性下降</li><li>竞技位置与Taper重叠</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- GEAR FLAT -->
+<div class="bit-card" data-type="attack" data-line="bx" data-name="gear flat 齿轮平底 gf">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚙</div><div class="img-fallback-text">GEAR FLAT</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff5533;border-color:#ff5533;">GF</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff5533;">GEAR FLAT</div>
+      <div class="bit-name">GF · 齿轮平底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-weight">≈1.0g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-23</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:90%"></div></div><span class="stat-val">90</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:38%"></div></div><span class="stat-val">38</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:68%"></div></div><span class="stat-val">68</span></div>
+    </div>
+    <p class="desc">Flat 的加重 Gear 版，外齿设计提升抓地力。比 Flat 有更强的 KO 爆发力，重量加持下冲击力更大，是进攻升级方向。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>比Flat更重更猛</li><li>KO能力强</li><li>抓地力强</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>走位有时不够流畅</li><li>齿轮磨损后性能下降</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- GEAR BALL -->
+<div class="bit-card" data-type="defense stamina" data-line="bx" data-name="gear ball 齿轮球底 gb">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚙</div><div class="img-fallback-text">GEAR BALL</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#44cc77;border-color:#44cc77;">GB</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#44cc77;">GEAR BALL</div>
+      <div class="bit-name">GB · 齿轮球底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-stamina">体力</span><span class="meta-tag tag-weight">≈1.1g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-24</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:18%"></div></div><span class="stat-val">18</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:85%"></div></div><span class="stat-val">85</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:85%"></div></div><span class="stat-val">85</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">Ball 的 Gear 加重版，更重带来更强的防 KO 能力。整体表现接近 Ball，抗 KO 稍强但走位一致性略有偏差。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>比Ball防KO更强</li><li>体力出色</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>走位一致性略输Ball</li><li>重量增加磨损加快</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- GEAR POINT -->
+<div class="bit-card" data-type="defense" data-line="bx" data-name="gear point 齿轮点底 gp">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚙</div><div class="img-fallback-text">GEAR POINT</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#88aaff;border-color:#88aaff;">GP</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#88aaff;">GEAR POINT</div>
+      <div class="bit-name">GP · 齿轮点底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-26</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:70%"></div></div><span class="stat-val">70</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:58%"></div></div><span class="stat-val">58</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:58%"></div></div><span class="stat-val">58</span></div>
+    </div>
+    <p class="desc">Point 的加重版本，齿轮增加重量后防 KO 能力提升。整体竞技表现中等，被 Ball 系列强烈压制。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>比Point防KO稍强</li><li>体力稳定</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>竞技位置被Ball/GB完全挤压</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- GEAR NEEDLE -->
+<div class="bit-card" data-type="defense" data-line="bx" data-name="gear needle 齿轮尖底 gn">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚙</div><div class="img-fallback-text">GEAR NEEDLE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#6699ff;border-color:#6699ff;">GN</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#6699ff;">GEAR NEEDLE</div>
+      <div class="bit-name">GN · 齿轮尖底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-27</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:80%"></div></div><span class="stat-val">80</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:72%"></div></div><span class="stat-val">72</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:60%"></div></div><span class="stat-val">60</span></div>
+    </div>
+    <p class="desc">Needle 的 Gear 加重版，比 Needle 和 High Needle 更重，防守重量感更强。是 HN 的重量型替代选项。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>重量最强的针底系列</li><li>防KO比HN稍强</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>竞技被HN和Ball挤压</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- QUAKE -->
+<div class="bit-card" data-type="special" data-line="bx" data-name="quake 震颤底 q">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🌊</div><div class="img-fallback-text">QUAKE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#dd88ff;border-color:#dd88ff;">Q</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#dd88ff;">QUAKE</div>
+      <div class="bit-name">Q · 震颤底</div>
+      <div class="card-meta"><span class="meta-tag tag-special">特殊</span><span class="meta-tag tag-weight">≈0.8g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-31</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:45%"></div></div><span class="stat-val">45</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:42%"></div></div><span class="stat-val">42</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:38%"></div></div><span class="stat-val">38</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:50%"></div></div><span class="stat-val">50</span></div>
+    </div>
+    <p class="desc">接触面产生不规则震动轨迹，走位难以预测。有一定趣味性，但靠运气成分大，体力损耗快，竞技实用性有限。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>走位不可预测</li><li>可以打乱对手节奏</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>体力差</li><li>靠运气成分大</li><li>竞技稳定性低</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- UNITE -->
+<div class="bit-card" data-type="balance" data-line="bx" data-name="unite 融合底 u">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🔮</div><div class="img-fallback-text">UNITE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#f5c518;border-color:#f5c518;">U</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#f5c518;">UNITE</div>
+      <div class="bit-name">U · 融合底</div>
+      <div class="card-meta"><span class="meta-tag tag-balance">平衡</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-33</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:48%"></div></div><span class="stat-val">48</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:55%"></div></div><span class="stat-val">55</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:52%"></div></div><span class="stat-val">52</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:58%"></div></div><span class="stat-val">58</span></div>
+    </div>
+    <p class="desc">多功能平衡设计，底部融合多种元素。攻守兼顾但在高手局中不够极端，上限有限。适合娱乐局多于竞技场。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>全面均衡适应性好</li><li>适合娱乐对战</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>高手局各方面不足</li><li>上限不高</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- CYCLONE -->
+<div class="bit-card" data-type="special" data-line="bx" data-name="cyclone 旋风底 c">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🌀</div><div class="img-fallback-text">CYCLONE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#dd88ff;border-color:#dd88ff;">C</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#dd88ff;">CYCLONE</div>
+      <div class="bit-name">C · 旋风底</div>
+      <div class="card-meta"><span class="meta-tag tag-special">特殊</span><span class="meta-tag tag-weight">≈0.7g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-34</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:52%"></div></div><span class="stat-val">52</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:50%"></div></div><span class="stat-val">50</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:42%"></div></div><span class="stat-val">42</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">螺旋形特殊走位设计，产生独特旋转轨迹。需要配合特定 Blade 才能发挥价值，单独使用表现一般。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>走位特殊有趣</li><li>特定配置有效</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>稳定性一般</li><li>通用性差</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ELEVATE -->
+<div class="bit-card" data-type="stamina" data-line="bx" data-name="elevate 抬升底 e">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⬆</div><div class="img-fallback-text">ELEVATE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#55eebb;border-color:#55eebb;">E</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#55eebb;">ELEVATE</div>
+      <div class="bit-name">E · 抬升底</div>
+      <div class="card-meta"><span class="meta-tag tag-stamina">体力</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-36</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:15%"></div></div><span class="stat-val">15</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:90%"></div></div><span class="stat-val">90</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:72%"></div></div><span class="stat-val">72</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">让陀螺略微抬高运行的特殊设计，体力表现极出色，是 Ball 系列在体力方向的有力挑战者。Whale Wave 5-80E 是其代表作。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>体力极强</li><li>是Ball的体力升级竞争者</li><li>Whale Wave配合极佳</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>无进攻能力</li><li>Meta定位仍在确立中</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- TRANS POINT -->
+<div class="bit-card" data-type="special" data-line="bx" data-name="trans point 变化点底 tp">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🔄</div><div class="img-fallback-text">TRANS POINT</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ffaa44;border-color:#ffaa44;">TP</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ffaa44;">TRANS POINT</div>
+      <div class="bit-name">TP · 变化点底</div>
+      <div class="card-meta"><span class="meta-tag tag-special">特殊</span><span class="meta-tag tag-weight">≈0.6g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-38</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:40%"></div></div><span class="stat-val">40</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:58%"></div></div><span class="stat-val">58</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:45%"></div></div><span class="stat-val">45</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">初期以 Point 形态运行，受到撞击后底部状态发生改变切换模式。双模式设计有趣，但两种状态都不是最顶，实战稳定性不理想。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>双模式切换有适应性</li><li>概念独特</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>两种模式都不够极端</li><li>实战表现不稳定</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- MERGE -->
+<div class="bit-card" data-type="balance" data-line="bx" data-name="merge 融合底 m">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">✦</div><div class="img-fallback-text">MERGE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#f5c518;border-color:#f5c518;">M</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#f5c518;">MERGE</div>
+      <div class="bit-name">M · 融合底</div>
+      <div class="card-meta"><span class="meta-tag tag-balance">平衡</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.2);font-size:10px;padding:2px 7px;">BX-45</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:55%"></div></div><span class="stat-val">55</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:62%"></div></div><span class="stat-val">62</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:60%"></div></div><span class="stat-val">60</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:62%"></div></div><span class="stat-val">62</span></div>
+    </div>
+    <p class="desc">较新发布的全能型平衡轴（BX-45），融合多种性能特性。发布时间较晚，竞技评价还在积累，初步表现是扎实的平衡型选手。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>全能均衡</li><li>适配多种配置</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>Meta评价仍在累积</li><li>无特定极端优势</li></ul></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end basic grid -->
+
+
+<!-- ===== UX LINE ===== -->
+<div class="section-header" data-section="ux">
+  <span class="section-tag tag-ux">UX Line</span>
+  <div class="section-title">UNIQUE LINE</div>
+  <div class="section-line"></div>
+</div>
+<p class="section-desc">Unique Line 引入了更复杂的特殊机制轴体，包括金属材质、自由旋转结构、主动加速设计等。整体重量和性能上限都比 BX 系列更高。</p>
+
+<div class="bits-grid">
+
+<!-- ACCEL -->
+<div class="bit-card" data-type="attack" data-line="ux" data-name="accel 加速底 a">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🚀</div><div class="img-fallback-text">ACCEL</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff5533;border-color:#ff5533;">A</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff5533;">ACCEL</div>
+      <div class="bit-name">A · 加速底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-special">特殊机制</span><span class="meta-tag tag-weight">≈0.8g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-01</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:92%"></div></div><span class="stat-val">92</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:28%"></div></div><span class="stat-val">28</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:30%"></div></div><span class="stat-val">30</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:45%"></div></div><span class="stat-val">45</span></div>
+    </div>
+    <p class="desc">主动加速设计，特殊底部材质让陀螺越转越快触发 Xtreme Dash。后期爆发力惊人，是高水平玩家的利器，但前期稳定性差容错率低。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>后期爆发力最强</li><li>Xtreme Dash触发极其凶猛</li><li>进攻上限极高</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>前期稳定性差</li><li>容错率极低</li><li>新手完全不推荐</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- HEXA -->
+<div class="bit-card" data-type="defense" data-line="ux" data-name="hexa 六角底 h">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⬡</div><div class="img-fallback-text">HEXA</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#4d9fff;border-color:#4d9fff;">H</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#4d9fff;">HEXA</div>
+      <div class="bit-name">H · 六角底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-weight">≈1.2g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-02</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:22%"></div></div><span class="stat-val">22</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:70%"></div></div><span class="stat-val">70</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:78%"></div></div><span class="stat-val">78</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">六边形底部设计，UX 线重量型防守轴。多边形接触面提供特殊防御效果，重量感十足，是防御组合的补充选择。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>重量优秀</li><li>六边形特殊防守机制</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>走位不够流畅</li><li>竞技稳定性中等</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- DISK BALL -->
+<div class="bit-card" data-type="stamina defense" data-line="ux" data-name="disk ball 碟形球底 db">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">💿</div><div class="img-fallback-text">DISK BALL</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#44dd88;border-color:#44dd88;">DB</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#44dd88;">DISK BALL</div>
+      <div class="bit-name">DB · 碟形球底</div>
+      <div class="card-meta"><span class="meta-tag tag-stamina">体力</span><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-weight">≈1.5g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-03</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:95%"></div></div><span class="stat-val">95</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:82%"></div></div><span class="stat-val">82</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:20%"></div></div><span class="stat-val">20</span></div>
+    </div>
+    <p class="desc">目前最重的轴体（≈1.5g），球底外加宽碟支撑，比普通 Ball 高近 2mm。调校得当时体力可以超越 Ball，宽碟提升防 KO。但防爆仅 20 分，不做倾斜发射风险极大。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>体力潜力超越Ball</li><li>宽碟防KO强</li><li>重量最大</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>防爆仅20分风险极大</li><li>高重心需要倾斜发射</li><li>调校要求极高</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- METAL NEEDLE -->
+<div class="bit-card" data-type="defense" data-line="ux" data-name="metal needle 金属尖底 mn">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🔩</div><div class="img-fallback-text">METAL NEEDLE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#aabbcc;border-color:#aabbcc;">MN</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#aabbcc;">METAL NEEDLE</div>
+      <div class="bit-name">MN · 金属尖底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-weight">≈0.8g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-05</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:12%"></div></div><span class="stat-val">12</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:82%"></div></div><span class="stat-val">82</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:75%"></div></div><span class="stat-val">75</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:65%"></div></div><span class="stat-val">65</span></div>
+    </div>
+    <p class="desc">Needle 的金属材质升级版，耐久度和一致性全面提升。比塑料 Needle 更稳定，是防守体系的升级选项，取代普通 Needle 的竞技位置。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>比塑料Needle更耐用</li><li>稳定性提升明显</li><li>体力和防守兼顾</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>仍有Needle系列弱点</li><li>被强攻正面打中仍有KO风险</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- GLIDE -->
+<div class="bit-card" data-type="balance" data-line="ux" data-name="glide 滑翔底 g">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🛩</div><div class="img-fallback-text">GLIDE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#f5c518;border-color:#f5c518;">G</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#f5c518;">GLIDE</div>
+      <div class="bit-name">G · 滑翔底</div>
+      <div class="card-meta"><span class="meta-tag tag-balance">平衡</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-07</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:40%"></div></div><span class="stat-val">40</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:70%"></div></div><span class="stat-val">70</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:60%"></div></div><span class="stat-val">60</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:58%"></div></div><span class="stat-val">58</span></div>
+    </div>
+    <p class="desc">滑行特殊底部，摩擦特性让走位独特顺滑。体力和防守兼顾的平衡型选手，在某些配置下有特殊发挥空间。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>走位顺滑独特</li><li>体力防守兼顾</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>竞技使用率中等</li><li>不够极端</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- FREE BALL -->
+<div class="bit-card" data-type="stamina" data-line="ux" data-name="free ball 自由球底 fb">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🎱</div><div class="img-fallback-text">FREE BALL</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#44dd88;border-color:#44dd88;">FB</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#44dd88;">FREE BALL</div>
+      <div class="bit-name">FB · 自由球底</div>
+      <div class="card-meta"><span class="meta-tag tag-stamina">体力</span><span class="meta-tag tag-special">特殊机制</span><span class="meta-tag tag-weight">≈1.0g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-08</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:92%"></div></div><span class="stat-val">92</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:78%"></div></div><span class="stat-val">78</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:50%"></div></div><span class="stat-val">50</span></div>
+    </div>
+    <p class="desc">球底内置自由旋转机构，减少摩擦损耗，理论体力超越普通 Ball。是 Ball 的机械升级版，状态调校得当时表现极佳，Silver Wolf 的招牌轴体。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>体力超越普通Ball</li><li>自由旋转减少摩擦</li><li>Silver Wolf配合出色</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>调校状态影响表现差异大</li><li>机构复杂</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- LEVEL -->
+<div class="bit-card" data-type="stamina" data-line="ux" data-name="level 水平底 l">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚖</div><div class="img-fallback-text">LEVEL</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#55eebb;border-color:#55eebb;">L</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#55eebb;">LEVEL</div>
+      <div class="bit-name">L · 水平底</div>
+      <div class="card-meta"><span class="meta-tag tag-stamina">体力</span><span class="meta-tag tag-weight">≈1.0g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-09</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:12%"></div></div><span class="stat-val">12</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:90%"></div></div><span class="stat-val">90</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:75%"></div></div><span class="stat-val">75</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:48%"></div></div><span class="stat-val">48</span></div>
+    </div>
+    <p class="desc">设计目标是让陀螺始终保持水平旋转，UX 线的体力代表轴体。体力和稳定性出色，是 Samurai Saber 的专属轴，竞技中有一定地位。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>体力极强</li><li>稳定性出色</li><li>防KO能力不错</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>防爆风险存在</li><li>无进攻能力</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOUND SPIKE -->
+<div class="bit-card" data-type="special defense" data-line="ux" data-name="bound spike 弹跳尖底 bs">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⬆</div><div class="img-fallback-text">BOUND SPIKE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#88aaff;border-color:#88aaff;">BS</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#88aaff;">BOUND SPIKE</div>
+      <div class="bit-name">BS · 弹跳尖底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-special">特殊机制</span><span class="meta-tag tag-weight">≈0.7g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-10</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:20%"></div></div><span class="stat-val">20</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:62%"></div></div><span class="stat-val">62</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:55%"></div></div><span class="stat-val">55</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:52%"></div></div><span class="stat-val">52</span></div>
+    </div>
+    <p class="desc">尖底配合弹跳机构，受撞击后底部弹出增加稳定性，独特的反弹防守机制。概念有趣但实战一致性存疑。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>弹跳防守机制独特</li><li>受撞后主动稳定</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>实战一致性不稳定</li><li>机制触发不一定</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOW RUSH -->
+<div class="bit-card" data-type="attack" data-line="ux" data-name="low rush 低冲刺底 lr">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">💨</div><div class="img-fallback-text">LOW RUSH</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff7744;border-color:#ff7744;">LR</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff7744;">LOW RUSH</div>
+      <div class="bit-name">LR · 低冲刺底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-weight">≈0.7g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-11</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:82%"></div></div><span class="stat-val">82</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:30%"></div></div><span class="stat-val">30</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:28%"></div></div><span class="stat-val">28</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:42%"></div></div><span class="stat-val">42</span></div>
+    </div>
+    <p class="desc">Rush 的低重心版本，更贴地的走位带来更积极的进攻性。爆发力强，配合 Impact Drake 使用有不错表现，但体力损耗快。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>攻击性强</li><li>低重心走位稳</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>体力差</li><li>容易自KO</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- UNDER NEEDLE -->
+<div class="bit-card" data-type="defense" data-line="ux" data-name="under needle 下针底 un">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">↓</div><div class="img-fallback-text">UNDER NEEDLE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#6699ff;border-color:#6699ff;">UN</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#6699ff;">UNDER NEEDLE</div>
+      <div class="bit-name">UN · 下针底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-weight">≈0.6g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-13</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:78%"></div></div><span class="stat-val">78</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:72%"></div></div><span class="stat-val">72</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">针尖偏向轴体底部的特殊设计，重心极低。低重心带来稳定性提升，是 Golem Rock 的专属轴，防守表现扎实。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>重心低稳定性好</li><li>防守表现扎实</li><li>Golem Rock配合出色</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>竞技使用率有限</li><li>专属性较强</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ZAP -->
+<div class="bit-card" data-type="special" data-line="ux" data-name="zap 电击底 z">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚡</div><div class="img-fallback-text">ZAP</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ffee44;border-color:#ffee44;">Z</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ffee44;">ZAP</div>
+      <div class="bit-name">Z · 电击底</div>
+      <div class="card-meta"><span class="meta-tag tag-special">特殊</span><span class="meta-tag tag-weight">≈0.8g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-14</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:48%"></div></div><span class="stat-val">48</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:50%"></div></div><span class="stat-val">50</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:42%"></div></div><span class="stat-val">42</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:48%"></div></div><span class="stat-val">48</span></div>
+    </div>
+    <p class="desc">特殊底部产生独特不规则运动轨迹的电击型轴体。走位难以预测，在某些配置下可以干扰对手，但自身稳定性欠佳。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>走位不可预测</li><li>干扰性强</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>自身稳定性差</li><li>竞技Meta位置小众</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- JOLT -->
+<div class="bit-card" data-type="attack" data-line="ux" data-name="jolt 冲击底 j">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">💥</div><div class="img-fallback-text">JOLT</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff6633;border-color:#ff6633;">J</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff6633;">JOLT</div>
+      <div class="bit-name">J · 冲击底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-weight">≈0.8g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-17</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:80%"></div></div><span class="stat-val">80</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:35%"></div></div><span class="stat-val">35</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:32%"></div></div><span class="stat-val">32</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:50%"></div></div><span class="stat-val">50</span></div>
+    </div>
+    <p class="desc">冲击型进攻轴，2025 年后发布的较新 UX 轴体，配合 Meteor Dragoon 使用。进攻性不错，Meta 评价还在积累中。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>进攻力不错</li><li>Meteor Dragoon配合好</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>体力差</li><li>竞技评价仍在积累</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- UNDER FLAT -->
+<div class="bit-card" data-type="attack" data-line="ux" data-name="under flat 下平底 uf">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⬛</div><div class="img-fallback-text">UNDER FLAT</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff5533;border-color:#ff5533;">UF</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff5533;">UNDER FLAT</div>
+      <div class="bit-name">UF · 下平底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-weight">≈0.7g</span><span class="meta-tag" style="background:rgba(77,159,255,0.1);color:#4d9fff;border:1px solid rgba(77,159,255,0.2);font-size:10px;padding:2px 7px;">UX-15</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:85%"></div></div><span class="stat-val">85</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:32%"></div></div><span class="stat-val">32</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:30%"></div></div><span class="stat-val">30</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:48%"></div></div><span class="stat-val">48</span></div>
+    </div>
+    <p class="desc">平底的低位变体，接触面更贴地，Xtreme Dash 触发稳定。进攻表现与 LF 接近，但整体更有规律性，Shark Scale 的配合轴。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>Xtreme Dash触发稳</li><li>低重心走位贴地</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>体力差</li><li>与LF竞技位置重叠</li></ul></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end ux grid -->
+
+
+<!-- ===== CX LINE ===== -->
+<div class="section-header" data-section="cx">
+  <span class="section-tag tag-cx">CX Line</span>
+  <div class="section-title">CUSTOM LINE</div>
+  <div class="section-line"></div>
+</div>
+<p class="section-desc">Custom Line 是全新的三件套可拆卸系统（Main Blade + Assist Blade + Lock Chip），轴体专为这套新系统设计。整体重量和机制复杂度都更高，代表了 Beyblade X 玩法的进化方向。</p>
+
+<div class="bits-grid">
+
+<!-- VORTEX -->
+<div class="bit-card" data-type="balance" data-line="cx" data-name="vortex 漩涡底 v">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🌀</div><div class="img-fallback-text">VORTEX</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#b44dff;border-color:#b44dff;">V</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#b44dff;">VORTEX</div>
+      <div class="bit-name">V · 漩涡底</div>
+      <div class="card-meta"><span class="meta-tag tag-balance">平衡</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-01</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:50%"></div></div><span class="stat-val">50</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:58%"></div></div><span class="stat-val">58</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:55%"></div></div><span class="stat-val">55</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:58%"></div></div><span class="stat-val">58</span></div>
+    </div>
+    <p class="desc">CX 系列首发轴，旋涡形底部设计，配合 Dran Brave 的 CX 结构使用。攻守均衡，是了解 CX 系统的入门轴体。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>攻守均衡入门好</li><li>CX系统配合稳定</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>CX线初期轴不够极端</li><li>稳定性一般</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOW ORB -->
+<div class="bit-card" data-type="stamina" data-line="cx" data-name="low orb 低球珠底 lo">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⭕</div><div class="img-fallback-text">LOW ORB</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#44dd88;border-color:#44dd88;">LO</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#44dd88;">LOW ORB</div>
+      <div class="bit-name">LO · 低球珠底</div>
+      <div class="card-meta"><span class="meta-tag tag-stamina">体力</span><span class="meta-tag tag-weight">≈1.0g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-02</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:10%"></div></div><span class="stat-val">10</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:88%"></div></div><span class="stat-val">88</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:75%"></div></div><span class="stat-val">75</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:52%"></div></div><span class="stat-val">52</span></div>
+    </div>
+    <p class="desc">Orb 的低重心 CX 版本，比普通 Orb 更稳，体力强，防 KO 表现优秀。配合 Wizard Arc 的 CX 结构有出色发挥。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>比Orb更稳</li><li>体力防守兼顾</li><li>低重心稳定性强</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>无进攻能力</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- WEDGE -->
+<div class="bit-card" data-type="defense" data-line="cx" data-name="wedge 楔形底 w">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">◁</div><div class="img-fallback-text">WEDGE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#88aaff;border-color:#88aaff;">W</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#88aaff;">WEDGE</div>
+      <div class="bit-name">W · 楔形底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-weight">≈0.8g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-03</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:20%"></div></div><span class="stat-val">20</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:68%"></div></div><span class="stat-val">68</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:65%"></div></div><span class="stat-val">65</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:60%"></div></div><span class="stat-val">60</span></div>
+    </div>
+    <p class="desc">楔形接触面，提供特殊角度的稳定支撑，是 Perseus Dark 的专属轴体。防守特化，体力表现也不错。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>特殊稳定机制</li><li>防守体力兼顾</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>竞技专属场景有限</li><li>通用性差</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- KICK -->
+<div class="bit-card" data-type="attack special" data-line="cx" data-name="kick 踢击底 k">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🦵</div><div class="img-fallback-text">KICK</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff4444;border-color:#ff4444;">K</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff4444;">KICK</div>
+      <div class="bit-name">K · 踢击底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-special">特殊机制</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-05</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:85%"></div></div><span class="stat-val">85</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:38%"></div></div><span class="stat-val">38</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:35%"></div></div><span class="stat-val">35</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:52%"></div></div><span class="stat-val">52</span></div>
+    </div>
+    <p class="desc">底部弹出踢击机构，受到某种状态触发时主动释放额外攻击力。配合 CX 结构威力倍增，是 CX 进攻线的核心轴体。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>特殊踢击进攻机制</li><li>CX结构协同效果强</li><li>进攻力出色</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>需要精准调校</li><li>不稳定时自损体力</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- GEAR RUSH CX -->
+<div class="bit-card" data-type="attack" data-line="cx" data-name="gear rush 齿轮冲刺底 gr">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">⚙</div><div class="img-fallback-text">GEAR RUSH</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff7744;border-color:#ff7744;">GR</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff7744;">GEAR RUSH</div>
+      <div class="bit-name">GR · 齿轮冲刺底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-weight">≈1.0g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-06</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:82%"></div></div><span class="stat-val">82</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:35%"></div></div><span class="stat-val">35</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:32%"></div></div><span class="stat-val">32</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">Rush 的 CX 重量加强版，齿轮外壳配合更高重量带来更强的冲击力。CX 结构加持下进攻威力可观，Fox Brush 的配置轴。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>重量加持攻击力强</li><li>CX协同效果好</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>体力差</li><li>稳定性一般</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- TURBO -->
+<div class="bit-card" data-type="special attack" data-line="cx" data-name="turbo 涡轮底 tr">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🌪</div><div class="img-fallback-text">TURBO</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff5533;border-color:#ff5533;">Tr</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff5533;">TURBO</div>
+      <div class="bit-name">Tr · 涡轮底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-special">特殊机制</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-07</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:78%"></div></div><span class="stat-val">78</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:45%"></div></div><span class="stat-val">45</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:38%"></div></div><span class="stat-val">38</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">涡轮机制设计，旋转越快产生越强的动态效果。Pegasus Blast 的配置轴，攻击特化，前期弱后期强的动态性能轴体。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>动态性能独特</li><li>后期爆发力有潜力</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>前期较弱</li><li>体力损耗依赖转速</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- WALL BALL -->
+<div class="bit-card" data-type="defense stamina" data-line="cx" data-name="wall ball 壁球底 wb">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🏐</div><div class="img-fallback-text">WALL BALL</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#44dd88;border-color:#44dd88;">WB</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#44dd88;">WALL BALL</div>
+      <div class="bit-name">WB · 壁球底</div>
+      <div class="card-meta"><span class="meta-tag tag-defense">防御</span><span class="meta-tag tag-stamina">体力</span><span class="meta-tag tag-weight">≈1.1g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-08</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:12%"></div></div><span class="stat-val">12</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:82%"></div></div><span class="stat-val">82</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:78%"></div></div><span class="stat-val">78</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">球底外加外沿壁面支撑结构，接触壁面时提供额外稳定性。防 KO 机制强化，是 CX 线体力防守轴中的有力竞争者。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>壁面额外稳定机制</li><li>防KO能力强</li><li>体力出色</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>纯Ball相比竞技优势不稳定</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- TRANS KICK -->
+<div class="bit-card" data-type="special balance" data-line="cx" data-name="trans kick 变化踢击底 tk">
+  <div class="tier-badge tier-C">C</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🔄</div><div class="img-fallback-text">TRANS KICK</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ffaa44;border-color:#ffaa44;">TK</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ffaa44;">TRANS KICK</div>
+      <div class="bit-name">TK · 变化踢击底</div>
+      <div class="card-meta"><span class="meta-tag tag-special">特殊</span><span class="meta-tag tag-weight">≈0.9g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-09</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:62%"></div></div><span class="stat-val">62</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:52%"></div></div><span class="stat-val">52</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:48%"></div></div><span class="stat-val">48</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:55%"></div></div><span class="stat-val">55</span></div>
+    </div>
+    <p class="desc">Kick 与 Trans 机制融合的双模式轴体，Sol Eclipse 的配置轴。受撞击切换状态，理论上适应性强，但两种模式都不算顶级。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>双模式适应性</li><li>概念新颖</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>两种模式都不够极端</li><li>竞技表现中规中矩</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- OPERATE -->
+<div class="bit-card" data-type="special balance" data-line="cx" data-name="operate 操控底 op">
+  <div class="tier-badge tier-B">B</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🎛</div><div class="img-fallback-text">OPERATE</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#b44dff;border-color:#b44dff;">Op</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#b44dff;">OPERATE</div>
+      <div class="bit-name">Op · 操控底</div>
+      <div class="card-meta"><span class="meta-tag tag-special">特殊机制</span><span class="meta-tag tag-weight">≈1.0g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-11</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:45%"></div></div><span class="stat-val">45</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:65%"></div></div><span class="stat-val">65</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:62%"></div></div><span class="stat-val">62</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:58%"></div></div><span class="stat-val">58</span></div>
+    </div>
+    <p class="desc">主动操控设计的复杂机构轴体，Emperor Might 的专属轴。CX 结构配合下有独特协同效果，但机构复杂意味着磨损后性能下降明显。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>CX协同效果独特</li><li>主动操控机制新颖</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>机构复杂磨损影响大</li><li>调校门槛高</li></ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- IGNITION -->
+<div class="bit-card" data-type="attack" data-line="cx" data-name="ignition 点火底 i bahamut blitz">
+  <div class="tier-badge tier-A">A</div>
+  <div class="card-image"><div class="img-fallback"><div class="img-fallback-icon">🔥</div><div class="img-fallback-text">IGNITION</div></div></div>
+  <div class="card-header">
+    <div class="bit-icon" style="color:#ff4444;border-color:#ff4444;">I</div>
+    <div class="card-title-block">
+      <div class="bit-abbr" style="color:#ff4444;">IGNITION</div>
+      <div class="bit-name">I · 点火底</div>
+      <div class="card-meta"><span class="meta-tag tag-attack">攻击</span><span class="meta-tag tag-weight">≈1.1g</span><span class="meta-tag" style="background:rgba(180,77,255,0.1);color:#b44dff;border:1px solid rgba(180,77,255,0.2);font-size:10px;padding:2px 7px;">CX-13</span><span class="meta-tag" style="background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3);font-size:10px;padding:2px 7px;">★ Bahamut Blitz</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="stat-bars">
+      <div class="stat-row"><span class="stat-label-sm">攻击</span><div class="stat-bar-track"><div class="stat-bar-fill fill-attack" style="width:90%"></div></div><span class="stat-val">90</span></div>
+      <div class="stat-row"><span class="stat-label-sm">体力</span><div class="stat-bar-track"><div class="stat-bar-fill fill-stamina" style="width:32%"></div></div><span class="stat-val">32</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防御</span><div class="stat-bar-track"><div class="stat-bar-fill fill-defense" style="width:38%"></div></div><span class="stat-val">38</span></div>
+      <div class="stat-row"><span class="stat-label-sm">防爆</span><div class="stat-bar-track"><div class="stat-bar-fill fill-burst" style="width:58%"></div></div><span class="stat-val">58</span></div>
+    </div>
+    <p class="desc">CX 线最重进攻轴之一，点火启动设计在接触瞬间爆发出极强冲击力。CX-13 Bahamut Blitz 的配置轴，配合强力 CX Main Blade 有极出色的进攻潜力，是 CX 进攻线的旗舰轴体。</p>
+    <div class="pros-cons">
+      <div class="pro-con-block"><div class="pro-con-title pro">优点</div><ul class="pro-con-list"><li>CX线最强进攻轴</li><li>重量大冲击力强</li><li>Bahamut Blitz配合出色</li></ul></div>
+      <div class="pro-con-block"><div class="pro-con-title con">缺点</div><ul class="pro-con-list"><li>体力偏短</li><li>高度依赖整体CX组合</li><li>单独使用表现受限</li></ul></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end cx grid -->
+
+</main>
+
+<footer>
+  数据参考来源：Beyblade Wiki / Beyblade X Database / World Beyblade Organization · 截至 <span>2026 年 7 月</span><br>
+  <span style="opacity:0.4;font-size:10px;margin-top:8px;display:block;">轴体数值为社群综合评估，非官方数据 · 实际表现因部件状态、技术水平而异</span>
+</footer>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.bit-card');
+  const countBadge = document.getElementById('countBadge');
+
+  let currentFilter = 'all';
+  let currentSearch = '';
+
+  function updateCards() {
+    let visible = 0;
+    cards.forEach(card => {
+      const name = card.dataset.name || '';
+      const type = card.dataset.type || '';
+      const line = card.dataset.line || '';
+
+      const matchSearch = !currentSearch || name.includes(currentSearch.toLowerCase());
+      let matchFilter = false;
+
+      if (currentFilter === 'all') matchFilter = true;
+      else if (currentFilter === 'attack') matchFilter = type.includes('attack');
+      else if (currentFilter === 'stamina') matchFilter = type.includes('stamina');
+      else if (currentFilter === 'defense') matchFilter = type.includes('defense');
+      else if (currentFilter === 'balance') matchFilter = type.includes('balance');
+      else if (currentFilter === 'bx') matchFilter = line === 'bx';
+      else if (currentFilter === 'ux') matchFilter = line === 'ux';
+      else if (currentFilter === 'cx') matchFilter = line === 'cx';
+
+      if (matchSearch && matchFilter) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    countBadge.innerHTML = `显示 <b>${visible}</b> 个轴体`;
+
+    // Hide section headers if all cards in that section are hidden
+    document.querySelectorAll('.section-header').forEach(header => {
+      const section = header.dataset.section;
+      const sectionCards = document.querySelectorAll(`.bit-card[data-line="${section}"]`);
+      // simplified: always show headers
+    });
+  }
+
+  searchInput.addEventListener('input', (e) => {
+    currentSearch = e.target.value;
+    updateCards();
+  });
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      updateCards();
+    });
+  });
+
+  // Animate stat bars on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelectorAll('.stat-bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = w; }, 100);
+      });
+    }, 200);
+  });
+</script>
+
+</body>
+</html>

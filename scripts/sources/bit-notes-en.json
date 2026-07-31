@@ -1,0 +1,224 @@
+{
+  "_note": "English rendering of scripts/sources/beyblade-x-bits.html, keyed by bit code. Structure (stats, weight, line, debut) is read from the HTML; this file carries the prose. BeyClub's own writing.",
+
+  "F": {
+    "summary": "A flat sole meets the floor directly, so friction is high and movement is aggressive. It is the most reliable way to trigger Xtreme Dash, which makes it the usual starting point for attack.",
+    "pros": ["The most consistent Xtreme Dash trigger", "Forgiving to launch", "Suits most attack blades"],
+    "cons": ["Very poor stamina", "Loses to stamina-drain tactics", "Burst of speed fades late in a match"]
+  },
+  "T": {
+    "summary": "A half-flat cone that trades some aggression for stability. Stamina is markedly better than Flat and burst resistance reaches 80, so it suits attack builds that need to survive a long round.",
+    "pros": ["Balanced attack and defence", "Excellent burst resistance", "Much better stamina than Flat"],
+    "cons": ["Less attack than Flat", "Not extreme in either direction", "Modest presence in the meta"]
+  },
+  "B": {
+    "summary": "A spherical contact point gives the most stable spin support of any bit. It performs on almost any blade, which is why it sits at the top of the meta and in most competitive bags.",
+    "pros": ["The most consistent bit in the game", "Works with every blade", "Very forgiving in competition"],
+    "cons": ["No attack potential", "Needs a strong blade to carry it", "Occasionally knocked out by heavy attack"]
+  },
+  "N": {
+    "summary": "A tiny contact point cuts friction and holds the bey spinning in the centre. Centring and stamina are both good; resisting a knock-out is its weak spot.",
+    "pros": ["Centres well and keeps stamina", "Very low friction loss", "Light"],
+    "cons": ["Poor knock-out resistance", "Sent flying by a committed attack", "No offensive threat"]
+  },
+  "HN": {
+    "summary": "A taller Needle. The higher centre of gravity adds stability, making it a top pick for defence builds and a frequent sight at tournaments alongside Ball.",
+    "pros": ["Top-tier defensive consistency", "More stable than Needle", "High win rate in competition"],
+    "cons": ["Still vulnerable to a clean frontal hit", "No attack whatsoever", "Depends on blade weight to work"]
+  },
+  "LF": {
+    "summary": "Lower than Flat, so Xtreme Dash triggers constantly and movement is more aggressive. The ceiling is high and the margin for error is not — this is a bit for players who can control it.",
+    "pros": ["The highest attack ceiling", "Triggers Xtreme Dash constantly", "Rewards skilled play"],
+    "cons": ["Serious self-knock-out risk", "Very poor stamina", "Not recommended for beginners"]
+  },
+  "O": {
+    "summary": "A larger sphere than Ball, tuned purely towards endurance. In stamina matchups it is a genuine rival to Ball and takes a hit slightly better.",
+    "pros": ["Outstanding stamina", "Slightly better knock-out resistance than Ball", "Excellent in pure stamina matchups"],
+    "cons": ["No attack capability at all", "Less flexible than Ball across builds"]
+  },
+  "P": {
+    "summary": "An extremely small contact point with almost no friction. Stamina should be excellent in theory, but it wanders off its track when hit, so results are inconsistent.",
+    "pros": ["Very low friction loss", "Holds the centre well"],
+    "cons": ["Inconsistent in real matches", "Loses its track when struck", "Squeezed out by Ball and High Needle"]
+  },
+  "S": {
+    "summary": "A fine spike with burst resistance of just 20 — the worst knock-out resistance of any bit. A light touch sends it out of the ring.",
+    "pros": ["Stamina is… fine?", "Distinctive look"],
+    "cons": ["The worst knock-out resistance in the game", "Burst resistance of only 20", "Not competitively viable"]
+  },
+  "R": {
+    "summary": "An attack bit that moves more predictably than Flat. It performs well in the right build, but it is less adaptable overall.",
+    "pros": ["More predictable movement", "Slightly better stamina than Flat"],
+    "cons": ["Less extreme attack than Flat", "Awkwardly placed in the meta"]
+  },
+  "HT": {
+    "summary": "A taller Taper. The raised centre of gravity shifts its balance point slightly and adds a little stamina, at the cost of steadiness under heavy attack.",
+    "pros": ["Slightly better stamina than Taper", "Covers both attack and defence"],
+    "cons": ["Less stable under heavy attack", "Overlaps with Taper's role"]
+  },
+  "GF": {
+    "summary": "A weighted Gear version of Flat with an outer toothed edge for grip. Heavier than Flat and hits harder, which makes it the natural upgrade path for attack.",
+    "pros": ["Heavier and more violent than Flat", "Strong knock-out power", "Excellent grip"],
+    "cons": ["Movement is sometimes less fluid", "Performance drops as the gear wears"]
+  },
+  "GB": {
+    "summary": "A weighted Gear version of Ball. The extra mass improves knock-out resistance while performance stays close to Ball itself.",
+    "pros": ["Better knock-out resistance than Ball", "Excellent stamina"],
+    "cons": ["Slightly less consistent movement than Ball", "The added weight wears it faster"]
+  },
+  "GP": {
+    "summary": "A weighted Point. The gear adds mass and improves knock-out resistance, but the Ball family covers the same ground better.",
+    "pros": ["Better knock-out resistance than Point", "Steady stamina"],
+    "cons": ["Completely overshadowed by Ball and Gear Ball"]
+  },
+  "GN": {
+    "summary": "A weighted Gear version of Needle, heavier than both Needle and High Needle. The extra mass gives defence builds more presence.",
+    "pros": ["The heaviest of the needle family", "Slightly better knock-out resistance than High Needle"],
+    "cons": ["Squeezed out competitively by High Needle and Ball"]
+  },
+  "Q": {
+    "summary": "The contact surface produces an irregular, vibrating path that is hard to read. Entertaining, but the outcome leans on luck and stamina drains quickly.",
+    "pros": ["Unpredictable movement", "Can break an opponent's rhythm"],
+    "cons": ["Poor stamina", "Depends heavily on luck", "Low competitive consistency"]
+  },
+  "U": {
+    "summary": "A general-purpose balance bit that folds several elements into one sole. It covers attack and defence without being extreme at either.",
+    "pros": ["Well-rounded and adaptable", "Good for casual battles"],
+    "cons": ["Falls short on every axis against strong players", "Limited ceiling"]
+  },
+  "C": {
+    "summary": "A spiral sole that produces a distinctive rotating path. It needs the right blade to be worth running; on its own it is unremarkable.",
+    "pros": ["Unusual and entertaining movement", "Effective in specific builds"],
+    "cons": ["Mediocre stability", "Poor general-purpose value"]
+  },
+  "E": {
+    "summary": "A special design that lifts the bey slightly as it spins. Stamina is excellent, making it a real challenger to the Ball family — Whale Wave 5-80E is the build that made its name.",
+    "pros": ["Outstanding stamina", "A genuine stamina rival to Ball", "Pairs superbly with Whale Wave"],
+    "cons": ["No attack capability", "Its place in the meta is still settling"]
+  },
+  "TP": {
+    "summary": "Starts in a Point configuration and changes state when struck. The two-mode idea is interesting, but neither mode is best in class and results are inconsistent.",
+    "pros": ["Two modes give it some adaptability", "Genuinely novel concept"],
+    "cons": ["Neither mode is extreme enough", "Inconsistent in real matches"]
+  },
+  "M": {
+    "summary": "A recent all-round balance bit that combines several performance traits. It arrived late, so competitive opinion is still forming, but early results are solid.",
+    "pros": ["Well-rounded", "Fits a wide range of builds"],
+    "cons": ["Meta opinion still forming", "No standout strength"]
+  },
+  "A": {
+    "summary": "An active acceleration design whose sole material makes the bey spin faster as the round goes on, triggering Xtreme Dash late. The late-round burst is formidable in skilled hands.",
+    "pros": ["The strongest late-round burst", "Triggers Xtreme Dash ferociously", "Very high attack ceiling"],
+    "cons": ["Unstable early in the round", "Very little margin for error", "Not for beginners"]
+  },
+  "H": {
+    "summary": "A hexagonal sole and the UX line's heavyweight defensive option. The polygonal contact gives it a distinctive defensive character with plenty of mass behind it.",
+    "pros": ["Excellent weight", "Distinctive hexagonal defence"],
+    "cons": ["Movement is not especially smooth", "Middling competitive consistency"]
+  },
+  "DB": {
+    "summary": "The heaviest bit in the game at about 1.5g, with a wide disc supporting a ball tip and standing nearly 2mm taller than a normal Ball. Tuned well it beats Ball on stamina, but burst resistance of 20 means an upright launch is asking for trouble.",
+    "pros": ["Can out-last Ball on stamina", "The wide disc resists knock-outs", "The heaviest bit available"],
+    "cons": ["Burst resistance of only 20", "The high centre of gravity demands an angled launch", "Very sensitive to tuning"]
+  },
+  "MN": {
+    "summary": "A metal Needle. Durability and consistency both improve over the plastic version, which is why it has taken over Needle's competitive slot.",
+    "pros": ["Far more durable than plastic Needle", "Noticeably more consistent", "Balances stamina and defence"],
+    "cons": ["Still carries the needle family's weaknesses", "A clean frontal hit can still knock it out"]
+  },
+  "G": {
+    "summary": "A gliding sole whose friction characteristics give it a smooth, distinctive path. A balance pick that covers stamina and defence, with room to surprise in the right build.",
+    "pros": ["Smooth, distinctive movement", "Covers both stamina and defence"],
+    "cons": ["Moderate competitive usage", "Not extreme enough to specialise"]
+  },
+  "FB": {
+    "summary": "A ball tip on a free-spinning mechanism that cuts friction loss, so stamina beats a plain Ball in theory. It is the mechanical upgrade of Ball and Silver Wolf's signature bit.",
+    "pros": ["Out-lasts a standard Ball", "Free rotation reduces friction", "Superb on Silver Wolf"],
+    "cons": ["Performance varies a lot with tuning", "A complex mechanism to maintain"]
+  },
+  "L": {
+    "summary": "Designed to keep the bey spinning level throughout the round, and the UX line's stamina flagship. Stamina and stability are both strong; it is Samurai Saber's usual bit.",
+    "pros": ["Very strong stamina", "Excellent stability", "Decent knock-out resistance"],
+    "cons": ["Some burst risk remains", "No attack capability"]
+  },
+  "BS": {
+    "summary": "A spike paired with a bounce mechanism: when struck, the sole pops out and adds stability. A genuinely unusual reactive defence, though its consistency is unproven.",
+    "pros": ["Distinctive reactive defence", "Stabilises itself after a hit"],
+    "cons": ["Inconsistent in real matches", "The mechanism does not always trigger"]
+  },
+  "LR": {
+    "summary": "A low centre-of-gravity Rush. Sitting closer to the floor makes it more aggressive and gives it real knock-out power — it works well on Impact Drake — but stamina goes quickly.",
+    "pros": ["Strongly aggressive", "Low centre of gravity keeps movement steady"],
+    "cons": ["Poor stamina", "Prone to self-knock-out"]
+  },
+  "UN": {
+    "summary": "The needle tip sits under the body, dropping the centre of gravity dramatically. That low stance adds stability, and it is Golem Rock's usual partner.",
+    "pros": ["Very low centre of gravity", "Solid defensive showing", "Excellent on Golem Rock"],
+    "cons": ["Limited competitive usage", "Fairly build-specific"]
+  },
+  "Z": {
+    "summary": "A special sole that produces an irregular, jolting path. Hard to predict and disruptive to an opponent, though not especially stable itself.",
+    "pros": ["Unpredictable movement", "Disrupts the opponent"],
+    "cons": ["Not very stable itself", "A niche position in the meta"]
+  },
+  "J": {
+    "summary": "An impact-focused attack bit, one of the newer UX releases, built to run with Meteor Dragoon. Attack is respectable and its meta standing is still accumulating.",
+    "pros": ["Respectable attack", "Pairs well with Meteor Dragoon"],
+    "cons": ["Poor stamina", "Competitive opinion still forming"]
+  },
+  "UF": {
+    "summary": "A low variant of Flat that sits closer to the floor and triggers Xtreme Dash reliably. Attack is close to Low Flat but more regular, and it is Shark Scale's partner bit.",
+    "pros": ["Reliable Xtreme Dash trigger", "Low, ground-hugging movement"],
+    "cons": ["Poor stamina", "Overlaps with Low Flat's role"]
+  },
+  "V": {
+    "summary": "The CX line's launch bit, with a vortex-shaped sole built to run inside Dran Brave's CX structure. Balanced and a good way into the CX system.",
+    "pros": ["Balanced and beginner-friendly", "Stable within the CX system"],
+    "cons": ["An early CX bit, so not extreme", "Mediocre stability"]
+  },
+  "LO": {
+    "summary": "A low centre-of-gravity CX take on Orb. Steadier than a plain Orb with strong stamina and good knock-out resistance; it shines inside Wizard Arc's CX structure.",
+    "pros": ["Steadier than Orb", "Covers stamina and defence", "Very stable thanks to the low stance"],
+    "cons": ["No attack capability"]
+  },
+  "W": {
+    "summary": "A wedge-shaped contact face that supports the bey at an unusual angle. Perseus Dark's dedicated bit, specialised for defence with decent stamina alongside.",
+    "pros": ["Distinctive stabilising mechanism", "Covers defence and stamina"],
+    "cons": ["Narrow competitive niche", "Poor general-purpose value"]
+  },
+  "K": {
+    "summary": "A pop-out kick mechanism that releases extra attack power when triggered. Inside a CX structure the effect multiplies, which makes it the core of CX attack.",
+    "pros": ["Distinctive kick attack mechanism", "Strong synergy with the CX structure", "Excellent attack"],
+    "cons": ["Needs precise tuning", "Burns its own stamina when unstable"]
+  },
+  "GR": {
+    "summary": "A heavier CX version of Rush, with a gear shell and more mass behind every hit. In a CX structure the impact is considerable; it is Fox Brush's configuration bit.",
+    "pros": ["Extra weight means real attack power", "Good CX synergy"],
+    "cons": ["Poor stamina", "Mediocre stability"]
+  },
+  "Tr": {
+    "summary": "A turbine mechanism that produces a stronger effect the faster it spins. Pegasus Blast's configuration bit — weak early, strong late.",
+    "pros": ["Distinctive dynamic behaviour", "Real late-round potential"],
+    "cons": ["Weak early in the round", "Stamina depends on keeping the revs up"]
+  },
+  "WB": {
+    "summary": "A ball tip with an outer wall structure that adds stability when the wall makes contact. The reinforced knock-out resistance makes it a serious CX stamina-defence option.",
+    "pros": ["Extra stability from the wall", "Strong knock-out resistance", "Excellent stamina"],
+    "cons": ["Its edge over a plain Ball is inconsistent"]
+  },
+  "TK": {
+    "summary": "Kick and Trans mechanisms combined into a two-mode bit, and Sol Eclipse's configuration. It switches state when struck, which should make it adaptable, though neither mode is top tier.",
+    "pros": ["Two modes give it adaptability", "Novel concept"],
+    "cons": ["Neither mode is extreme enough", "Unremarkable competitive record"]
+  },
+  "Op": {
+    "summary": "A complex, actively controlled mechanism and Emperor Might's dedicated bit. The CX synergy is distinctive, but a complicated mechanism means performance falls off noticeably as it wears.",
+    "pros": ["Distinctive CX synergy", "Novel active control mechanism"],
+    "cons": ["Complexity means wear hurts it badly", "Demanding to tune"]
+  },
+  "I": {
+    "summary": "One of the heaviest attack bits in the CX line, with an ignition design that releases a violent impact on contact. It is Bahamut Blitz's configuration bit and the flagship of CX attack.",
+    "pros": ["The strongest attack bit in the CX line", "Heavy, with real impact behind it", "Superb on Bahamut Blitz"],
+    "cons": ["Short on stamina", "Depends heavily on the whole CX build", "Limited on its own"]
+  }
+}

@@ -1,11 +1,12 @@
 import type { BuyAdvice } from './types'
 
 /**
- * Buy verdicts mirror the reference tier site's algorithm so a part graded
- * "worth buying" here matches what a player sees there. The source sheet leaves
- * its buy column empty and computes this at load time.
+ * Buy verdicts are always computed here, from the grades this app blends —
+ * never read from a source. A sheet's own buy column was written against its
+ * own tier list, so importing it would put two different judgements on one page
+ * and leave a part graded S sitting under "skip".
  */
-const TIER_SCORES: Record<string, number> = {
+export const TIER_SCORES: Record<string, number> = {
   X: 100,
   'S+': 90,
   S: 80,
@@ -21,7 +22,15 @@ const TIER_SCORES: Record<string, number> = {
   E: 0,
 }
 
-/** A blade is judged on the whole package: its own tier counts double. */
+/**
+ * A blade is judged on the whole package: its own grade counts double, its
+ * stock parts once each. Called with a bare grade for a ratchet or bit, which
+ * then stands on its own.
+ *
+ * An ungraded part simply drops out of the average, so an unrated blade is
+ * judged on the ratchet and bit in the box — and a part with nothing graded at
+ * all gets no verdict rather than a bad one.
+ */
 export function calculateBuyRec(
   bladeTier: string,
   ratchetTier?: string,
@@ -53,13 +62,6 @@ export function calculateBuyRec(
   return 'no'
 }
 
-/** A ratchet or bit stands on its own tier alone. */
-export function getBuyRec(tier: string): BuyAdvice {
-  if (['X', 'S+', 'S', 'A+', 'A'].includes(tier)) return 'yes'
-  if (['B+', 'B'].includes(tier)) return 'maybe'
-  if (TIER_SCORES[tier] === undefined) return ''
-  return 'no'
-}
 
 export const BUY_VERDICTS: Record<
   Exclude<BuyAdvice, ''>,
@@ -99,20 +101,28 @@ export function explainVerdict(part: {
   const base = part.buy ? BUY_VERDICTS[part.buy as Exclude<BuyAdvice, ''>].reason : ''
   if (part.cat !== 'blade') return base
 
-  const weak: string[] = []
-  const strong: string[] = []
-
-  const bladeScore = TIER_SCORES[part.tier]
+  const graded: { name: string; code: string; tier: string; score: number }[] = []
   for (const [name, code, tier] of [
     ['ratchet', part.stockRatchet, part.ratchetTier],
     ['bit', part.stockBit, part.bitTier],
   ] as const) {
     if (!code || !tier) continue
     const score = TIER_SCORES[tier]
-    if (score === undefined || bladeScore === undefined) continue
-    if (score < bladeScore) weak.push(`its ${name} ${code} is only ${tier}`)
-    else strong.push(`its ${name} ${code} is ${tier}`)
+    if (score !== undefined) graded.push({ name, code, tier, score })
   }
+
+  const bladeScore = TIER_SCORES[part.tier]
+
+  // Nobody has graded the blade, so the verdict is about the box: say so, or
+  // the reader is left wondering what an unrated part is being praised for.
+  if (bladeScore === undefined) {
+    if (!graded.length) return base
+    const parts = graded.map((g) => `its ${g.name} ${g.code} is ${g.tier}`)
+    return `The blade itself isn't ranked yet, but ${parts.join(' and ')} — this grades the parts in the box, not the blade.`
+  }
+
+  const weak = graded.filter((g) => g.score < bladeScore).map((g) => `its ${g.name} ${g.code} is only ${g.tier}`)
+  const strong = graded.filter((g) => g.score >= bladeScore).map((g) => `its ${g.name} ${g.code} is ${g.tier}`)
 
   if (weak.length) {
     return `The blade itself grades ${part.tier}, but ${weak.join(' and ')} — you are buying it for the blade, and will want better parts to go with it.`

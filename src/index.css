@@ -41,6 +41,8 @@
   /* type */
   --font-display: 'Michroma', system-ui, sans-serif;
   --font-body: 'Chakra Petch', system-ui, -apple-system, sans-serif;
+  /* The wordmark only — page titles stay on the display face. */
+  --font-logo: 'Zen Dots', 'Michroma', system-ui, sans-serif;
 
   /* layout */
   --nav-h: 64px;
@@ -170,17 +172,26 @@ button {
   padding-bottom: calc(var(--nav-h) + 28px + env(safe-area-inset-bottom));
 }
 
+/* Title and its action share a line, so the page opens on content. */
+.page-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 4px 0 2px;
+}
+
 .page-title {
   font-family: var(--font-display);
   font-size: 21px;
   letter-spacing: 0.02em;
-  margin: 4px 0 2px;
+  margin: 0;
 }
 
 .page-sub {
   font-size: 13px;
   color: var(--text-2);
-  margin: 0 0 18px;
+  margin: 0 0 14px;
 }
 
 /* ── Top bar ───────────────────────────────────────────────── */
@@ -192,23 +203,17 @@ button {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: calc(env(safe-area-inset-top) + 12px) 16px 12px;
+  padding: calc(env(safe-area-inset-top) + 14px) 16px 14px;
   background: rgba(10, 12, 17, 0.55);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--hairline);
 }
 
-.topbar-mark {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-}
-
 .topbar-name {
-  font-family: var(--font-display);
+  font-family: var(--font-logo);
   font-size: 15px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   background: var(--accent-grad);
   -webkit-background-clip: text;
   background-clip: text;
@@ -420,38 +425,59 @@ button {
   color: var(--text-3);
 }
 
-/* ── Source switcher ───────────────────────────────────────── */
+/* ── Ranking provenance (collapsed by default) ─────────────── */
 
-.segmented {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  padding: 3px;
-  border-radius: 14px;
-  margin-bottom: 12px;
+.notice-stale {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 184, 48, 0.1);
+  border: 1px solid rgba(255, 184, 48, 0.28);
+  color: #ffd489;
+  font-size: 12px;
+  margin: 0 0 10px;
+  text-align: left;
 }
 
-.segment {
-  padding: 9px 4px;
-  border-radius: 11px;
-  font-size: 12.5px;
-  font-weight: 500;
+.info-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 11.5px;
+  white-space: nowrap;
   color: var(--text-3);
-  transition: background 0.18s ease, color 0.18s ease;
+  transition: color 0.18s ease, border-color 0.18s ease;
 }
 
-.segment.active {
-  background: var(--glass-strong);
-  color: var(--text);
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+.info-toggle:hover,
+.info-toggle.open {
+  color: var(--text-2);
+  border-color: var(--hairline-strong);
 }
 
 /* ── Attribution ───────────────────────────────────────────── */
 
-.attribution {
-  padding: 13px 15px;
-  border-radius: var(--radius-sm);
-  margin-bottom: 14px;
+/* The sheet supplies the card, so this only spaces the content inside it. */
+.attribution .sheet-name {
+  margin-bottom: 10px;
+}
+
+.attr-source {
+  padding-top: 11px;
+  margin-top: 11px;
+  border-top: 1px solid var(--hairline);
+}
+
+.attr-source h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 5px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
 .attr-blurb {
@@ -691,13 +717,6 @@ button {
 
 .chip-dim {
   color: var(--text-3);
-}
-
-.part-credit {
-  margin-top: 6px;
-  font-size: 10.5px;
-  color: var(--text-3);
-  font-style: italic;
 }
 
 .part-tier {
@@ -1004,7 +1023,6 @@ button {
   color: var(--accent-2);
 }
 
-.fact-list,
 .pro-list,
 .con-list {
   list-style: none;
@@ -1015,7 +1033,6 @@ button {
   gap: 7px;
 }
 
-.fact-list li,
 .pro-list li,
 .con-list li {
   position: relative;
@@ -1023,17 +1040,6 @@ button {
   font-size: 12.5px;
   line-height: 1.6;
   color: var(--text-2);
-}
-
-.fact-list li::before {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 8px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
 }
 
 .pro-list li::before {
@@ -1068,6 +1074,143 @@ button {
 .notice-error {
   border-color: rgba(255, 95, 120, 0.35);
   color: #ffa8b6;
+}
+
+/* ── How a tier was calculated ─────────────────────────────── */
+
+.calc {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calc-row {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--hairline);
+}
+
+.calc-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.calc-source {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.calc-weight {
+  font-size: 11px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-said {
+  margin: 3px 0 6px;
+  font-size: 12px;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+
+.calc-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.calc-score {
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-foot a {
+  color: var(--accent-2);
+  border-bottom: 1px solid rgba(139, 232, 255, 0.3);
+}
+
+.calc-total {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-arrow {
+  color: var(--text-3);
+}
+
+.calc-note {
+  margin: 9px 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--text-3);
+}
+
+/* ── Bit profile ───────────────────────────────────────────── */
+
+.bit-profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 11px;
+}
+
+.bit-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 11px;
+}
+
+.bit-stat-row {
+  display: grid;
+  grid-template-columns: 66px 1fr 26px;
+  align-items: center;
+  gap: 8px;
+}
+
+.bit-stat-label {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.bit-stat-track {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.bit-stat-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.bit-stat-value {
+  font-size: 11px;
+  color: var(--text-2);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Unproven markers ──────────────────────────────────────── */
+
+.chip-unproven {
+  color: #ffd489;
+  border-color: rgba(255, 184, 48, 0.3);
+  background: rgba(255, 184, 48, 0.1);
 }
 
 /* ── Detail sheet ──────────────────────────────────────────── */
@@ -1183,14 +1326,6 @@ button {
   color: var(--text-2);
 }
 
-.sheet-link {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 13px;
-  color: var(--accent-2);
-  border-bottom: 1px solid rgba(139, 232, 255, 0.32);
-}
-
 .stat-row {
   display: flex;
   gap: 10px;
@@ -1215,36 +1350,6 @@ button {
   display: block;
   margin-top: 4px;
   font-size: 10px;
-  color: var(--text-3);
-}
-
-.combo-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.combo-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 11px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--hairline);
-}
-
-.combo-name {
-  font-family: var(--font-display);
-  font-size: 12px;
-}
-
-.combo-stat {
-  font-size: 11px;
   color: var(--text-3);
 }
 

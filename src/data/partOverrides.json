@@ -1,0 +1,17 @@
+{
+  "_note": "Corrections for rows the Taiwan sheet records awkwardly, keyed by its product id. `id` replaces a placeholder product code, `nameEn` supplies a title, and `blade` says which blade the row really is so it shares that blade's tournament record instead of looking untested.",
+
+  "A賞飛龍": {
+    "id": "UX-00-2-80-GN",
+    "nameEn": "Wyvern Hover",
+    "blade": "飛龍懸浮"
+  },
+  "BXH-22": {
+    "nameEn": "Ragna Rage FE",
+    "blade": "邪神狂怒"
+  },
+  "BXC-19": {
+    "nameEn": "Bahamut Blitz BK",
+    "blade": "龍王閃擊"
+  }
+}

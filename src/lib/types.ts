@@ -11,20 +11,28 @@ export type PartType =
 
 export type BuyAdvice = 'yes' | 'maybe' | 'no' | ''
 
-/** One rankable part, normalized across all three source datasets. */
+/** One rankable part, with its grade blended from every source that rates it. */
 export type Part = {
   id: string
   name: string
   nameEn?: string
   cat: PartCategory
   type: PartType
+  /** The blended grade. `rating` shows how it was reached. */
   tier: string
   buy: BuyAdvice
   img?: string
-  /** Stock ratchet / bit the part ships with (blades only). */
+  /**
+   * The blade this part belongs to — its base Chinese name for blades, its id
+   * otherwise. Colour variants and metal coatings share one key so they share
+   * one tournament record.
+   */
+  key: string
+  /** Stock parts it ships with (blades only). */
   stockRatchet?: string
   stockBit?: string
-  /** Tier grades of the parts it ships with. */
+  stockAssist?: string
+  /** Blended grades of those stock parts, on the same scale as `tier`. */
   ratchetTier?: string
   bitTier?: string
   /** Free-text combo suggestion from the source. */
@@ -33,17 +41,52 @@ export type Part = {
   communityCombo?: string
   /** Product this part comes in. */
   product?: string
-  /** Tournament record, when the entry came from placement data. */
-  stats?: PartStats
+  /** How the blended tier was arrived at, and from what. */
+  rating?: Rating
   /** Per-entry credit — required for hand-curated entries. */
   credit?: Credit
 }
 
-export type PartStats = {
-  wins: number
-  firsts: number
-  championRate: number | null
-  lastSeen?: string
+/** What each source said about a part. Absent keys mean "this source is silent". */
+export type RatingSources = {
+  /** Taiwan community grade, on our thirteen-step scale. */
+  community?: string
+  /** Japanese list grade, on its own five-step scale. */
+  japan?: string
+  tournament?: TournamentRecord
+}
+
+export type TournamentRecord = {
+  /** Top-4 placements across the whole record, and across the last 90 days. */
+  allTime: number
+  recent90: number
+  /** First places (blades only). */
+  firsts?: number
+  /** The ratchet and bit this blade is most often built with. */
+  topRatchet?: string
+  topBit?: string
+  /** 0–100, log share of the category leader across both windows. */
+  score: number
+}
+
+export type SourceKey = 'tournament' | 'community' | 'japan'
+
+/** One source's contribution, after weights are renormalised over what exists. */
+export type RatingTerm = {
+  key: SourceKey
+  /** 0–100 on the shared scale. */
+  score: number
+  /** 0–1, summing to 1 across the terms. */
+  weight: number
+}
+
+export type Rating = RatingSources & {
+  /** The blended 0–100 score behind `tier`. Meaningless when `tier` is "-". */
+  score: number
+  /** A grade on the shared scale, or "-" when no source has rated this part. */
+  tier: string
+  /** No tournament record, so the tier is held below the proven-only grades. */
+  capped: boolean
 }
 
 export type Credit = {
@@ -52,45 +95,59 @@ export type Credit = {
   sourceUrl: string
 }
 
-/** A top combo backed by real tournament placements. */
-export type ComboStat = {
-  key: string
-  bladeId: string
-  bladeName: string
-  ratchet: string
-  bit: string
-  wins: number
-  firsts: number
-  seconds: number
-  thirds: number
-  championRate: number | null
-  lastDate: string
-  rank: number
-}
-
 /** BeyClub's own editorial take on a part — never a source's opinion. */
 export type PartNotes = {
   pros: string[]
   cons: string[]
   technique?: string
+  /** What the part does, in a sentence or two. */
+  summary?: string
+  /** Bit reference data: how it behaves and where it came from. */
+  profile?: {
+    /** "Flat" — the spelled-out name behind the code. */
+    label: string
+    labelZh?: string
+    line?: 'BX' | 'UX' | 'CX'
+    weightG?: number
+    /** Product it debuted in. */
+    debut?: string
+    /** 0–100. Defence is absent on the few cards that never rated it. */
+    stats: { attack: number; stamina: number; defense?: number; burst?: number }
+  }
 }
 
-export type SourceId = 'community' | 'tournament' | 'japan'
-
+/** Provenance for one of the three inputs to a rating. */
 export type SourceMeta = {
-  id: SourceId
   label: string
   flag: string
-  /** Shown under the tab: what this dataset actually is. */
+  /** What this dataset actually is. */
   blurb: string
-  /** Who produced the ratings — the accountability line. */
+  /** Who produced it — the accountability line. */
   credits: { label: string; url?: string }[]
   basis: 'opinion' | 'results'
 }
 
+/** The `source` block written by scripts/fetch-tournament.mjs. */
+export type TournamentSource = {
+  name: string
+  url: string
+  upstream: string
+  upstreamUrl: string
+  coverage: { events: number; combos: number }
+  windows: Record<string, { from: string | null; to: string | null; events: number; combos: number }>
+}
+
+export type TournamentFile = {
+  fetchedAt: string
+  source: TournamentSource
+  parts: ({ cat: PartCategory; key: string; name: string } & Omit<TournamentRecord, 'score'>)[]
+  unmatched: { name: string; count: number }[]
+}
+
 export type Dataset = {
   parts: Part[]
-  combos: ComboStat[]
+  /** Coverage and provenance of the placement data behind the ranking. */
+  tournament: TournamentSource
   /** When the data was fetched (ISO). */
   fetchedAt: string
   /** True when served from cache after a failed refresh. */
