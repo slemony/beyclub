@@ -27,10 +27,11 @@ Pages serves from the `gh-pages` branch. The app uses `HashRouter` and a relativ
 
 ### Enabling automatic deploys
 
-A workflow that deploys on every push to `main` is ready at `.github/workflows/deploy.yml`, but it is **not committed** — pushing workflow files needs the `workflow` OAuth scope. To switch to automatic deploys:
+A workflow that deploys on every push to `main` is ready at `.github/workflows/deploy.yml`, but it is **not committed** — pushing workflow files needs the `workflow` OAuth scope, so the path is currently listed in `.git/info/exclude`. To switch to automatic deploys:
 
 ```bash
-gh auth refresh -s workflow          # grant the scope (opens a browser)
+gh auth refresh -s workflow                          # grant the scope (opens a browser)
+sed -i '' '/^\.github\/$/d' .git/info/exclude        # stop ignoring it locally
 git add .github && git commit -m "Add Pages deploy workflow" && git push
 ```
 
