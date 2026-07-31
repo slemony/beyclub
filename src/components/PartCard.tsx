@@ -8,7 +8,11 @@ type Props = { part: Part; onOpen: (part: Part) => void }
 export default function PartCard({ part, onOpen }: Props) {
   const tierColor = TIER_COLORS[part.tier] ?? '#6b7480'
   const primary = part.nameEn ?? part.name
-  const secondary = part.nameEn ? part.name : undefined
+  // The alt line keeps a blade's original Chinese name in view next to its
+  // translation. A ratchet, bit or assist has no such pair — its "name" is
+  // just its id spelled out (輔助H / Heavy), so showing it here would repeat
+  // the id line as a third variant.
+  const secondary = part.cat === 'blade' && part.nameEn ? part.name : undefined
 
   return (
     <button className="glass glass-lit part-card" onClick={() => onOpen(part)}>
