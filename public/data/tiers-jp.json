@@ -1,0 +1,1187 @@
+{
+ "note": "Hand-curated from a Japanese community tier list. Each entry links to the writer's own article for that bey. English names come from the official product catalogue where a product code is known, otherwise they are transliterated from the Japanese name.",
+ "curatedAt": "2026-07-31",
+ "source": {
+  "author": "おくろぐ (okuyama3093)",
+  "sourceName": "【ベイブレードX】最強ランキング｜最新Tier表",
+  "sourceUrl": "https://okuyama3093.com/beyblade-tier-strongest/",
+  "basis": "Author's own competitive assessment, informed by Japanese tournament results"
+ },
+ "tierScale": [
+  "S",
+  "A",
+  "B",
+  "C",
+  "D"
+ ],
+ "parts": [
+  {
+   "id": "UX-03",
+   "productCode": "UX-03",
+   "name": "ウィザードロッド",
+   "nameEn": "Wizard Rod",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-wizardrod-commentary/"
+   }
+  },
+  {
+   "id": "UX-15",
+   "productCode": "UX-15",
+   "name": "シャークスケイル",
+   "nameEn": "Shark Scale",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-sharkscale-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "エアロペガサス",
+   "productCode": null,
+   "name": "エアロペガサス",
+   "nameEn": "Aero Pegasus",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-aeropegasus-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-07",
+   "productCode": "CX-07",
+   "name": "ペガサスブラスト",
+   "nameEn": "Pegasus Blast",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-pegasusblast-commentary/"
+   }
+  },
+  {
+   "id": "UX-17",
+   "productCode": "UX-17",
+   "name": "メテオドラグーン",
+   "nameEn": "Meteor Dragoon",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-meteordragoon-commentary/"
+   }
+  },
+  {
+   "id": "UX-19",
+   "productCode": "UX-19",
+   "name": "バレットグリフォン",
+   "nameEn": "Bullet Griffon",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-bulletgriffon-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-20",
+   "productCode": "UX-20",
+   "name": "グローリーワルキューレ",
+   "nameEn": "Glory Valkyrie",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-gloryvalkyrie-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-16",
+   "productCode": "UX-16",
+   "name": "クロックミラージュ",
+   "nameEn": "Clock Mirage",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-clockmirage-commentary/"
+   }
+  },
+  {
+   "id": "BX-34",
+   "productCode": "BX-34",
+   "name": "コバルトドラグーン",
+   "nameEn": "Cobalt Dragoon",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-cobaltdragoon-commentary/"
+   }
+  },
+  {
+   "id": "BX-23",
+   "productCode": "BX-23",
+   "name": "フェニックスウイング",
+   "nameEn": "Phoenix Wing",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-phoenixwing-commentary/"
+   }
+  },
+  {
+   "id": "BX-49",
+   "productCode": "BX-49",
+   "name": "ドランストライク",
+   "nameEn": "Dran Strike",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-dranstrike-commentary/"
+   }
+  },
+  {
+   "id": "CX-13",
+   "productCode": "CX-13",
+   "name": "バハムートブリッツ",
+   "nameEn": "Bahamut Blitz",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-bahamutblitz-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-08",
+   "productCode": "UX-08",
+   "name": "シルバーウルフ",
+   "nameEn": "Silver Wolf",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-silverwolf-commentary/"
+   }
+  },
+  {
+   "id": "ヘブンズリング",
+   "productCode": null,
+   "name": "ヘブンズリング",
+   "nameEn": "Heavens Ring",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "S",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-heavensring-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ワイバーンホバー",
+   "productCode": null,
+   "name": "ワイバーンホバー",
+   "nameEn": "Wyvern Hover",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-wyvernhover-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-14",
+   "productCode": "CX-14",
+   "name": "ナイトフォートレス",
+   "nameEn": "Knight Fortress",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-knightfortress-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-11",
+   "productCode": "CX-11",
+   "name": "エンペラーマイト",
+   "nameEn": "Emperor Might",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-emperormight-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-14",
+   "productCode": "UX-14",
+   "name": "スコーピオスピア",
+   "nameEn": "Scorpio Spear",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-scorpiospear-commentary/"
+   }
+  },
+  {
+   "id": "UX-01",
+   "productCode": "UX-01",
+   "name": "ドランバスター",
+   "nameEn": "Dran Buster",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-dragonbuster-commentary/"
+   }
+  },
+  {
+   "id": "UX-11",
+   "productCode": "UX-11",
+   "name": "インパクトドレイク",
+   "nameEn": "Impact Drake",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-impactdrake-commentary/"
+   }
+  },
+  {
+   "id": "オロチクラスタ",
+   "productCode": null,
+   "name": "オロチクラスタ",
+   "nameEn": "Orochi Cluster",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-orochicluster-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ワルキューレボルト",
+   "productCode": null,
+   "name": "ワルキューレボルト",
+   "nameEn": "Valkyrie Volt",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-walkurebolt-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-01",
+   "productCode": "CX-01",
+   "name": "ドランブレイブ",
+   "nameEn": "Dran Brave",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-dragonbrave-commentary/"
+   }
+  },
+  {
+   "id": "CX-09",
+   "productCode": "CX-09",
+   "name": "ソルエクリプス",
+   "nameEn": "Sol Eclipse",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-soleclipse-commentary/"
+   }
+  },
+  {
+   "id": "CX-12",
+   "productCode": "CX-12",
+   "name": "フェニックスフレア",
+   "nameEn": "Phoenix Flare",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-phoenixflare-commentary/"
+   }
+  },
+  {
+   "id": "ユニコーンデルタ",
+   "productCode": null,
+   "name": "ユニコーンデルタ",
+   "nameEn": "Unicorn Delta",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-unicorndelta-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-18",
+   "productCode": "CX-18",
+   "name": "ブラキオウィップ",
+   "nameEn": "Brachio Whip",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-brachiowhip-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-15",
+   "productCode": "CX-15",
+   "name": "ラグナレイジ",
+   "nameEn": "Ragna Rage",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-ragnarage-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ケルベロスフレイム",
+   "productCode": null,
+   "name": "ケルベロスフレイム",
+   "nameEn": "Cerberus Flame",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-cerberusflame-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "マミーカース",
+   "productCode": null,
+   "name": "マミーカース",
+   "nameEn": "Mummy Curse",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "A",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-mummycurse-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-36",
+   "productCode": "BX-36",
+   "name": "ホエールウェーブ",
+   "nameEn": "Whale Wave",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-whalewave-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-44",
+   "productCode": "BX-44",
+   "name": "トリケラプレス",
+   "nameEn": "Tricera Press",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-tricerapress-commentary/"
+   }
+  },
+  {
+   "id": "ティラノビート",
+   "productCode": null,
+   "name": "ティラノビート",
+   "nameEn": "Tyranno Beat",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-trexbeat-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "コバルトドレイク",
+   "productCode": null,
+   "name": "コバルトドレイク",
+   "nameEn": "Cobalt Drake",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-cobaltdrake-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-10",
+   "productCode": "CX-10",
+   "name": "ウルフハント",
+   "nameEn": "Wolf Hunt",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-wolfhunt-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-06",
+   "productCode": "CX-06",
+   "name": "フォックスブラッシュ",
+   "nameEn": "Fox Brush",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-foxbrush-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "CX-03",
+   "productCode": "CX-03",
+   "name": "ペルセウスダーク",
+   "nameEn": "Perseus Dark",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-perseusdark-commentary/"
+   }
+  },
+  {
+   "id": "ヘルズリーパー",
+   "productCode": null,
+   "name": "ヘルズリーパー",
+   "nameEn": "Hells Reaper",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-hellsreaper-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-45",
+   "productCode": "BX-45",
+   "name": "サムライカリバー",
+   "nameEn": "Samurai Calibur",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-samuraicalibur-commentary/"
+   }
+  },
+  {
+   "id": "CX-02",
+   "productCode": "CX-02",
+   "name": "ウィザードアーク",
+   "nameEn": "Wizard Arc",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-wizardarc-commentary/"
+   }
+  },
+  {
+   "id": "シャークエッジ",
+   "productCode": null,
+   "name": "シャークエッジ",
+   "nameEn": "Shark Edge",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-sharkedge-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-09",
+   "productCode": "UX-09",
+   "name": "サムライセイバー",
+   "nameEn": "Samurai Saber",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-samuraisaber-commentary/"
+   }
+  },
+  {
+   "id": "ナイトメイル",
+   "productCode": null,
+   "name": "ナイトメイル",
+   "nameEn": "Knight Mail",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-knightmail-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ティラノロア",
+   "productCode": null,
+   "name": "ティラノロア",
+   "nameEn": "Tyranno Roar",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-tyrannoroar-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "クロコクランチ",
+   "productCode": null,
+   "name": "クロコクランチ",
+   "nameEn": "Croco Crunch",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "B",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-crococrunch-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-13",
+   "productCode": "UX-13",
+   "name": "ゴーレムロック",
+   "nameEn": "Golem Rock",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-golemrock-commentary/"
+   }
+  },
+  {
+   "id": "BX-01",
+   "productCode": "BX-01",
+   "name": "ドランソード",
+   "nameEn": "Dran Sword",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-dragonsword-commentary/"
+   }
+  },
+  {
+   "id": "BX-04",
+   "productCode": "BX-04",
+   "name": "ナイトシールド",
+   "nameEn": "Knight Shield",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-knightshield-commentary/"
+   }
+  },
+  {
+   "id": "UX-06",
+   "productCode": "UX-06",
+   "name": "レオンクレスト",
+   "nameEn": "Leon Crest",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-leoncrest-commentary/"
+   }
+  },
+  {
+   "id": "UX-07",
+   "productCode": "UX-07",
+   "name": "フェニックスラダー",
+   "nameEn": "Phoenix Rudder",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-phoenixrudder-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-21",
+   "productCode": "BX-21",
+   "name": "ヘルズチェイン",
+   "nameEn": "Hells Chain",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-hellschain-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-02",
+   "productCode": "BX-02",
+   "name": "ヘルズサイズ",
+   "nameEn": "Hells Scythe",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-hellsscythe-commentary/"
+   }
+  },
+  {
+   "id": "BX-26",
+   "productCode": "BX-26",
+   "name": "ユニコーンスティング",
+   "nameEn": "Unicorn Sting",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-unicornsting-commentary/"
+   }
+  },
+  {
+   "id": "BX-38",
+   "productCode": "BX-38",
+   "name": "クリムゾンガルーダ",
+   "nameEn": "Crimson Garuda",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-crimsongaruda-commentary/"
+   }
+  },
+  {
+   "id": "BX-33",
+   "productCode": "BX-33",
+   "name": "ヴァイスタイガー",
+   "nameEn": "Weiss Tiger",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-weistiger-commentary/"
+   }
+  },
+  {
+   "id": "BX-20",
+   "productCode": "BX-20",
+   "name": "ドランダガー",
+   "nameEn": "Dran Dagger",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-dragondagger-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "マンモスタスク",
+   "productCode": null,
+   "name": "マンモスタスク",
+   "nameEn": "Mammoth Tusk",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-mammothtusk-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-39",
+   "productCode": "BX-39",
+   "name": "シェルタードレイク",
+   "nameEn": "Shelter Drake",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-shelterdrake-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "シャークギル",
+   "productCode": null,
+   "name": "シャークギル",
+   "nameEn": "Shark Gill",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-sharkgill-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-16",
+   "productCode": "BX-16",
+   "name": "ヴァイパーテイル",
+   "nameEn": "Viper Tail",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "C",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-vipertail-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "プテラスイング",
+   "productCode": null,
+   "name": "プテラスイング",
+   "nameEn": "Ptera Swing",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-pteraswing-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ワイバーンゲイル",
+   "productCode": null,
+   "name": "ワイバーンゲイル",
+   "nameEn": "Wyvern Gale",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-wyverngale-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-02",
+   "productCode": "UX-02",
+   "name": "ヘルズハンマー",
+   "nameEn": "Hells Hammer",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-hellshammer-commentary/"
+   }
+  },
+  {
+   "id": "BX-03",
+   "productCode": "BX-03",
+   "name": "ウィザードアロー",
+   "nameEn": "Wizard Arrow",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-wizardarrow-commentary/"
+   }
+  },
+  {
+   "id": "ブラックシェル",
+   "productCode": null,
+   "name": "ブラックシェル",
+   "nameEn": "Black Shell",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-blackshell-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "フェニックスフェザー",
+   "productCode": null,
+   "name": "フェニックスフェザー",
+   "nameEn": "Phoenix Feather",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-phoenixfeather-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-13",
+   "productCode": "BX-13",
+   "name": "ナイトランス",
+   "nameEn": "Knight Lance",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-knightlance-commentary/"
+   }
+  },
+  {
+   "id": "BX-27",
+   "productCode": "BX-27",
+   "name": "スフィンクスカウル",
+   "nameEn": "Sphinx Cowl",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-sphinxcowl-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ゴートタックル",
+   "productCode": null,
+   "name": "ゴートタックル",
+   "nameEn": "Goat Tackle",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-goattackle-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ゴーストサークル",
+   "productCode": null,
+   "name": "ゴーストサークル",
+   "nameEn": "Ghost Circle",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-ghostcircle-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "BX-15",
+   "productCode": "BX-15",
+   "name": "レオンクロー",
+   "nameEn": "Leon Claw",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-leonclaw-commentary/"
+   }
+  },
+  {
+   "id": "BX-19",
+   "productCode": "BX-19",
+   "name": "ライノホーン",
+   "nameEn": "Rhino Horn",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-rhinohorn-commentary/"
+   }
+  },
+  {
+   "id": "シノビナイフ",
+   "productCode": null,
+   "name": "シノビナイフ",
+   "nameEn": "Shinobi Knife",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-shinobiknife-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "UX-05",
+   "productCode": "UX-05",
+   "name": "シノビシャドウ",
+   "nameEn": "Shinobi Shadow",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-shinobishadow-commentary/"
+   },
+   "nameEnDerived": true
+  },
+  {
+   "id": "ベアスクラッチ",
+   "productCode": null,
+   "name": "ベアスクラッチ",
+   "nameEn": "Bear Scratch",
+   "cat": "blade",
+   "type": "balance",
+   "tier": "D",
+   "buy": "",
+   "credit": {
+    "author": "おくろぐ (okuyama3093)",
+    "sourceName": "ベイブレードX 最強ランキング Tier表",
+    "sourceUrl": "https://okuyama3093.com/beyblade-bearscratch-commentary/"
+   },
+   "nameEnDerived": true
+  }
+ ]
+}

@@ -1,0 +1,43 @@
+import PartImage from './PartImage'
+import { BUY_LABELS, TIER_COLORS, TYPE_COLORS, TYPE_LABELS, tierLabel } from '../lib/tiers'
+import type { Part } from '../lib/types'
+
+type Props = { part: Part; onOpen: (part: Part) => void }
+
+export default function PartCard({ part, onOpen }: Props) {
+  const tierColor = TIER_COLORS[part.tier] ?? '#6b7480'
+  const primary = part.nameEn ?? part.name
+  const secondary = part.nameEn ? part.name : undefined
+
+  return (
+    <button className="glass glass-lit part-card" onClick={() => onOpen(part)}>
+      <span className="part-tier" style={{ color: tierColor, borderColor: `${tierColor}55` }}>
+        {tierLabel(part.tier)}
+      </span>
+
+      <PartImage src={part.img} alt={primary} />
+
+      <span className="part-body">
+        <span className="part-id">{part.id}</span>
+        <span className="part-name">{primary}</span>
+        {secondary && <span className="part-alt">{secondary}</span>}
+
+        <span className="part-meta">
+          {part.type && TYPE_LABELS[part.type] && (
+            <span className="chip" style={{ color: TYPE_COLORS[part.type] }}>
+              {TYPE_LABELS[part.type]}
+            </span>
+          )}
+          {part.buy && <span className="chip chip-dim">{BUY_LABELS[part.buy]}</span>}
+          {part.stats && (
+            <span className="chip chip-dim">
+              {part.stats.wins.toLocaleString()} wins · {part.stats.firsts} 🥇
+            </span>
+          )}
+        </span>
+
+        {part.credit && <span className="part-credit">via {part.credit.author}</span>}
+      </span>
+    </button>
+  )
+}

@@ -1,0 +1,104 @@
+{
+  "note": "BeyClub's own editorial notes. These are our read on each part, not the Taiwanese or Japanese sources' opinion, and are shown in the app under a 'BeyClub notes' heading. Keyed by 'category:id'. Parts without an entry simply omit the section.",
+  "updatedAt": "2026-07-31",
+  "notes": {
+    "blade:UX-03": {
+      "pros": [
+        "The most successful blade in the tournament record by a wide margin",
+        "Outlasts almost anything in a stamina battle once it settles",
+        "Flexible — performs on several ratchet and bit combinations rather than one narrow build"
+      ],
+      "cons": [
+        "Vulnerable to a committed attack type that reaches it early",
+        "So common that opponents come prepared for it"
+      ],
+      "technique": "Launch flat and controlled rather than at maximum power — the goal is a clean, stable spin that survives the opening exchanges, not an aggressive first hit."
+    },
+    "blade:BX-23": {
+      "pros": [
+        "Second only to Wizard Rod in recorded placements",
+        "Hits hard while still holding a respectable spin",
+        "Strong on the widely available 1-60 ratchet"
+      ],
+      "cons": ["Gives up ground to pure stamina builds if the knockout doesn't land"],
+      "technique": "Commit to the attack early. Its win condition is a burst or knockout in the first few exchanges, so launch with pace and angle rather than playing for the long spin."
+    },
+    "blade:BX-34": {
+      "pros": [
+        "Consistently one of the highest-placing attack blades",
+        "Pairs well with the E bit for an attack build that still finishes spins"
+      ],
+      "cons": [
+        "Left-spin, so it needs a left-spin launcher",
+        "Punished badly by a mistimed launch"
+      ],
+      "technique": "Left-spin gives it an advantage in opposite-spin matchups — use that deliberately rather than treating it as an ordinary attacker."
+    },
+    "blade:UX-15": {
+      "pros": [
+        "Top-tier attack power, rated X by the Taiwanese community",
+        "Very strong opening hit"
+      ],
+      "cons": ["Stamina is its weak point — the source itself flags this"],
+      "technique": "Aim to finish the match early. Combine with a ratchet that keeps it aggressive and accept that a long spin is not the plan."
+    },
+    "blade:UX-01": {
+      "pros": ["A proven attack blade with a deep tournament record", "Well suited to burst finishes"],
+      "cons": ["Loses out to modern stamina blades if the knockout doesn't land"],
+      "technique": "A pure aggression pick — launch hard and hunt for the burst."
+    },
+    "blade:UX-08": {
+      "pros": ["Balanced enough to handle a range of opponents", "Rated highly by both the Taiwanese and Japanese communities"],
+      "cons": ["Rarely the outright best answer to any single matchup"],
+      "technique": "A dependable all-rounder — a good pick when you don't know what you're facing."
+    },
+    "bit:R": {
+      "pros": [
+        "The single most successful bit in the tournament record",
+        "Gets into a rush attack faster than almost anything else"
+      ],
+      "cons": ["Burns through spin quickly — a poor choice if the match goes long"],
+      "technique": "Built for rush attacks. Launch with power and aim to end the match in the opening exchanges."
+    },
+    "bit:LR": {
+      "pros": ["Nearly matches R for placements while holding spin better", "Very widely playable — appears across more combos than any other bit"],
+      "cons": ["Neither the fastest attacker nor the longest spinner"],
+      "technique": "A safer rush option than R. Good default when you want attack pressure without throwing away the long game."
+    },
+    "bit:H": {
+      "pros": ["Excellent balance of attack and stamina", "One of the top three bits by recorded wins"],
+      "cons": ["Rarely the extreme best at either job"],
+      "technique": "The reliable middle ground — pick it when the matchup is unknown."
+    },
+    "bit:B": {
+      "pros": ["Strong stamina retention", "A core part of the top stamina builds"],
+      "cons": ["Little attack threat — it wins by outlasting, not by hitting"],
+      "technique": "Launch for stability. Let the opponent spend their energy attacking and take the spin-finish."
+    },
+    "bit:E": {
+      "pros": ["High placement rate despite appearing in fewer combos", "Holds spin well for its speed"],
+      "cons": ["More specialised than the general-purpose bits"],
+      "technique": "Best on blades that already have the weight to attack — it adds finishing spin rather than raw aggression."
+    },
+    "ratchet:1-60": {
+      "pros": ["The most successful ratchet in the record", "Low profile keeps the bey stable and hard to knock over"],
+      "cons": ["Low height gives up some attack angle against taller opponents"],
+      "technique": "The default competitive choice. If you're unsure which ratchet to run, start here."
+    },
+    "ratchet:9-60": {
+      "pros": ["Nearly matches 1-60 for wins and appears in more distinct combos", "Extra contact points help in exchanges"],
+      "cons": ["Slightly heavier feel changes launch timing"],
+      "technique": "A strong alternative to 1-60, especially on stamina builds where the extra contact helps survive hits."
+    },
+    "ratchet:3-60": {
+      "pros": ["Third by wins and one of the most widely played", "Good compromise between stability and weight"],
+      "cons": ["Outperformed at the very top by 1-60 and 9-60"],
+      "technique": "A solid, forgiving choice while you work out which extreme suits your blade."
+    },
+    "ratchet:5-60": {
+      "pros": ["Well represented across successful attack builds", "Suits blades that want a bit more mass low down"],
+      "cons": ["Less flexible than the 1-60 / 9-60 pair"],
+      "technique": "Pair it with attack blades that benefit from the added weight in the exchange."
+    }
+  }
+}
