@@ -10,6 +10,17 @@ name: Refresh part catalogue
 on:
   schedule:
     - cron: '0 3 * * *' # 03:00 UTC = 11:00 MYT
+  # Also on every merge, so a deploy can never ship a build whose catalogue
+  # snapshot is missing or older than the code that reads it — the site would
+  # otherwise sit on a load error until the next scheduled run.
+  #
+  # paths-ignore keeps this workflow's own data commit from re-triggering it:
+  # the checkout below can push as DATA_PAT, and a PAT push does start
+  # workflows.
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'public/data/**'
   workflow_dispatch:
 
 permissions:
