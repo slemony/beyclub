@@ -1,17 +1,14 @@
-import { useEffect } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import BottomNav from './components/BottomNav'
 import TopBar from './components/TopBar'
+import { useScrollMemory } from './lib/useScrollMemory'
 import StockPage from './pages/StockPage'
 import TierPage from './pages/TierPage'
 
 export default function App() {
-  const { pathname } = useLocation()
-
-  // Each tab should start at the top rather than inheriting the last scroll.
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
+  // Each tab comes back where the reader left it; reopening the current tab
+  // starts from the top.
+  useScrollMemory()
 
   return (
     <div className="app">
