@@ -160,6 +160,12 @@ async function loadCatalogue(): Promise<Raw[]> {
     })
   }
 
+  // A blade with no image of its own borrows one from another entry sharing
+  // its key — a recolor or metal-coat variant is still the same physical mold.
+  const imgByKey = new Map<string, string>()
+  for (const p of out) if (p.cat === 'blade' && p.img) imgByKey.set(p.key, p.img)
+  for (const p of out) if (p.cat === 'blade' && !p.img) p.img = imgByKey.get(p.key)
+
   return out
 }
 
