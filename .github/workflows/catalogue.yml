@@ -54,13 +54,17 @@ jobs:
 
       - name: Commit if the catalogue moved
         run: |
-          if git diff --quiet -- public/data/catalogue.json; then
+          # Staged before the comparison, unlike the sibling workflows: their
+          # data files are already tracked, but the very first snapshot is not,
+          # and `git diff` alone never reports an untracked file as a change —
+          # so the run that creates it would report "no change" and drop it.
+          git add public/data/catalogue.json
+          if git diff --cached --quiet -- public/data/catalogue.json; then
             echo "No change in catalogue."
             exit 0
           fi
           git config user.name  "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add public/data/catalogue.json
           git commit -m "Refresh part catalogue from the Taiwan community sheet"
           git push
 
