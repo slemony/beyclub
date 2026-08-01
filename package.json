@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "refresh:tournament": "node --experimental-strip-types scripts/fetch-tournament.mjs",
     "refresh:stock": "node scripts/fetch-stock.mjs",
+    "refresh:catalogue": "node --experimental-strip-types scripts/fetch-catalogue.mjs",
     "deploy": "npm run build && gh-pages -d dist -b gh-pages --dotfiles"
   },
   "dependencies": {
