@@ -1,0 +1,71 @@
+name: Refresh part catalogue
+
+# Once a day — the Taiwan sheet doesn't move like shop stock, so this is
+# mostly a safety net for whenever it does.
+#
+# Scrape, commit, build and publish all happen in this one workflow on purpose,
+# same reasoning as stock.yml: a commit pushed with GITHUB_TOKEN does not
+# trigger other workflows, so a scrape-only job would update the repository
+# and never reach the live site.
+on:
+  schedule:
+    - cron: '0 3 * * *' # 03:00 UTC = 11:00 MYT
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.DATA_PAT || github.token }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Exits non-zero on a parse failure or a collapse in the catalogue, and
+      # rewrites nothing when the sheet has not moved.
+      - name: Snapshot the Taiwan community sheet
+        run: npm run refresh:catalogue
+
+      - name: Commit if the catalogue moved
+        run: |
+          if git diff --quiet -- public/data/catalogue.json; then
+            echo "No change in catalogue."
+            exit 0
+          fi
+          git config user.name  "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add public/data/catalogue.json
+          git commit -m "Refresh part catalogue from the Taiwan community sheet"
+          git push
+
+      - run: npm run build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: refresh
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

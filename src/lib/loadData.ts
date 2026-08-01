@@ -1,10 +1,9 @@
 import bladeNamesEn from '../data/bladeNamesEn.json'
 import bladeNamesZhEn from '../data/bladeNamesZhEn.json'
+import manualParts from '../data/manualParts.json'
 import partOverrides from '../data/partOverrides.json'
 import { calculateBuyRec } from './buyRec'
-import { parseCSV } from './csv'
 import { blendRating, tournamentScore } from './rating'
-import { ENDPOINTS } from './sources'
 import { baseName, normalize } from './text'
 import type {
   Dataset,
@@ -53,11 +52,13 @@ function englishName(id: string, zhName: string): string | undefined {
   return EN_NAMES[id] ?? ZH_EN_NAMES[baseName(zhName)]
 }
 
-/** Sheets are edited constantly; bust any intermediary cache. */
-async function fetchCsv(url: string): Promise<string[][]> {
-  const res = await fetch(`${url}&_=${Date.now()}`)
+/** Our own snapshot of the Taiwan sheet, refreshed daily by scripts/fetch-catalogue.mjs. */
+type CatalogueFile = { fetchedAt: string; blades: string[][]; parts: string[][] }
+
+async function loadCatalogueFile(): Promise<CatalogueFile> {
+  const res = await fetch(`${import.meta.env.BASE_URL}data/catalogue.json`)
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
-  return parseCSV(await res.text())
+  return (await res.json()) as CatalogueFile
 }
 
 const cell = (row: string[], i: number) => (row[i] ?? '').trim()
@@ -80,10 +81,7 @@ type Raw = Omit<Part, 'tier' | 'buy'> & {
  * final word.
  */
 async function loadCatalogue(): Promise<Raw[]> {
-  const [blades, parts] = await Promise.all([
-    fetchCsv(ENDPOINTS.blades),
-    fetchCsv(ENDPOINTS.parts),
-  ])
+  const { blades, parts } = await loadCatalogueFile()
 
   const out: Raw[] = []
   const seen = new Set<string>()
@@ -143,6 +141,22 @@ async function loadCatalogue(): Promise<Raw[]> {
       img: cell(row, 12) || undefined,
       combo: [cell(row, 13), cell(row, 14)].filter(Boolean).join('\n') || undefined,
       communityCombo: cell(row, 15) || undefined,
+    })
+  }
+
+  // Officially announced parts the Taiwan sheet hasn't caught up with yet.
+  // Steps aside automatically once the sheet lists the same id/cat pair.
+  for (const part of manualParts.parts) {
+    const key = `${part.id}|${part.cat}`
+    if (seen.has(key)) continue
+    seen.add(key)
+
+    out.push({
+      ...part,
+      cat: part.cat as PartCategory,
+      type: part.type as PartType,
+      key: (part as { key?: string }).key ?? part.id,
+      img: part.img || undefined,
     })
   }
 

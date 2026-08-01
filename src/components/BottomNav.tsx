@@ -1,12 +1,9 @@
 import { NavLink } from 'react-router-dom'
-import { EventsIcon, MoreIcon, NewsIcon, StockIcon, TierIcon } from './icons'
+import { StockIcon, TierIcon } from './icons'
 
 const TABS = [
   { to: '/tiers', label: 'Tiers', Icon: TierIcon },
   { to: '/stock', label: 'Stock', Icon: StockIcon },
-  { to: '/events', label: 'Events', Icon: EventsIcon },
-  { to: '/news', label: 'News', Icon: NewsIcon },
-  { to: '/more', label: 'More', Icon: MoreIcon },
 ]
 
 export default function BottomNav() {
