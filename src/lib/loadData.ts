@@ -156,7 +156,9 @@ async function loadCatalogue(): Promise<Raw[]> {
       cat: part.cat as PartCategory,
       type: part.type as PartType,
       key: (part as { key?: string }).key ?? part.id,
-      img: part.img || undefined,
+      // A relative path is a locally committed asset; a full URL (as sheet
+      // rows already carry) is left as-is.
+      img: part.img ? (part.img.startsWith('http') ? part.img : `${import.meta.env.BASE_URL}${part.img}`) : undefined,
     })
   }
 

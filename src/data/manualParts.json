@@ -1,5 +1,5 @@
 {
-  "_note": "Officially announced parts not yet in the Taiwan sheet, added straight from the manufacturer's own release rather than waiting on the community. Appended onto the catalogue in loadCatalogue() and skipped automatically once the sheet carries the same id/cat pair. `img` is left blank pending the infobox images on https://beyblade.fandom.com/wiki/HellsNether_Z and https://beyblade.fandom.com/wiki/HellsNether_Deck_Set.",
+  "_note": "Officially announced parts not yet in the Taiwan sheet, added straight from the manufacturer's own release rather than waiting on the community. Appended onto the catalogue in loadCatalogue() and skipped automatically once the sheet carries the same id/cat pair. A relative `img` (no leading slash) points at a locally committed asset under public/, prefixed with BASE_URL at load time in loadCatalogue(); UX-21-2/UX-21-3 borrow UX-21-1's image via loadCatalogue()'s shared-key backfill since they're recolors of the same blade.",
   "parts": [
     {
       "id": "UX-21-1",
@@ -11,7 +11,7 @@
       "product": "UX-21 HellsNether Deck Set",
       "stockRatchet": "8-80",
       "stockBit": "Z",
-      "img": ""
+      "img": "images/parts/UX-21-1.png"
     },
     {
       "id": "UX-21-2",
