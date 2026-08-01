@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-07-31T08:04:31.435Z",
+  "updatedAt": "2026-08-01T14:22:30.581Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
     "currency": "MYR"
   },
   "coverage": {
-    "products": 156,
-    "inStock": 63,
+    "products": 157,
+    "inStock": 64,
     "pages": 5
   },
   "products": [
@@ -390,6 +390,16 @@
       "priceMYR": 34.9,
       "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/8613985ec49eb8f757ae6439e879bb2a/eB62jz87QRYGlvryB39cy4FE3pdtZJWheFFRjV5K.png"
+    },
+    {
+      "slug": "beyblade-x-premuim-tee",
+      "url": "https://kelabgasingbeyblade.my/products/beyblade-x-premuim-tee",
+      "title": "BEYBLADE X PREMUIM TEE",
+      "kgbCategory": "T-Shirt",
+      "group": "merch",
+      "priceMYR": 129.9,
+      "inStock": false,
+      "img": "https://kelabgasingbeyblade.my/storage/product/7e7757b1e12abcb736ab9a754ffb617a/GBV2NeLuqbbbsYGt9zpwUav8ccmLJsiKzr08E4LH.png"
     },
     {
       "slug": "beyblade-x-red-hoodie",
@@ -1590,7 +1600,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 85.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/7f39f8317fbdb1988ef4c628eba02591/c8l2Dykzl4ZHM1U7zhkqjkhc8tDorNjKR7cDIIUQ.png"
     },
     {
