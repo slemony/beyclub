@@ -239,12 +239,15 @@ button {
   transform: translateX(-50%);
   bottom: calc(env(safe-area-inset-bottom) + 12px);
   z-index: 30;
-  width: min(calc(100% - 24px), var(--content-max));
+  /* Hugs however many tabs are on show rather than stretching across the
+     screen — two tabs in a full-width pill is mostly empty glass. */
+  width: fit-content;
+  max-width: min(calc(100% - 24px), var(--content-max));
   height: var(--nav-h);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 6px;
+  padding: 0 8px;
   background: rgba(18, 22, 31, 0.62);
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
@@ -255,8 +258,10 @@ button {
 
 .nav-item {
   display: flex;
-  flex: 1 1 0;
-  max-width: 120px;
+  /* Sized for a comfortable tap target rather than a share of the width,
+     since the pill no longer has a width to share out. */
+  flex: 0 1 auto;
+  min-width: 76px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
