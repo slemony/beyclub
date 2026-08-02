@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-01T14:22:30.581Z",
+  "updatedAt": "2026-08-02T14:23:19.164Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
@@ -7,7 +7,7 @@
   },
   "coverage": {
     "products": 157,
-    "inStock": 64,
+    "inStock": 63,
     "pages": 5
   },
   "products": [
@@ -1383,7 +1383,7 @@
       "kgbCategory": "Booster",
       "group": "bey",
       "priceMYR": 52.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/c8ffe9a587b126f152ed3d89a146b445/mVHvdHCnnd3BvcubJYCixDaIjekKoslP5EkAMKO3.png"
     },
     {
