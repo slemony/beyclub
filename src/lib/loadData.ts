@@ -76,6 +76,22 @@ type Raw = Omit<Part, 'tier' | 'buy'> & {
 }
 
 /**
+ * A hand-added entry from manualParts.json — the fields that file is allowed to
+ * set. Spelled out because the list is usually empty, which would otherwise
+ * leave the loop below inferring `never`, and because it is the only
+ * description of the shape whoever adds the next announced set will follow.
+ */
+type ManualPart = Partial<Raw> & {
+  id: string
+  name: string
+  cat: PartCategory
+  type: PartType
+  communityTier: string
+}
+
+const MANUAL_PARTS = manualParts.parts as ManualPart[]
+
+/**
  * The Taiwan catalogue: which parts exist, what they look like and what they
  * ship with. Its tier column becomes one input to the blend rather than the
  * final word.
@@ -145,17 +161,21 @@ async function loadCatalogue(): Promise<Raw[]> {
   }
 
   // Officially announced parts the Taiwan sheet hasn't caught up with yet.
-  // Steps aside automatically once the sheet lists the same id/cat pair.
-  for (const part of manualParts.parts) {
+  //
+  // Matched exactly, and only exactly: the sheet lists `NR` and `Nr` as two
+  // different bits on different grades, so folding case or zero-padding
+  // together to catch near-misses would merge genuinely separate parts. An
+  // entry written before the real data exists will often not match at all —
+  // UX-21 was added as UX-21-1 against the sheet's UX-21-01 and every blade
+  // showed twice — so these have to be deleted by hand, as the file says.
+  for (const part of MANUAL_PARTS) {
     const key = `${part.id}|${part.cat}`
     if (seen.has(key)) continue
     seen.add(key)
 
     out.push({
       ...part,
-      cat: part.cat as PartCategory,
-      type: part.type as PartType,
-      key: (part as { key?: string }).key ?? part.id,
+      key: part.key ?? part.id,
       // A relative path is a locally committed asset; a full URL (as sheet
       // rows already carry) is left as-is.
       img: part.img ? (part.img.startsWith('http') ? part.img : `${import.meta.env.BASE_URL}${part.img}`) : undefined,
