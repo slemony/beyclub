@@ -1,57 +1,7 @@
 {
-  "_note": "Officially announced parts not yet in the Taiwan sheet, added straight from the manufacturer's own release rather than waiting on the community. Appended onto the catalogue in loadCatalogue() and skipped automatically once the sheet carries the same id/cat pair. A relative `img` (no leading slash) points at a locally committed asset under public/, prefixed with BASE_URL at load time in loadCatalogue(); UX-21-2/UX-21-3 borrow UX-21-1's image via loadCatalogue()'s shared-key backfill since they're recolors of the same blade.",
-  "parts": [
-    {
-      "id": "UX-21-1",
-      "name": "惡魔冥淵",
-      "cat": "blade",
-      "type": "balance",
-      "communityTier": "-",
-      "key": "惡魔冥淵",
-      "product": "UX-21 HellsNether Deck Set",
-      "stockRatchet": "8-80",
-      "stockBit": "Z",
-      "img": "images/parts/UX-21-1.png"
-    },
-    {
-      "id": "UX-21-2",
-      "name": "霜輝銀狼",
-      "cat": "blade",
-      "type": "balance",
-      "communityTier": "-",
-      "key": "霜輝銀狼",
-      "product": "UX-21 HellsNether Deck Set",
-      "stockRatchet": "9-70",
-      "stockBit": "R",
-      "img": ""
-    },
-    {
-      "id": "UX-21-3",
-      "name": "飛龍懸浮",
-      "cat": "blade",
-      "type": "balance",
-      "communityTier": "-",
-      "key": "飛龍懸浮",
-      "product": "UX-21 HellsNether Deck Set",
-      "stockRatchet": "8-80",
-      "stockBit": "B",
-      "img": ""
-    },
-    {
-      "id": "8-80",
-      "name": "8-80",
-      "cat": "ratchet",
-      "type": "ratchet",
-      "communityTier": "-",
-      "img": ""
-    },
-    {
-      "id": "Z",
-      "name": "Zap",
-      "cat": "bit",
-      "type": "bit",
-      "communityTier": "-",
-      "img": ""
-    }
-  ]
+  "_note": "Officially announced parts the Taiwan sheet has not caught up with yet, added straight from the manufacturer's own release so a new set is not missing from the tier list for its first week or two. Appended onto the catalogue in loadCatalogue(). A relative `img` (no leading slash) points at a locally committed asset under public/, prefixed with BASE_URL at load time.",
+
+  "_when_the_sheet_catches_up": "Delete the entry by hand. loadCatalogue() only steps aside on an exact id+cat match, and an entry written before the real data exists rarely guesses that exactly — UX-21 shipped here as UX-21-1 against the sheet's zero-padded UX-21-01, and every blade showed twice. Matching loosely is not the fix: the sheet carries `NR` and `Nr` as two different bits, on different grades, so folding case or padding together would silently merge genuinely separate parts. Copy the sheet's id format exactly (UX-21-01, not UX-21-1) and treat any entry here as temporary.",
+
+  "parts": []
 }
