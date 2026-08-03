@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-02T14:23:19.164Z",
+  "updatedAt": "2026-08-03T04:23:52.192Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
@@ -533,7 +533,7 @@
       "url": "https://kelabgasingbeyblade.my/products/bx-08-3-on-3-deck-set",
       "code": "BX-08",
       "title": "BX-08 3 ON 3 DECK SET",
-      "kgbCategory": "Battle Set",
+      "kgbCategory": "Deck Set",
       "group": "bey",
       "priceMYR": 129.9,
       "inStock": false,
@@ -617,10 +617,10 @@
       "img": "https://kelabgasingbeyblade.my/storage/product/1752371184/2Ij7KwD26mhs7aVDD8Do7LkCazD0fRFBcvBXXbPM.png"
     },
     {
-      "slug": "bx-16-viper-tail",
-      "url": "https://kelabgasingbeyblade.my/products/bx-16-viper-tail",
+      "slug": "bx-16-viper-tail-select",
+      "url": "https://kelabgasingbeyblade.my/products/bx-16-viper-tail-select",
       "code": "BX-16",
-      "title": "BX-16 VIPER TAIL",
+      "title": "BX-16 VIPER TAIL SELECT",
       "kgbCategory": "Random Booster",
       "group": "bey",
       "priceMYR": 52.9,
