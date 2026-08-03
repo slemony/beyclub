@@ -41,6 +41,7 @@ export function buildPartIndex(parts: Part[]): PartIndex {
     // Stock parts count as usage too — that's how the bey ships.
     if (blade.stockRatchet) codes.add(normalize(blade.stockRatchet))
     if (blade.stockBit) codes.add(normalize(blade.stockBit))
+    if (blade.stockAssist) codes.add(normalize(blade.stockAssist))
 
     return { blade, codes }
   })
