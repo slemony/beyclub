@@ -17,15 +17,23 @@ export type PartIndex = {
 const CATEGORY_FALLBACKS: PartCategory[] = ['ratchet', 'bit', 'assist', 'blade']
 
 export function buildPartIndex(parts: Part[]): PartIndex {
-  const byKey = new Map<string, Part>()
-  for (const part of parts) {
-    byKey.set(`${normalize(part.id)}|${part.cat}`, part)
-  }
-
-  const blades = parts.filter((p) => p.cat === 'blade')
+  /**
+   * The bare code a part is referenced by. Assist blades are catalogued as
+   * "輔助X", but every reference to them — a blade's stock column, a build
+   * string — names the bare "X". Strip the prefix so both sides meet.
+   */
+  const partCode = (cat: PartCategory, id: string) =>
+    cat === 'assist' ? id.replace(/^輔助/, '') : id
 
   /** Category-tagged code, so a bit "J" and an assist "J" never cross-match. */
   const tag = (cat: PartCategory, code: string) => `${cat}|${normalize(code)}`
+
+  const byKey = new Map<string, Part>()
+  for (const part of parts) {
+    byKey.set(`${normalize(partCode(part.cat, part.id))}|${part.cat}`, part)
+  }
+
+  const blades = parts.filter((p) => p.cat === 'blade')
 
   /**
    * Which codes each blade recommends. Built once — a per-part scan over every
@@ -73,7 +81,7 @@ export function buildPartIndex(parts: Part[]): PartIndex {
 
     bladesUsing(part) {
       if (part.cat === 'blade') return []
-      const key = tag(part.cat, part.id)
+      const key = tag(part.cat, partCode(part.cat, part.id))
       return bladeUsage.filter((u) => u.codes.has(key)).map((u) => u.blade)
     },
   }
