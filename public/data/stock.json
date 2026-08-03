@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-03T04:23:52.192Z",
+  "updatedAt": "2026-08-03T15:37:21.039Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
@@ -7,7 +7,7 @@
   },
   "coverage": {
     "products": 157,
-    "inStock": 63,
+    "inStock": 66,
     "pages": 5
   },
   "products": [
@@ -392,16 +392,6 @@
       "img": "https://kelabgasingbeyblade.my/storage/product/8613985ec49eb8f757ae6439e879bb2a/eB62jz87QRYGlvryB39cy4FE3pdtZJWheFFRjV5K.png"
     },
     {
-      "slug": "beyblade-x-premuim-tee",
-      "url": "https://kelabgasingbeyblade.my/products/beyblade-x-premuim-tee",
-      "title": "BEYBLADE X PREMUIM TEE",
-      "kgbCategory": "T-Shirt",
-      "group": "merch",
-      "priceMYR": 129.9,
-      "inStock": false,
-      "img": "https://kelabgasingbeyblade.my/storage/product/7e7757b1e12abcb736ab9a754ffb617a/GBV2NeLuqbbbsYGt9zpwUav8ccmLJsiKzr08E4LH.png"
-    },
-    {
       "slug": "beyblade-x-red-hoodie",
       "url": "https://kelabgasingbeyblade.my/products/beyblade-x-red-hoodie",
       "title": "BEYBLADE X RED HOODIE",
@@ -569,7 +559,7 @@
       "kgbCategory": "Grip",
       "group": "launcher",
       "priceMYR": 29.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/1752028168/Rf0bpnHisVcod4gsepoH157cbUhVkfUj9VrkFwOS.png"
     },
     {
@@ -1299,10 +1289,10 @@
       "img": "https://kelabgasingbeyblade.my/storage/product/1754690415/g5GY7CDW2j9hBALuTm3iVzaq0lvkL1GykYEPEYS4.png"
     },
     {
-      "slug": "cx-08-random-booster-vol-7",
-      "url": "https://kelabgasingbeyblade.my/products/cx-08-random-booster-vol-7",
+      "slug": "cx-08-random-booster-vol7",
+      "url": "https://kelabgasingbeyblade.my/products/cx-08-random-booster-vol7",
       "code": "CX-08",
-      "title": "CX-08 RANDOM BOOSTER Vol 7",
+      "title": "CX-08 RANDOM BOOSTER VOL.7",
       "kgbCategory": "Random Booster",
       "group": "bey",
       "priceMYR": 54.9,
@@ -1361,14 +1351,14 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 85.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/a0a080f42e6f13b3a2df133f073095dd/EIFSCu7aesT22mX9R4X79d8toTC9uDDssU6HrIGL.png"
     },
     {
-      "slug": "cx-14-starter-knightfortress-gv8-70un",
-      "url": "https://kelabgasingbeyblade.my/products/cx-14-starter-knightfortress-gv8-70un",
+      "slug": "cx-14-knightfortress-gv8-70un",
+      "url": "https://kelabgasingbeyblade.my/products/cx-14-knightfortress-gv8-70un",
       "code": "CX-14",
-      "title": "CX-14 STARTER KNIGHTFORTRESS GV8-70UN",
+      "title": "CX-14 KNIGHTFORTRESS GV8-70UN",
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 85.9,
@@ -1376,10 +1366,10 @@
       "img": "https://kelabgasingbeyblade.my/storage/product/202cb962ac59075b964b07152d234b70/BEOulI0mLjUkt0l2BcGcvwyOQS0IFCRpcd7jOYLq.png"
     },
     {
-      "slug": "cx-15-booster-ragnarage-fe4-55y",
-      "url": "https://kelabgasingbeyblade.my/products/cx-15-booster-ragnarage-fe4-55y",
+      "slug": "cx-15-ragnarage-fe4-55y",
+      "url": "https://kelabgasingbeyblade.my/products/cx-15-ragnarage-fe4-55y",
       "code": "CX-15",
-      "title": "CX-15 BOOSTER RAGNARAGE FE4-55Y",
+      "title": "CX-15 RAGNARAGE FE4-55Y",
       "kgbCategory": "Booster",
       "group": "bey",
       "priceMYR": 52.9,
@@ -1409,10 +1399,10 @@
       "img": "https://kelabgasingbeyblade.my/storage/product/140f6969d5213fd0ece03148e62e461e/yfpWYtSJQt7piXmqdfyYvmoNXiEHKRX0axH0yRXU.png"
     },
     {
-      "slug": "cx-18-random-booster-brachio-whip-select",
-      "url": "https://kelabgasingbeyblade.my/products/cx-18-random-booster-brachio-whip-select",
+      "slug": "cx-18-brachio-whip-select",
+      "url": "https://kelabgasingbeyblade.my/products/cx-18-brachio-whip-select",
       "code": "CX-18",
-      "title": "CX-18 RANDOM BOOSTER BRACHIO WHIP SELECT",
+      "title": "CX-18 BRACHIO WHIP SELECT",
       "kgbCategory": "Random Booster",
       "group": "bey",
       "priceMYR": 52.9,
@@ -1440,6 +1430,16 @@
       "img": "https://kelabgasingbeyblade.my/storage/product/1753051731/XpQY0O2d7sRtraQfLc2q8KPh5uK8txBqnopGiZo5.jpg"
     },
     {
+      "slug": "limited-edition-merdeka-cup-2026-beyblade-x-premium-tee",
+      "url": "https://kelabgasingbeyblade.my/products/limited-edition-merdeka-cup-2026-beyblade-x-premium-tee",
+      "title": "Limited Edition Merdeka Cup 2026 BEYBLADE X PREMIUM TEE",
+      "kgbCategory": "T-Shirt",
+      "group": "merch",
+      "priceMYR": 129.9,
+      "inStock": true,
+      "img": "https://kelabgasingbeyblade.my/storage/product/7e7757b1e12abcb736ab9a754ffb617a/Bz51UZSh4vKsBJA11zOZqYN0jznPNs1PYPcvBU8e.jpg"
+    },
+    {
       "slug": "pro-blader-t-shirt",
       "url": "https://kelabgasingbeyblade.my/products/pro-blader-t-shirt",
       "title": "PRO BLADER T-SHIRT",
@@ -1448,6 +1448,16 @@
       "priceMYR": 59.9,
       "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/93db85ed909c13838ff95ccfa94cebd9/rYhO4s1UtPRZmc5kVQuFsg5H8BSHPMGnrMzumBpC.png"
+    },
+    {
+      "slug": "takara-tomy-beyblade-x-ux-19-starter-bullet-griffon",
+      "url": "https://kelabgasingbeyblade.my/products/takara-tomy-beyblade-x-ux-19-starter-bullet-griffon",
+      "title": "TAKARA TOMY BEYBLADE X UX-19 STARTER BULLET GRIFFON",
+      "kgbCategory": "Starter",
+      "group": "bey",
+      "priceMYR": 85.9,
+      "inStock": false,
+      "img": "https://kelabgasingbeyblade.my/storage/product/ec5decca5ed3d6b8079e2e7e7bacc9f2/1htaauknHAVqPgwgAWxTtYh7LmNioixgiIsNXiBX.png"
     },
     {
       "slug": "ux-01-dran-buster-1-60a",
@@ -1646,17 +1656,6 @@
       "priceMYR": 52.9,
       "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1767319844/U7RlQ3Q6GOyN5xZ6BxcU5OWSr3sDyMLbgTrhc6v1.png"
-    },
-    {
-      "slug": "ux-19-bullet-griffon-h",
-      "url": "https://kelabgasingbeyblade.my/products/ux-19-bullet-griffon-h",
-      "code": "UX-19",
-      "title": "UX-19 BULLET GRIFFON H",
-      "kgbCategory": "Starter",
-      "group": "bey",
-      "priceMYR": 85.9,
-      "inStock": false,
-      "img": "https://kelabgasingbeyblade.my/storage/product/ec5decca5ed3d6b8079e2e7e7bacc9f2/1htaauknHAVqPgwgAWxTtYh7LmNioixgiIsNXiBX.png"
     },
     {
       "slug": "ux-20-glory-valkyrie-lf",
