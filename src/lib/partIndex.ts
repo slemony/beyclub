@@ -24,6 +24,9 @@ export function buildPartIndex(parts: Part[]): PartIndex {
 
   const blades = parts.filter((p) => p.cat === 'blade')
 
+  /** Category-tagged code, so a bit "J" and an assist "J" never cross-match. */
+  const tag = (cat: PartCategory, code: string) => `${cat}|${normalize(code)}`
+
   /**
    * Which codes each blade recommends. Built once — a per-part scan over every
    * blade's build strings would re-parse hundreds of cells on every sheet open.
@@ -35,13 +38,19 @@ export function buildPartIndex(parts: Part[]): PartIndex {
     const b = comboPartCodes(community)
 
     const codes = new Set<string>()
-    for (const set of [a.ratchets, a.bits, a.assists, b.ratchets, b.bits, b.assists]) {
-      for (const code of set) codes.add(normalize(code))
+    for (const set of [a.ratchets, b.ratchets]) {
+      for (const code of set) codes.add(tag('ratchet', code))
+    }
+    for (const set of [a.bits, b.bits]) {
+      for (const code of set) codes.add(tag('bit', code))
+    }
+    for (const set of [a.assists, b.assists]) {
+      for (const code of set) codes.add(tag('assist', code))
     }
     // Stock parts count as usage too — that's how the bey ships.
-    if (blade.stockRatchet) codes.add(normalize(blade.stockRatchet))
-    if (blade.stockBit) codes.add(normalize(blade.stockBit))
-    if (blade.stockAssist) codes.add(normalize(blade.stockAssist))
+    if (blade.stockRatchet) codes.add(tag('ratchet', blade.stockRatchet))
+    if (blade.stockBit) codes.add(tag('bit', blade.stockBit))
+    if (blade.stockAssist) codes.add(tag('assist', blade.stockAssist))
 
     return { blade, codes }
   })
@@ -64,7 +73,7 @@ export function buildPartIndex(parts: Part[]): PartIndex {
 
     bladesUsing(part) {
       if (part.cat === 'blade') return []
-      const key = normalize(part.id)
+      const key = tag(part.cat, part.id)
       return bladeUsage.filter((u) => u.codes.has(key)).map((u) => u.blade)
     },
   }
