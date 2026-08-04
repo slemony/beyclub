@@ -54,7 +54,7 @@ Two things keep it running unattended:
 npm run refresh:stock   # rewrite public/data/stock.json from kelabgasingbeyblade.my
 ```
 
-`stock.yml` runs this at 09:00 and 21:00 MYT and, like the tournament job, commits, builds and publishes in one run. The whole catalogue costs five requests: KGB's `/shop` listing already carries title, category, price, image and an in-stock button, so only the dozen products sold in several sizes need their own page fetched for the availability their card omits.
+`stock.yml` runs this at 00:00 and 17:30 MYT and, like the tournament job, commits, builds and publishes in one run. Readers can also pull the latest deployed `stock.json` by hand from the "Where this comes from" sheet on the Stock page — throttled to once per clock hour, since the file only moves when the scrape commits. The whole catalogue costs five requests: KGB's `/shop` listing already carries title, category, price, image and an in-stock button, so only the dozen products sold in several sizes need their own page fetched for the availability their card omits.
 
 The scraper leaves `stock.json` untouched when nothing has changed, which is what makes the commit step a no-op and what makes `updatedAt` mean **when stock last changed** rather than when it was last checked. It exits non-zero if a card parses incompletely, if no bey survives the parse, or if the catalogue shrinks by more than a quarter.
 

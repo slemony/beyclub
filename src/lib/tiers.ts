@@ -46,6 +46,7 @@ export const CATEGORY_LABELS: Record<PartCategory | 'all', string> = {
   ratchet: 'Ratchets',
   bit: 'Bits',
   assist: 'Assist',
+  overblade: 'Over Blade',
 }
 
 export const BUY_LABELS: Record<string, string> = {
@@ -61,7 +62,7 @@ export function tierRank(tier: string): number {
 }
 
 /** A tier row reads blade first — that is the part a buyer chooses around. */
-const CATEGORY_ORDER: Record<PartCategory, number> = { blade: 0, ratchet: 1, bit: 2, assist: 3 }
+const CATEGORY_ORDER: Record<PartCategory, number> = { blade: 0, ratchet: 1, bit: 2, assist: 3, overblade: 4 }
 
 /**
  * Within one tier: category first, then strongest to the left.

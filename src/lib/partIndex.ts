@@ -10,11 +10,13 @@ import type { Part, PartCategory } from './types'
 export type PartIndex = {
   /** Resolve a code to a part, preferring the expected category. */
   resolve: (code: string, expected: PartCategory) => Part | undefined
+  /** Blades that ship this part in the box (its stock ratchet/bit/assist/over blade). */
+  bladesShipping: (part: Part) => Part[]
   /** Blades whose recommended or community build names this part. */
-  bladesUsing: (part: Part) => Part[]
+  bladesUsingInBuild: (part: Part) => Part[]
 }
 
-const CATEGORY_FALLBACKS: PartCategory[] = ['ratchet', 'bit', 'assist', 'blade']
+const CATEGORY_FALLBACKS: PartCategory[] = ['ratchet', 'bit', 'assist', 'overblade', 'blade']
 
 export function buildPartIndex(parts: Part[]): PartIndex {
   /**
@@ -36,8 +38,10 @@ export function buildPartIndex(parts: Part[]): PartIndex {
   const blades = parts.filter((p) => p.cat === 'blade')
 
   /**
-   * Which codes each blade recommends. Built once — a per-part scan over every
-   * blade's build strings would re-parse hundreds of cells on every sheet open.
+   * The parts each blade names — kept as two sets so the detail sheet can tell
+   * "ships in the box" from "named in a suggested build". Built once — a
+   * per-part scan over every blade's build strings would re-parse hundreds of
+   * cells on every sheet open.
    */
   const bladeUsage = blades.map((blade) => {
     const recommended = parseCombo(blade.combo)
@@ -45,23 +49,33 @@ export function buildPartIndex(parts: Part[]): PartIndex {
     const a = comboPartCodes(recommended)
     const b = comboPartCodes(community)
 
-    const codes = new Set<string>()
+    const buildCodes = new Set<string>()
     for (const set of [a.ratchets, b.ratchets]) {
-      for (const code of set) codes.add(tag('ratchet', code))
+      for (const code of set) buildCodes.add(tag('ratchet', code))
     }
     for (const set of [a.bits, b.bits]) {
-      for (const code of set) codes.add(tag('bit', code))
+      for (const code of set) buildCodes.add(tag('bit', code))
     }
     for (const set of [a.assists, b.assists]) {
-      for (const code of set) codes.add(tag('assist', code))
+      for (const code of set) buildCodes.add(tag('assist', code))
     }
-    // Stock parts count as usage too — that's how the bey ships.
-    if (blade.stockRatchet) codes.add(tag('ratchet', blade.stockRatchet))
-    if (blade.stockBit) codes.add(tag('bit', blade.stockBit))
-    if (blade.stockAssist) codes.add(tag('assist', blade.stockAssist))
 
-    return { blade, codes }
+    // What actually comes in the box — the original parts, kept apart from the
+    // suggested build above.
+    const stockCodes = new Set<string>()
+    if (blade.stockRatchet) stockCodes.add(tag('ratchet', blade.stockRatchet))
+    if (blade.stockBit) stockCodes.add(tag('bit', blade.stockBit))
+    if (blade.stockAssist) stockCodes.add(tag('assist', blade.stockAssist))
+    if (blade.stockOverblade) stockCodes.add(tag('overblade', blade.stockOverblade))
+
+    return { blade, buildCodes, stockCodes }
   })
+
+  const bladesWhere = (part: Part, pick: (u: (typeof bladeUsage)[number]) => Set<string>) => {
+    if (part.cat === 'blade') return []
+    const key = tag(part.cat, partCode(part.cat, part.id))
+    return bladeUsage.filter((u) => pick(u).has(key)).map((u) => u.blade)
+  }
 
   return {
     resolve(code, expected) {
@@ -79,10 +93,12 @@ export function buildPartIndex(parts: Part[]): PartIndex {
       return undefined
     },
 
-    bladesUsing(part) {
-      if (part.cat === 'blade') return []
-      const key = tag(part.cat, partCode(part.cat, part.id))
-      return bladeUsage.filter((u) => u.codes.has(key)).map((u) => u.blade)
+    bladesShipping(part) {
+      return bladesWhere(part, (u) => u.stockCodes)
+    },
+
+    bladesUsingInBuild(part) {
+      return bladesWhere(part, (u) => u.buildCodes)
     },
   }
 }

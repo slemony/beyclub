@@ -1,5 +1,7 @@
 {
-  "_note": "Corrections for rows the Taiwan sheet records awkwardly, keyed by its product id. `id` replaces a placeholder product code, `nameEn` supplies a title, and `blade` says which blade the row really is so it shares that blade's tournament record instead of looking untested.",
+  "_note": "Corrections for rows the Taiwan sheet records awkwardly, keyed by its product id. `id` replaces a placeholder product code, `nameEn` supplies a title, and `blade` says which blade the row really is so it shares that blade's tournament record instead of looking untested. `assist` / `overblade` backfill an in-the-box part the sheet leaves off: `assist` fills a blank assist column, `overblade` supplies the CX Expand Blade over blade (single-letter code, defined in manualParts.json) the sheet has no column for at all.",
+
+  "_over_blades": "Only the four confirmed CX Expand Blade families ship an over blade (Bahamut Blitz→Break B, Ragna Rage→Flow F, Unicorn Delta→Peak P, Brachio Whip→Outer O); every other CX blade uses the original three-part Main Blade system and gets none. The blank assist columns on the CX random-booster rows (e.g. CX-05-04, CX-08-04, CX-11-02, CX-17-03) are deliberately left blank: those are UX/BX blades, which have no assist blade — filling them would be wrong.",
 
   "A賞飛龍": {
     "id": "UX-00-2-80-GN",
@@ -8,10 +10,20 @@
   },
   "BXH-22": {
     "nameEn": "Ragna Rage FE",
-    "blade": "邪神狂怒"
+    "blade": "邪神狂怒",
+    "overblade": "F"
   },
   "BXC-19": {
     "nameEn": "Bahamut Blitz BK",
-    "blade": "龍王閃擊"
-  }
+    "blade": "龍王閃擊",
+    "overblade": "B"
+  },
+  "CX-13": { "overblade": "B" },
+  "CX-16": { "overblade": "B" },
+  "CX-15": { "overblade": "F" },
+  "CX-17-01": { "overblade": "P" },
+  "CX-17-02": { "overblade": "P" },
+  "CX-18-01": { "overblade": "O" },
+  "CX-18-02": { "overblade": "O" },
+  "CX-18-03": { "overblade": "O" }
 }

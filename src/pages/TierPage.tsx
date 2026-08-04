@@ -15,7 +15,7 @@ import type { Dataset, Part, PartCategory, PartNotes, StockProduct } from '../li
 
 type Filter = PartCategory | 'all'
 
-const FILTERS: Filter[] = ['all', 'blade', 'ratchet', 'bit', 'assist']
+const FILTERS: Filter[] = ['all', 'blade', 'ratchet', 'bit', 'assist', 'overblade']
 
 export default function TierPage() {
   const [data, setData] = useState<Dataset | null>(null)

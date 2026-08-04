@@ -5,7 +5,15 @@ import Sheet from '../components/Sheet'
 import StockCard from '../components/StockCard'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
-import { buildStockIndex, gradedOn, loadStock } from '../lib/stock'
+import {
+  buildStockIndex,
+  canRefreshStockNow,
+  gradedOn,
+  loadStock,
+  markStockRefreshed,
+  msToNextHour,
+  nextRefreshLabel,
+} from '../lib/stock'
 import { tierRank } from '../lib/tiers'
 import type { Dataset, Part, PartNotes, StockFile, StockGroup, StockProduct } from '../lib/types'
 
@@ -67,6 +75,8 @@ export default function StockPage() {
   const [showSoldOut, setShowSoldOut] = useState(false)
   const [stack, setStack] = useState<Part[]>([])
   const [showSource, setShowSource] = useState(false)
+  const [canRefresh, setCanRefresh] = useState(() => canRefreshStockNow())
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -161,6 +171,33 @@ export default function StockPage() {
     })
   }, [])
 
+  // Re-enable the manual refresh exactly as the clock rolls past the next :00.
+  // Only armed while it is spent — once live there is nothing to wait for.
+  useEffect(() => {
+    if (canRefresh) return
+    const t = setTimeout(() => setCanRefresh(canRefreshStockNow()), msToNextHour() + 500)
+    return () => clearTimeout(t)
+  }, [canRefresh])
+
+  const refreshStock = useCallback(async () => {
+    if (!canRefresh || refreshing) return
+    setRefreshing(true)
+    // Spend the slot on the attempt, not the outcome, so a failed fetch can't be
+    // retried in a tight loop. Recompute the gate in `finally` so the "Checking…"
+    // state stays visible for the duration of the fetch.
+    markStockRefreshed()
+    try {
+      const fresh = await loadStock(true)
+      setStock(fresh)
+      setError(null)
+    } catch {
+      // Keep whatever is on screen — the refresh is a nicety, not a reload.
+    } finally {
+      setRefreshing(false)
+      setCanRefresh(canRefreshStockNow())
+    }
+  }, [canRefresh, refreshing])
+
   const updated = when(stock?.updatedAt)
 
   return (
@@ -205,7 +242,27 @@ export default function StockPage() {
                 {stock?.source.name ?? 'Kelab Gasing Beyblade'} ↗
               </a>
             </div>
-            {updated && <p className="attr-time">Stock last changed {updated} (MYT)</p>}
+            {updated && (
+              <p className="attr-time">
+                Stock last changed {updated} (MYT)
+                {stock &&
+                  (canRefresh ? (
+                    <>
+                      {' · '}
+                      <button
+                        className="attr-refresh"
+                        onClick={refreshStock}
+                        disabled={refreshing}
+                      >
+                        {refreshing ? 'Checking…' : 'Check now'}
+                      </button>
+                      <span className="attr-refresh-note"> — once an hour</span>
+                    </>
+                  ) : (
+                    <span className="attr-refresh-note"> · Checked — next at {nextRefreshLabel()}</span>
+                  ))}
+              </p>
+            )}
           </div>
         </Sheet>
       )}

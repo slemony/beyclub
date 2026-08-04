@@ -538,6 +538,30 @@ button {
   color: var(--text-3);
 }
 
+/* Deliberately quiet — a text link inside the source sheet, not a call to
+   action. Reads once per hour; dims to plain text while it waits. */
+.attr-refresh {
+  font: inherit;
+  color: var(--accent-2);
+  border-bottom: 1px solid rgba(139, 232, 255, 0.3);
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.attr-refresh:hover {
+  border-bottom-color: rgba(139, 232, 255, 0.6);
+}
+
+.attr-refresh:disabled {
+  color: var(--text-3);
+  border-bottom-color: transparent;
+  cursor: default;
+}
+
+.attr-refresh-note {
+  color: var(--text-3);
+}
+
 /* ── Filters ───────────────────────────────────────────────── */
 
 .filter-row {
