@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PageHeader from '../components/PageHeader'
 import PartSheet from '../components/PartSheet'
 import Sheet from '../components/Sheet'
@@ -13,6 +13,8 @@ import {
   markStockRefreshed,
   msToNextHour,
   nextRefreshLabel,
+  stockScrapeConfigured,
+  triggerStockScrape,
 } from '../lib/stock'
 import { tierRank } from '../lib/tiers'
 import type { Dataset, Part, PartNotes, StockFile, StockGroup, StockProduct } from '../lib/types'
@@ -77,6 +79,10 @@ export default function StockPage() {
   const [showSource, setShowSource] = useState(false)
   const [canRefresh, setCanRefresh] = useState(() => canRefreshStockNow())
   const [refreshing, setRefreshing] = useState(false)
+  // The outcome of the last manual check, shown next to the timestamp so the
+  // click always has a visible result — even when nothing on the shelf moved.
+  const [refreshNote, setRefreshNote] = useState<'scanning' | 'updated' | 'nochange' | 'error' | null>(null)
+  const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -179,26 +185,103 @@ export default function StockPage() {
     return () => clearTimeout(t)
   }, [canRefresh])
 
+  // A scrape run scrapes, commits and redeploys before the new file is live, so
+  // the outcome arrives minutes after the click — poll for it rather than block.
+  const POLL_EVERY_MS = 25_000
+  const POLL_TRIES = 12 // ~5 minutes, comfortably past a scrape-build-deploy run
+
+  const settle = useCallback((note: Exclude<typeof refreshNote, 'scanning'>) => {
+    setRefreshNote(note)
+    setRefreshing(false)
+    setCanRefresh(canRefreshStockNow())
+  }, [])
+
   const refreshStock = useCallback(async () => {
     if (!canRefresh || refreshing) return
     setRefreshing(true)
-    // Spend the slot on the attempt, not the outcome, so a failed fetch can't be
-    // retried in a tight loop. Recompute the gate in `finally` so the "Checking…"
-    // state stays visible for the duration of the fetch.
-    markStockRefreshed()
-    try {
-      const fresh = await loadStock(true)
-      setStock(fresh)
-      setError(null)
-    } catch {
-      // Keep whatever is on screen — the refresh is a nicety, not a reload.
-    } finally {
-      setRefreshing(false)
-      setCanRefresh(canRefreshStockNow())
+
+    // No dispatcher wired up (dev, or not yet deployed): the most a page can do
+    // on its own is re-pull the last published file.
+    if (!stockScrapeConfigured()) {
+      markStockRefreshed()
+      try {
+        const fresh = await loadStock(true)
+        setStock(fresh)
+        setError(null)
+      } catch {
+        // Keep whatever is on screen — the refresh is a nicety, not a reload.
+      } finally {
+        settle('nochange')
+      }
+      return
     }
-  }, [canRefresh, refreshing])
+
+    setRefreshNote('scanning')
+    try {
+      await triggerStockScrape()
+    } catch {
+      // The scan never started, so don't spend the slot — let them try again.
+      settle('error')
+      return
+    }
+    // The scan is really running now; spend the hour so the shop isn't hit again.
+    markStockRefreshed()
+
+    // Wait for the run to republish, then adopt the new file the moment the
+    // shelf's timestamp moves. Unchanged after the window means nothing moved.
+    const before = stock?.updatedAt
+    let tries = 0
+    const poll = async () => {
+      tries += 1
+      try {
+        const fresh = await loadStock(true)
+        if (fresh.updatedAt !== before) {
+          setStock(fresh)
+          setError(null)
+          settle('updated')
+          return
+        }
+      } catch {
+        // A transient miss mid-deploy is expected — keep polling.
+      }
+      if (tries >= POLL_TRIES) {
+        settle('nochange')
+        return
+      }
+      pollRef.current = setTimeout(poll, POLL_EVERY_MS)
+    }
+    pollRef.current = setTimeout(poll, POLL_EVERY_MS)
+  }, [canRefresh, refreshing, stock, settle])
+
+  // Drop any in-flight poll if the reader leaves the page.
+  useEffect(() => () => { if (pollRef.current) clearTimeout(pollRef.current) }, [])
 
   const updated = when(stock?.updatedAt)
+
+  // One line, several states: scanning while a run is in flight, the outcome
+  // once it settles, otherwise the button (or when it frees up again).
+  const refreshControl = !stock ? null : refreshing ? (
+    <span className="attr-refresh-note"> · Scanning the shop… (~2 min)</span>
+  ) : canRefresh ? (
+    <>
+      {' · '}
+      <button className="attr-refresh" onClick={refreshStock}>
+        Check now
+      </button>
+      <span className="attr-refresh-note">
+        {refreshNote === 'error' ? ' — couldn’t start, try again' : ' — once an hour'}
+      </span>
+    </>
+  ) : (
+    <span className="attr-refresh-note">
+      {' · '}
+      {refreshNote === 'updated'
+        ? 'Updated just now'
+        : refreshNote === 'nochange'
+          ? `No change — next check at ${nextRefreshLabel()}`
+          : `Checked — next at ${nextRefreshLabel()}`}
+    </span>
+  )
 
   return (
     <>
@@ -245,22 +328,7 @@ export default function StockPage() {
             {updated && (
               <p className="attr-time">
                 Stock last changed {updated} (MYT)
-                {stock &&
-                  (canRefresh ? (
-                    <>
-                      {' · '}
-                      <button
-                        className="attr-refresh"
-                        onClick={refreshStock}
-                        disabled={refreshing}
-                      >
-                        {refreshing ? 'Checking…' : 'Check now'}
-                      </button>
-                      <span className="attr-refresh-note"> — once an hour</span>
-                    </>
-                  ) : (
-                    <span className="attr-refresh-note"> · Checked — next at {nextRefreshLabel()}</span>
-                  ))}
+                {refreshControl}
               </p>
             )}
           </div>

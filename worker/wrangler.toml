@@ -1,0 +1,21 @@
+name = "beyclub-stock-refresh"
+main = "refresh-stock.js"
+compatibility_date = "2026-08-01"
+
+# Restrict who may call the endpoint to the live site. Leave unset (or "*")
+# while testing from localhost.
+# [vars]
+# ALLOW_ORIGIN = "https://slemony.github.io"
+
+# Optional: a KV namespace enables the Worker's own once-an-hour guard, so the
+# throttle survives even if someone calls the endpoint directly. Create it with
+#   wrangler kv namespace create RATE
+# then paste the id below and uncomment.
+# [[kv_namespaces]]
+# binding = "RATE"
+# id = "<your-kv-namespace-id>"
+
+# The token is a secret, never committed. Set it with:
+#   wrangler secret put GH_DISPATCH_TOKEN
+# Use a fine-grained PAT scoped to slemony/beyclub with
+# "Actions: Read and write" and nothing else.
