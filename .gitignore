@@ -7,9 +7,12 @@ dist-ssr
 *.log
 .env
 
-# Datasets now live in the shared Firebase Storage bucket, not in git. Pull a
-# local copy for offline development with `npm run data:pull`.
+# Datasets now live on the Firebase Hosting data site, not in git. Pull a local
+# copy for offline development with `npm run data:pull`.
 /public/data/
+
+# Staging folder for the data-site deploy, built by `npm run data:stage`.
+/data-dist/
 
 # Machine-local Claude Code permission state
 .claude/settings.local.json

@@ -1,162 +1,141 @@
 # Firebase migration runbook
 
-This is the one-time setup that moves BeyClub's datasets out of git and into a
-shared Firebase Cloud Storage bucket, and stands up **beyclub.web.app** on
-Firebase Hosting as production alongside the existing GitHub Pages **test** site.
+This is the one-time setup that moves BeyClub's datasets out of git and onto
+**Firebase Hosting** (free — no billing), and stands up **beyclub.web.app** as
+production alongside the existing GitHub Pages **test** site.
 
 After it's done:
 
-- The five dataset JSON files live only in the bucket, not in the repo.
-- The scraper workflows write to the bucket instead of committing to `main`.
+- The five dataset JSON files are served from a Firebase Hosting **data site**,
+  not from the repo.
+- The scraper workflows publish to that data site instead of committing to `main`.
 - Both sites — test (`slemony.github.io/beyclub`) and production
-  (`beyclub.web.app`) — read the **same** bucket, so there is one source of
-  truth and no separate database to maintain.
+  (`beyclub.web.app`) — read the **same** data site, so there is one source of
+  truth and nothing separate to maintain.
+
+## The two Hosting sites
+
+One Firebase project (`beyclub-90e95`) with two Hosting sites:
+
+| Site | Serves | URL | Deployed by |
+|---|---|---|---|
+| **app** (named `beyclub`) | the React app (`dist`) | **beyclub.web.app** | `firebase-hosting.yml` on push to `main` |
+| **data** (the default site `beyclub-90e95`) | the five JSON files under `/data/` | beyclub-90e95.web.app | the scraper workflows, when data changes |
+
+The default site's ugly URL doesn't matter — nobody visits it, it's just a JSON
+endpoint the app fetches. This is why we get a clean **beyclub.web.app** for the
+app without paying for Cloud Storage.
 
 The code, config and workflows are already in place. What's left is the parts
-that need console access and secrets, which can't live in the repo.
+that need console access and a secret, which can't live in the repo. Everything
+below can be done from the browser — the Firebase console for clicks, and
+**Cloud Shell** (the `>_` icon, top-right of the console) for the CLI bits.
+
+> If you claimed a Hosting site id other than `beyclub` (because it was taken),
+> replace `beyclub` with your id in three places before deploying:
+> `firebase.json` (`site`), `package.json` (`deploy:app`), and the site name in
+> `README.md`. Tell me the id and I'll do it.
 
 ---
 
-## What you need once
+## 1. Enable Hosting and claim the app site
+1. Console → **Build → Hosting → Get started**. Click through the CLI steps it
+   shows (we don't need them) to finish — the default site
+   `beyclub-90e95.web.app` is created. **We don't use this for the app.**
+2. On the Hosting page, click **Add another site** → enter site id **`beyclub`**.
+   - Available → you get **beyclub.web.app**. 🎉
+   - Taken → try a short fallback (e.g. `beyclubmy`) and note the id.
 
-- The Firebase project **`beyclub-90e95`**, already wired into `.firebaserc`,
-  `.github/workflows/firebase-hosting.yml` (`projectId`), `src/lib/dataSource.ts`
-  and `.env.example`. Production is served from a **named Hosting site**, not the
-  default `beyclub-90e95.web.app` — you claim `beyclub` (→ `beyclub.web.app`) or a
-  short fallback in Phase 6, and its site id goes into `firebase.json`.
-- Its default Cloud Storage bucket, expected to be
-  **`beyclub-90e95.firebasestorage.app`** (older projects use `.appspot.com`). Keep
-  it consistent everywhere — it's the default baked into `src/lib/dataSource.ts`
-  and the scripts.
-- The `gcloud` and `firebase` CLIs, or the Firebase console, to run the steps.
-
-If your bucket name is **not** `beyclub-90e95.firebasestorage.app`, set it in:
-
-- `src/lib/dataSource.ts` → `DEFAULT_DATA_BASE`
-- `.env.example` (and any local `.env`)
-- the `DATA_BUCKET` repo **variable** (see below), which the workflows pass through
-
----
-
-## 1. Make the datasets publicly readable
-
-The web app reads the JSON over its plain public URL
-(`https://storage.googleapis.com/<bucket>/data/<file>`), so `allUsers` needs
-object-read on the bucket:
+## 2. Service account for CI (Cloud Shell)
+The workflows deploy as a service account. Create one with Hosting-deploy rights:
 
 ```bash
-gcloud storage buckets add-iam-policy-binding gs://beyclub-90e95.firebasestorage.app \
-  --member=allUsers --role=roles/storage.objectViewer
-```
-
-Only the `data/` objects are ever created here, and they're public shop/tier
-snapshots — nothing sensitive.
-
-## 2. Allow the browsers to fetch it (CORS)
-
-The test site is a different origin from the bucket, so the browser needs CORS:
-
-```bash
-gcloud storage buckets update gs://beyclub-90e95.firebasestorage.app --cors-file=firebase/cors.json
-```
-
-(`firebase/cors.json` allows `GET`/`HEAD` from any origin — fine for public data.)
-
-## 3. Service account for the automation
-
-One service account does both jobs — uploading data and deploying hosting:
-
-```bash
-gcloud iam service-accounts create beyclub-ci --display-name="BeyClub CI"
-
-# Upload datasets to the bucket
-gcloud projects add-iam-policy-binding beyclub-90e95 \
-  --member="serviceAccount:beyclub-ci@beyclub-90e95.iam.gserviceaccount.com" \
-  --role=roles/storage.objectAdmin
-
-# Deploy Firebase Hosting
-gcloud projects add-iam-policy-binding beyclub-90e95 \
-  --member="serviceAccount:beyclub-ci@beyclub-90e95.iam.gserviceaccount.com" \
+P=beyclub-90e95
+gcloud iam service-accounts create beyclub-ci --project=$P --display-name="BeyClub CI"
+gcloud projects add-iam-policy-binding $P \
+  --member="serviceAccount:beyclub-ci@$P.iam.gserviceaccount.com" \
   --role=roles/firebasehosting.admin
-
-# A key to hand to GitHub Actions
+gcloud projects add-iam-policy-binding $P \
+  --member="serviceAccount:beyclub-ci@$P.iam.gserviceaccount.com" \
+  --role=roles/firebase.viewer
 gcloud iam service-accounts keys create key.json \
-  --iam-account=beyclub-ci@beyclub-90e95.iam.gserviceaccount.com
+  --iam-account=beyclub-ci@$P.iam.gserviceaccount.com
+cat key.json      # copy the whole JSON
 ```
 
-## 4. GitHub secrets and variables
+## 3. GitHub secret
+GitHub → repo **Settings → Secrets and variables → Actions → New repository
+secret**: name **`GCP_SA_KEY`**, value = the entire `key.json`. Used by the app
+deploy and the three data workflows. Then `rm key.json` in Cloud Shell.
 
-In **Settings → Secrets and variables → Actions**:
+*(Optional)* Secret **`DATA_PAT`** — a fine-grained PAT with `contents: write`.
+The scrapers no longer commit, so `keepalive.yml` uses it to make a weekly
+one-line heartbeat commit that keeps GitHub from auto-disabling the scheduled
+workflows after 60 days of repo inactivity. Without it the heartbeat still runs
+with the default token; normal development activity also keeps the clock alive.
 
-- Secret **`GCP_SA_KEY`** — the full contents of `key.json`. Used by the three
-  data workflows (to upload) and `firebase-hosting.yml` (to deploy). Delete the
-  local `key.json` afterwards.
-- Variable **`DATA_BUCKET`** — your bucket name, only if it isn't the default
-  `beyclub-90e95.firebasestorage.app`.
-- Secret **`DATA_PAT`** *(optional)* — a fine-grained PAT with `contents: write`.
-  The scrapers no longer commit, so `keepalive.yml` uses this to make a weekly
-  one-line heartbeat commit that keeps GitHub from auto-disabling the scheduled
-  workflows after 60 days of repo inactivity. Without it the heartbeat still runs
-  with the default token; normal development activity also keeps the clock alive.
-
-## 5. Seed the bucket
-
-Do this **from `main`, before merging the migration** — `main` still has the
-JSON files there, and this branch has removed them:
+## 4. Seed the data site (Cloud Shell, from `main` which still has the files)
+The scrapers only publish the dataset they refresh; the first publish of the
+other four has to be a manual seed from the JSON still committed on `main`:
 
 ```bash
-git checkout main
+git clone https://github.com/slemony/beyclub && cd beyclub
+git checkout main            # main still has public/data/*.json
 npm ci
-GOOGLE_APPLICATION_CREDENTIALS=key.json DATA_BUCKET=beyclub-90e95.firebasestorage.app \
-  npm run data:push        # uploads all five files
+npm run data:stage           # copies all five into data-dist/data/
+npx firebase-tools deploy --only hosting:beyclub-90e95 --project beyclub-90e95
 ```
 
-Already merged? Recover the files from the last pre-migration commit and push:
+(Cloud Shell is already logged in as you, so `firebase-tools` can deploy without
+a key here. In CI the `GCP_SA_KEY` service account does it.)
+
+Already merged, so `main` no longer has the files? Recover them from the last
+pre-migration commit first:
 
 ```bash
 mkdir -p public/data
 for f in catalogue stock tournament tiers-jp part-notes; do
   git show <pre-migration-sha>:public/data/$f.json > public/data/$f.json
 done
-GOOGLE_APPLICATION_CREDENTIALS=key.json npm run data:push
+npm run data:stage && npx firebase-tools deploy --only hosting:beyclub-90e95 --project beyclub-90e95
 ```
 
-## 6. Turn on Firebase Hosting
-
-Merge the migration to `main`. `firebase-hosting.yml` builds and deploys to the
-`live` channel on every push, publishing production at **beyclub.web.app**. To
-deploy by hand:
+## 5. Deploy production
+Merge the migration to `main`. `firebase-hosting.yml` builds and deploys the app
+to your named site on every push. To deploy by hand:
 
 ```bash
-npm run deploy:firebase
+npm run deploy:app
 ```
 
-## 7. Verify
-
-- `curl -I https://storage.googleapis.com/beyclub-90e95.firebasestorage.app/data/stock.json`
-  → `200`, `content-type: application/json`.
-- Open **beyclub.web.app** and the test site — both should render stock and tiers
-  (they're now reading the bucket).
+## 6. Verify
+- `curl -I https://beyclub-90e95.web.app/data/stock.json`
+  → `200`, `content-type: application/json`, and an
+  `access-control-allow-origin: *` header.
+- Open **beyclub.web.app** and the test site (`slemony.github.io/beyclub`) —
+  both should render stock and tiers (they're reading the data site).
 - Run the **Refresh KGB stock** workflow manually
-  (Actions → Refresh KGB stock → Run workflow) and confirm it pulls, scrapes and
-  pushes without touching git.
+  (Actions → Refresh KGB stock → Run workflow) and confirm it pulls, scrapes and,
+  only if the shelf moved, deploys the data site — without touching git.
 
 ---
 
 ## Day-to-day after migration
 
-- **Scraped data** (stock, catalogue, tournament) updates itself on schedule,
-  straight into the bucket.
+- **Scraped data** (stock, catalogue, tournament) refreshes itself on schedule,
+  publishing straight to the data site.
 - **Curated data** (`tiers-jp.json`, `part-notes.json`) is now edited against the
-  bucket, not the repo:
+  data site, not the repo:
 
   ```bash
-  npm run data:pull -- tiers-jp.json          # get the current copy
+  npm run data:pull                          # get the full current set
   # edit public/data/tiers-jp.json
-  GOOGLE_APPLICATION_CREDENTIALS=key.json \
-    npm run data:push -- tiers-jp.json        # publish it (live within ~5 min)
+  npm run deploy:data                         # stage all five + deploy (live in ~5 min)
   ```
+
+  Pull the full set first — `deploy:data` re-publishes everything in
+  `public/data/`, so editing one file without the others present would drop them.
 
 - **Local development** with real data: `npm run data:pull` populates
   `public/data/` (gitignored). Without it, the app still reads the production
-  bucket directly over the network.
+  data site over the network.

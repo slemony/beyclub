@@ -14,9 +14,10 @@
     "refresh:stock": "node scripts/fetch-stock.mjs",
     "refresh:catalogue": "node --experimental-strip-types scripts/fetch-catalogue.mjs",
     "data:pull": "node scripts/data-pull.mjs",
-    "data:push": "node scripts/data-push.mjs",
+    "data:stage": "node scripts/data-stage.mjs",
     "deploy": "npm run build && gh-pages -d dist -b gh-pages --dotfiles",
-    "deploy:firebase": "npm run build && npx firebase-tools deploy --only hosting"
+    "deploy:app": "npm run build && npx firebase-tools deploy --only hosting:beyclub --project beyclub-90e95",
+    "deploy:data": "npm run data:stage && npx firebase-tools deploy --only hosting:beyclub-90e95 --project beyclub-90e95"
   },
   "dependencies": {
     "react": "^19.1.0",
@@ -24,7 +25,6 @@
     "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
-    "@google-cloud/storage": "^7.21.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.6.0",

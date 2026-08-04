@@ -3,10 +3,10 @@ name: Refresh part catalogue
 # Once a day — the Taiwan sheet doesn't move like shop stock, so this is mostly a
 # safety net for whenever it does.
 #
-# The scrape writes to the shared Firebase Storage bucket, read live by both the
-# test and production sites. There is no longer an on-push trigger: data is
+# The scrape publishes to the Firebase Hosting data site, read live by both the
+# test and production sites. There is no on-push trigger any more: data is
 # decoupled from deploys, so a deploy can no longer ship a stale catalogue, and
-# no data is committed to git.
+# no data is committed to git. The deploy runs only when the sheet moved.
 on:
   schedule:
     - cron: '0 3 * * *' # 03:00 UTC = 11:00 MYT
@@ -16,7 +16,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: data-catalogue
+  group: data-deploy
   cancel-in-progress: false
 
 jobs:
@@ -32,24 +32,35 @@ jobs:
 
       - run: npm ci
 
-      # The scraper compares against the current snapshot to leave the file
-      # untouched when the sheet has not moved.
-      - name: Pull current catalogue from the bucket
-        run: npm run data:pull -- catalogue.json
-        env:
-          DATA_BUCKET: ${{ vars.DATA_BUCKET }}
+      # Pull the whole live set: the scraper compares against the current
+      # catalogue, and the deploy re-publishes all five files.
+      - name: Pull current data
+        run: npm run data:pull
+
+      - name: Note the catalogue we started from
+        run: cp public/data/catalogue.json "$RUNNER_TEMP/before.json" 2>/dev/null || true
 
       # Exits non-zero on a parse failure or a collapse in the catalogue, and
       # rewrites nothing when the sheet has not moved.
       - name: Snapshot the Taiwan community sheet
         run: npm run refresh:catalogue
 
-      - name: Authenticate to Google Cloud
+      - name: Did the catalogue change?
+        id: diff
+        run: |
+          if [ -f "$RUNNER_TEMP/before.json" ] && cmp -s public/data/catalogue.json "$RUNNER_TEMP/before.json"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No change in catalogue — skipping deploy."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Authenticate to Firebase
+        if: steps.diff.outputs.changed == 'true'
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Push catalogue to the bucket
-        run: npm run data:push -- catalogue.json
-        env:
-          DATA_BUCKET: ${{ vars.DATA_BUCKET }}
+      - name: Deploy the data site
+        if: steps.diff.outputs.changed == 'true'
+        run: npm run deploy:data

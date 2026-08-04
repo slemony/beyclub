@@ -1,9 +1,8 @@
 name: Deploy production (Firebase Hosting)
 
-# Production: beyclub.web.app. Builds from main and deploys to the Firebase
-# Hosting "live" channel. Reads the same bucket datasets as the test site, so
-# promoting a change is purely a matter of this deploy succeeding — the data is
-# already shared.
+# Production: beyclub.web.app. Builds from main and deploys the app to its named
+# Hosting site. Reads the same data site as the test site, so promoting a change
+# is purely a matter of this deploy succeeding — the data is already shared.
 on:
   push:
     branches: [main]
@@ -29,14 +28,13 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
 
-      # Same service-account key as the data workflows; it needs Firebase Hosting
-      # Admin in addition to Storage Object Admin. channelId "live" targets
-      # production rather than a preview channel.
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Authenticate to Firebase
+        uses: google-github-actions/auth@v2
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.GCP_SA_KEY }}
-          channelId: live
-          projectId: beyclub-90e95
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # deploy:app builds and deploys ONLY the app site (--only hosting:beyclub),
+      # so it never touches the data site the scrapers publish to.
+      - name: Build and deploy the app
+        run: npm run deploy:app

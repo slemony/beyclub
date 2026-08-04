@@ -1,16 +1,30 @@
 {
-  "hosting": {
-    "public": "dist",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [{ "source": "**", "destination": "/index.html" }],
-    "headers": [
-      {
-        "source": "assets/**",
-        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
-      }
-    ]
-  },
-  "storage": {
-    "rules": "firebase/storage.rules"
-  }
+  "hosting": [
+    {
+      "site": "beyclub",
+      "public": "dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }],
+      "headers": [
+        {
+          "source": "assets/**",
+          "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+        }
+      ]
+    },
+    {
+      "site": "beyclub-90e95",
+      "public": "data-dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "Access-Control-Allow-Origin", "value": "*" },
+            { "key": "Cache-Control", "value": "public, max-age=300" }
+          ]
+        }
+      ]
+    }
+  ]
 }

@@ -2,8 +2,9 @@ name: Refresh tournament data
 
 # BBXHub recomputes every Friday, so we pick it up on Saturday morning MYT.
 #
-# The scrape writes to the shared Firebase Storage bucket, read live by both the
-# test and production sites — no build, no deploy, and no data committed to git.
+# The scrape publishes to the Firebase Hosting data site, read live by both the
+# test and production sites — no app build, and no data committed to git. The
+# deploy runs only when coverage moved.
 on:
   schedule:
     - cron: '0 2 * * 6' # Sat 02:00 UTC = 10:00 MYT
@@ -13,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: data-tournament
+  group: data-deploy
   cancel-in-progress: false
 
 jobs:
@@ -29,24 +30,35 @@ jobs:
 
       - run: npm ci
 
-      # The scraper compares against the current snapshot to leave the file
-      # untouched when coverage has not moved.
-      - name: Pull current tournament data from the bucket
-        run: npm run data:pull -- tournament.json
-        env:
-          DATA_BUCKET: ${{ vars.DATA_BUCKET }}
+      # Pull the whole live set: the scraper compares against the current data,
+      # and the deploy re-publishes all five files.
+      - name: Pull current data
+        run: npm run data:pull
+
+      - name: Note the data we started from
+        run: cp public/data/tournament.json "$RUNNER_TEMP/before.json" 2>/dev/null || true
 
       # Exits non-zero on a parse failure or a collapse in coverage, leaving the
-      # bucket's dataset in place rather than publishing an empty one.
+      # live dataset in place rather than publishing an empty one.
       - name: Scrape BBXHub
         run: npm run refresh:tournament
 
-      - name: Authenticate to Google Cloud
+      - name: Did the tournament data change?
+        id: diff
+        run: |
+          if [ -f "$RUNNER_TEMP/before.json" ] && cmp -s public/data/tournament.json "$RUNNER_TEMP/before.json"; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No change in tournament data — skipping deploy."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Authenticate to Firebase
+        if: steps.diff.outputs.changed == 'true'
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Push tournament data to the bucket
-        run: npm run data:push -- tournament.json
-        env:
-          DATA_BUCKET: ${{ vars.DATA_BUCKET }}
+      - name: Deploy the data site
+        if: steps.diff.outputs.changed == 'true'
+        run: npm run deploy:data
