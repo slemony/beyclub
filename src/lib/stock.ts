@@ -44,11 +44,24 @@ export function markStockRefreshed(): void {
   }
 }
 
-/** Milliseconds until the next :00, when the manual refresh frees up again. */
-export function msToNextHour(d = new Date()): number {
+/** The next whole hour — when the manual refresh frees up again. */
+function nextHour(d = new Date()): Date {
   const next = new Date(d)
   next.setHours(d.getHours() + 1, 0, 0, 0)
-  return next.getTime() - d.getTime()
+  return next
+}
+
+/** Milliseconds until the next :00, when the manual refresh frees up again. */
+export function msToNextHour(d = new Date()): number {
+  return nextHour(d).getTime() - d.getTime()
+}
+
+/**
+ * The next :00 as a clock time to show the reader, in the same local zone the
+ * throttle counts in (MYT for our lot), e.g. "3:00 pm".
+ */
+export function nextRefreshLabel(d = new Date()): string {
+  return nextHour(d).toLocaleTimeString('en-MY', { hour: 'numeric', minute: '2-digit' })
 }
 
 /**

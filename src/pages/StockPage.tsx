@@ -12,6 +12,7 @@ import {
   loadStock,
   markStockRefreshed,
   msToNextHour,
+  nextRefreshLabel,
 } from '../lib/stock'
 import { tierRank } from '../lib/tiers'
 import type { Dataset, Part, PartNotes, StockFile, StockGroup, StockProduct } from '../lib/types'
@@ -182,9 +183,9 @@ export default function StockPage() {
     if (!canRefresh || refreshing) return
     setRefreshing(true)
     // Spend the slot on the attempt, not the outcome, so a failed fetch can't be
-    // retried in a tight loop.
+    // retried in a tight loop. Recompute the gate in `finally` so the "Checking…"
+    // state stays visible for the duration of the fetch.
     markStockRefreshed()
-    setCanRefresh(false)
     try {
       const fresh = await loadStock(true)
       setStock(fresh)
@@ -193,6 +194,7 @@ export default function StockPage() {
       // Keep whatever is on screen — the refresh is a nicety, not a reload.
     } finally {
       setRefreshing(false)
+      setCanRefresh(canRefreshStockNow())
     }
   }, [canRefresh, refreshing])
 
@@ -254,9 +256,10 @@ export default function StockPage() {
                       >
                         {refreshing ? 'Checking…' : 'Check now'}
                       </button>
+                      <span className="attr-refresh-note"> — once an hour</span>
                     </>
                   ) : (
-                    <span className="attr-refresh-done"> · Checked this hour</span>
+                    <span className="attr-refresh-note"> · Checked — next at {nextRefreshLabel()}</span>
                   ))}
               </p>
             )}
