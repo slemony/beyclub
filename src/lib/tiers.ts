@@ -28,6 +28,10 @@ export const TYPE_LABELS: Record<string, string> = {
   special: 'Special',
   ratchet: 'Ratchet',
   bit: 'Bit',
+  // Assist and over blades carry no attack/stamina type, so this chip names the
+  // component instead — the same way it labels a ratchet or bit.
+  assist: 'Assist',
+  overblade: 'Over Blade',
 }
 
 export const TYPE_COLORS: Record<string, string> = {
@@ -38,6 +42,8 @@ export const TYPE_COLORS: Record<string, string> = {
   special: '#8be8ff',
   ratchet: '#8ba3c0',
   bit: '#8ba3c0',
+  assist: '#8ba3c0',
+  overblade: '#8ba3c0',
 }
 
 export const CATEGORY_LABELS: Record<PartCategory | 'all', string> = {

@@ -26,6 +26,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          # The stock "Check now" dispatcher URL (worker/). Unset until deployed,
+          # which leaves the button falling back to a plain re-fetch.
+          VITE_STOCK_REFRESH_URL: ${{ vars.STOCK_REFRESH_URL }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

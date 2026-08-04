@@ -56,6 +56,30 @@ export function msToNextHour(d = new Date()): number {
   return nextHour(d).getTime() - d.getTime()
 }
 
+/** The endpoint that dispatches the scrape workflow — empty when not deployed. */
+const REFRESH_ENDPOINT = import.meta.env.VITE_STOCK_REFRESH_URL
+
+/**
+ * Whether "Check now" can start a real scrape. False falls the button back to
+ * simply re-pulling the last published file, which is all a page can do alone.
+ */
+export function stockScrapeConfigured(): boolean {
+  return Boolean(REFRESH_ENDPOINT)
+}
+
+/**
+ * Ask the dispatcher to start a fresh scrape. It holds the GitHub token a public
+ * page can't (see worker/refresh-stock.js) and fires the same `stock.yml`
+ * workflow the schedule does. Resolves once the run is queued — the new data
+ * lands a few minutes later, when the run scrapes, commits and redeploys, which
+ * is why the caller then polls loadStock() for the change.
+ */
+export async function triggerStockScrape(): Promise<void> {
+  if (!REFRESH_ENDPOINT) throw new Error('No stock refresh endpoint configured')
+  const res = await fetch(REFRESH_ENDPOINT, { method: 'POST' })
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+}
+
 /**
  * The next :00 as a clock time to show the reader, in the same local zone the
  * throttle counts in (MYT for our lot), e.g. "3:00 pm".

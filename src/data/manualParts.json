@@ -3,7 +3,7 @@
 
   "_when_the_sheet_catches_up": "Delete the entry by hand. loadCatalogue() only steps aside on an exact id+cat match, and an entry written before the real data exists rarely guesses that exactly — UX-21 shipped here as UX-21-1 against the sheet's zero-padded UX-21-01, and every blade showed twice. Matching loosely is not the fix: the sheet carries `NR` and `Nr` as two different bits, on different grades, so folding case or padding together would silently merge genuinely separate parts. Copy the sheet's id format exactly (UX-21-01, not UX-21-1) and treat any entry here as temporary.",
 
-  "_over_blades": "The CX Expand Blade over blades (cat 'overblade'), which the Taiwan sheet does not model at all — no category, no column, only an incidental note. Keyed by the single letter used in the CX product code (Break=B, Flow=F, Peak=P, Outer=O), the same convention the assist blades follow. No community or tournament source grades them yet, so `communityTier` is '-' and they show as Unrated; the box linkage in partOverrides.json is the useful part. Sourced from the Beyblade wiki. No image, since we do not hotlink a source's artwork.",
+  "_over_blades": "The CX Expand Blade over blades (cat 'overblade'), which the Taiwan sheet does not model at all — no category, no column, only an incidental note. Keyed by the single letter used in the CX product code (Break=B, Flow=F, Peak=P, Outer=O), the same convention the assist blades follow. No community or tournament source grades them yet, so `communityTier` is '-' and they show as Unrated; the box linkage in partOverrides.json is the useful part. Names sourced from the Beyblade wiki. Images are our own photos, background cut to transparent to sit on the dark cards like the rest, committed under public/overblades/.",
 
   "parts": [
     {
@@ -13,6 +13,7 @@
       "cat": "overblade",
       "type": "overblade",
       "communityTier": "-",
+      "img": "overblades/break.webp",
       "product": "CX-13 龍王閃擊 (Bahamut Blitz)"
     },
     {
@@ -22,6 +23,7 @@
       "cat": "overblade",
       "type": "overblade",
       "communityTier": "-",
+      "img": "overblades/flow.webp",
       "product": "CX-15 邪神狂怒 (Ragna Rage)"
     },
     {
@@ -31,6 +33,7 @@
       "cat": "overblade",
       "type": "overblade",
       "communityTier": "-",
+      "img": "overblades/peak.webp",
       "product": "CX-17 獨角極變 (Unicorn Delta)"
     },
     {
@@ -40,6 +43,7 @@
       "cat": "overblade",
       "type": "overblade",
       "communityTier": "-",
+      "img": "overblades/outer.webp",
       "product": "CX-18 腕龍鞭擊 (Brachio Whip)"
     }
   ]

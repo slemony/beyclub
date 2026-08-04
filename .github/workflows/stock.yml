@@ -59,6 +59,9 @@ jobs:
           git push
 
       - run: npm run build
+        env:
+          # Keep the "Check now" dispatcher URL in the bundle this job republishes.
+          VITE_STOCK_REFRESH_URL: ${{ vars.STOCK_REFRESH_URL }}
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
