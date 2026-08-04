@@ -14,13 +14,55 @@ export function formatMYR(myr: number): string {
 }
 
 /**
+ * A manual "check now" is allowed at most once per whole clock hour, freeing up
+ * again as the reader's own clock rolls past the next :00. The shelf itself only
+ * moves when the scheduled scrape commits, so a tighter allowance would just
+ * re-pull the same bytes.
+ */
+const MANUAL_REFRESH_KEY = 'beyclub:stock:lastManualRefresh'
+
+/** The whole clock-hour we're in, in the reader's local time (MYT for our lot). */
+function currentHourSlot(d = new Date()): string {
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}-${d.getHours()}`
+}
+
+/** True once the clock has crossed into an hour we have not refreshed in yet. */
+export function canRefreshStockNow(): boolean {
+  try {
+    return localStorage.getItem(MANUAL_REFRESH_KEY) !== currentHourSlot()
+  } catch {
+    return true
+  }
+}
+
+/** Spend this hour's manual refresh, so the button waits for the next :00. */
+export function markStockRefreshed(): void {
+  try {
+    localStorage.setItem(MANUAL_REFRESH_KEY, currentHourSlot())
+  } catch {
+    // No storage means no throttle to persist — the button just stays live.
+  }
+}
+
+/** Milliseconds until the next :00, when the manual refresh frees up again. */
+export function msToNextHour(d = new Date()): number {
+  const next = new Date(d)
+  next.setHours(d.getHours() + 1, 0, 0, 0)
+  return next.getTime() - d.getTime()
+}
+
+/**
  * What KGB has on the shelf, falling back to the last good copy so the page
  * always renders something. Stock is a nicety on the tier page and the whole
  * point of the stock page, so failure is never allowed to blank either.
  */
-export async function loadStock(): Promise<StockFile> {
+export async function loadStock(bust = false): Promise<StockFile> {
   try {
-    const res = await fetch(`${import.meta.env.BASE_URL}data/stock.json`)
+    // A manual refresh cache-busts, so it pulls the freshly deployed file rather
+    // than whatever the CDN or the browser last held. The normal page load skips
+    // this and stays fast on the cached copy.
+    const url = `${import.meta.env.BASE_URL}data/stock.json${bust ? `?t=${Date.now()}` : ''}`
+    const res = await fetch(url, bust ? { cache: 'no-store' } : undefined)
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
     const data = (await res.json()) as StockFile
 
