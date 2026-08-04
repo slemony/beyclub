@@ -1,23 +1,24 @@
 name: Refresh KGB stock
 
-# Twice a day, morning and evening MYT — often enough to catch a restock the
-# day it happens without hammering someone else's shop.
+# Twice a day, morning and evening MYT — often enough to catch a restock the day
+# it happens without hammering someone else's shop.
 #
-# Scrape, commit, build and publish all happen in this one workflow on purpose.
-# A commit pushed with GITHUB_TOKEN does not trigger other workflows, so a
-# scrape-only job would update the repository and never reach the live site.
+# The scrape writes to the shared Firebase Storage bucket, which both the test
+# site (GitHub Pages) and production (beyclub.web.app) read live. So there is no
+# build or deploy here, and — unlike before the Firebase migration — no data is
+# committed to git.
 on:
   schedule:
     - cron: '0 1,13 * * *' # 01:00 and 13:00 UTC = 09:00 and 21:00 MYT
   workflow_dispatch:
 
+# No `contents: write`: this workflow no longer pushes commits. It needs only to
+# read the repo and authenticate to Google Cloud to upload the snapshot.
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
-  group: pages
+  group: data-stock
   cancel-in-progress: false
 
 jobs:
@@ -25,11 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          # Pushing as a real account keeps the repository "active": GitHub
-          # disables scheduled workflows in public repos after 60 days of
-          # inactivity, and the workflow's own runs do not reset that clock.
-          token: ${{ secrets.DATA_PAT || github.token }}
 
       - uses: actions/setup-node@v4
         with:
@@ -38,36 +34,27 @@ jobs:
 
       - run: npm ci
 
+      # Give the scraper the snapshot currently live in the bucket, so its "did
+      # the shelf move?" check still works and updatedAt keeps meaning "when
+      # stock last changed" rather than "when the job last ran".
+      - name: Pull current stock from the bucket
+        run: npm run data:pull -- stock.json
+        env:
+          DATA_BUCKET: ${{ vars.DATA_BUCKET }}
+
       # Exits non-zero on a parse failure or a collapse in the catalogue, and
       # rewrites nothing when the shelf has not moved.
       - name: Scrape Kelab Gasing Beyblade
         run: npm run refresh:stock
 
-      - name: Commit if the stock moved
-        run: |
-          if git diff --quiet -- public/data/stock.json; then
-            echo "No change in stock."
-            exit 0
-          fi
-          git config user.name  "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add public/data/stock.json
-          git commit -m "Refresh stock from Kelab Gasing Beyblade"
-          git push
-
-      - run: npm run build
-
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          path: dist
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-  deploy:
-    needs: refresh
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      # Uploads only if the file actually changed, so an unchanged shelf leaves
+      # the bucket object — and its CDN cache — untouched.
+      - name: Push stock to the bucket
+        run: npm run data:push -- stock.json
+        env:
+          DATA_BUCKET: ${{ vars.DATA_BUCKET }}

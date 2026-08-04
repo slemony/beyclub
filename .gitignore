@@ -5,6 +5,11 @@ dist-ssr
 .DS_Store
 .vite
 *.log
+.env
+
+# Datasets now live in the shared Firebase Storage bucket, not in git. Pull a
+# local copy for offline development with `npm run data:pull`.
+/public/data/
 
 # Machine-local Claude Code permission state
 .claude/settings.local.json

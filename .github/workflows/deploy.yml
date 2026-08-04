@@ -1,8 +1,19 @@
-name: Deploy to GitHub Pages
+name: Deploy test site (GitHub Pages)
 
+# GitHub Pages is the TEST environment. Production is beyclub.web.app on Firebase
+# Hosting (see firebase-hosting.yml). Both build from main and read the same
+# datasets from the shared Firebase Storage bucket, so the only difference
+# between them is the host and domain — the test site is where a code change is
+# seen before it fronts the beyclub.web.app name.
+#
+# The build no longer bundles any data: the JSON snapshots were moved out of the
+# repo into the bucket, and the app fetches them at runtime.
 on:
   push:
     branches: [main]
+    # The keep-alive heartbeat is not a code change — don't rebuild for it.
+    paths-ignore:
+      - '.github/last-refresh'
   workflow_dispatch:
 
 permissions:

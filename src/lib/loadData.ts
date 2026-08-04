@@ -3,6 +3,7 @@ import bladeNamesZhEn from '../data/bladeNamesZhEn.json'
 import manualParts from '../data/manualParts.json'
 import partOverrides from '../data/partOverrides.json'
 import { calculateBuyRec } from './buyRec'
+import { dataUrl } from './dataSource'
 import { blendRating, tournamentScore } from './rating'
 import { baseName, normalize } from './text'
 import type {
@@ -56,7 +57,7 @@ function englishName(id: string, zhName: string): string | undefined {
 type CatalogueFile = { fetchedAt: string; blades: string[][]; parts: string[][] }
 
 async function loadCatalogueFile(): Promise<CatalogueFile> {
-  const res = await fetch(`${import.meta.env.BASE_URL}data/catalogue.json`)
+  const res = await fetch(dataUrl('catalogue.json'))
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
   return (await res.json()) as CatalogueFile
 }
@@ -193,7 +194,7 @@ async function loadCatalogue(): Promise<Raw[]> {
 
 /** Placement counts, already keyed onto our catalogue by the refresh script. */
 async function loadTournament(): Promise<TournamentFile> {
-  const res = await fetch(`${import.meta.env.BASE_URL}data/tournament.json`)
+  const res = await fetch(dataUrl('tournament.json'))
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
   return (await res.json()) as TournamentFile
 }
@@ -208,14 +209,14 @@ type JapanFile = {
  * original author's images.
  */
 async function loadJapan(): Promise<JapanFile> {
-  const res = await fetch(`${import.meta.env.BASE_URL}data/tiers-jp.json`)
+  const res = await fetch(dataUrl('tiers-jp.json'))
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
   return (await res.json()) as JapanFile
 }
 
 /** BeyClub's editorial notes, keyed "category:id". */
 export async function loadPartNotes(): Promise<Record<string, PartNotes>> {
-  const res = await fetch(`${import.meta.env.BASE_URL}data/part-notes.json`)
+  const res = await fetch(dataUrl('part-notes.json'))
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
   const json = (await res.json()) as { notes: Record<string, PartNotes> }
   return json.notes ?? {}

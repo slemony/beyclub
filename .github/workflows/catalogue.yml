@@ -1,35 +1,22 @@
 name: Refresh part catalogue
 
-# Once a day — the Taiwan sheet doesn't move like shop stock, so this is
-# mostly a safety net for whenever it does.
+# Once a day — the Taiwan sheet doesn't move like shop stock, so this is mostly a
+# safety net for whenever it does.
 #
-# Scrape, commit, build and publish all happen in this one workflow on purpose,
-# same reasoning as stock.yml: a commit pushed with GITHUB_TOKEN does not
-# trigger other workflows, so a scrape-only job would update the repository
-# and never reach the live site.
+# The scrape writes to the shared Firebase Storage bucket, read live by both the
+# test and production sites. There is no longer an on-push trigger: data is
+# decoupled from deploys, so a deploy can no longer ship a stale catalogue, and
+# no data is committed to git.
 on:
   schedule:
     - cron: '0 3 * * *' # 03:00 UTC = 11:00 MYT
-  # Also on every merge, so a deploy can never ship a build whose catalogue
-  # snapshot is missing or older than the code that reads it — the site would
-  # otherwise sit on a load error until the next scheduled run.
-  #
-  # paths-ignore keeps this workflow's own data commit from re-triggering it:
-  # the checkout below can push as DATA_PAT, and a PAT push does start
-  # workflows.
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'public/data/**'
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
-  group: pages
+  group: data-catalogue
   cancel-in-progress: false
 
 jobs:
@@ -37,8 +24,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.DATA_PAT || github.token }}
 
       - uses: actions/setup-node@v4
         with:
@@ -47,40 +32,24 @@ jobs:
 
       - run: npm ci
 
+      # The scraper compares against the current snapshot to leave the file
+      # untouched when the sheet has not moved.
+      - name: Pull current catalogue from the bucket
+        run: npm run data:pull -- catalogue.json
+        env:
+          DATA_BUCKET: ${{ vars.DATA_BUCKET }}
+
       # Exits non-zero on a parse failure or a collapse in the catalogue, and
       # rewrites nothing when the sheet has not moved.
       - name: Snapshot the Taiwan community sheet
         run: npm run refresh:catalogue
 
-      - name: Commit if the catalogue moved
-        run: |
-          # Staged before the comparison, unlike the sibling workflows: their
-          # data files are already tracked, but the very first snapshot is not,
-          # and `git diff` alone never reports an untracked file as a change —
-          # so the run that creates it would report "no change" and drop it.
-          git add public/data/catalogue.json
-          if git diff --cached --quiet -- public/data/catalogue.json; then
-            echo "No change in catalogue."
-            exit 0
-          fi
-          git config user.name  "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git commit -m "Refresh part catalogue from the Taiwan community sheet"
-          git push
-
-      - run: npm run build
-
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          path: dist
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-  deploy:
-    needs: refresh
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Push catalogue to the bucket
+        run: npm run data:push -- catalogue.json
+        env:
+          DATA_BUCKET: ${{ vars.DATA_BUCKET }}

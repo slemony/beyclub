@@ -1,0 +1,42 @@
+name: Deploy production (Firebase Hosting)
+
+# Production: beyclub.web.app. Builds from main and deploys to the Firebase
+# Hosting "live" channel. Reads the same bucket datasets as the test site, so
+# promoting a change is purely a matter of this deploy succeeding — the data is
+# already shared.
+on:
+  push:
+    branches: [main]
+    # The keep-alive heartbeat is not a code change — don't redeploy for it.
+    paths-ignore:
+      - '.github/last-refresh'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firebase-hosting
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      # Same service-account key as the data workflows; it needs Firebase Hosting
+      # Admin in addition to Storage Object Admin. channelId "live" targets
+      # production rather than a preview channel.
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.GCP_SA_KEY }}
+          channelId: live
+          projectId: beyclub

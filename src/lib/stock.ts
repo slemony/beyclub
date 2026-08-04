@@ -1,4 +1,5 @@
 import { TIER_SCORES } from './buyRec'
+import { dataUrl } from './dataSource'
 import { tierRank } from './tiers'
 import { normalize } from './text'
 import type { Part, StockFile, StockProduct } from './types'
@@ -20,7 +21,7 @@ export function formatMYR(myr: number): string {
  */
 export async function loadStock(): Promise<StockFile> {
   try {
-    const res = await fetch(`${import.meta.env.BASE_URL}data/stock.json`)
+    const res = await fetch(dataUrl('stock.json'))
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
     const data = (await res.json()) as StockFile
 
