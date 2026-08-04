@@ -39,4 +39,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.GCP_SA_KEY }}
           channelId: live
-          projectId: beyclub
+          projectId: beyclub-90e95

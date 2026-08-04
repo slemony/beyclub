@@ -19,16 +19,18 @@ that need console access and secrets, which can't live in the repo.
 
 ## What you need once
 
-- A Firebase project. `beyclub.web.app` implies the project id **`beyclub`** —
-  if yours differs, update it in `.firebaserc`, `.github/workflows/firebase-hosting.yml`
-  (`projectId`), and the bucket name below.
-- Its default Cloud Storage bucket. New projects use
-  **`beyclub.firebasestorage.app`**; older ones use `beyclub.appspot.com`. Use
-  whichever your project actually has and keep it consistent everywhere (it's the
-  default baked into `src/lib/dataSource.ts` and the scripts).
+- The Firebase project **`beyclub-90e95`**, already wired into `.firebaserc`,
+  `.github/workflows/firebase-hosting.yml` (`projectId`), `src/lib/dataSource.ts`
+  and `.env.example`. Production is served from a **named Hosting site**, not the
+  default `beyclub-90e95.web.app` — you claim `beyclub` (→ `beyclub.web.app`) or a
+  short fallback in Phase 6, and its site id goes into `firebase.json`.
+- Its default Cloud Storage bucket, expected to be
+  **`beyclub-90e95.firebasestorage.app`** (older projects use `.appspot.com`). Keep
+  it consistent everywhere — it's the default baked into `src/lib/dataSource.ts`
+  and the scripts.
 - The `gcloud` and `firebase` CLIs, or the Firebase console, to run the steps.
 
-If your bucket name is **not** `beyclub.firebasestorage.app`, set it in:
+If your bucket name is **not** `beyclub-90e95.firebasestorage.app`, set it in:
 
 - `src/lib/dataSource.ts` → `DEFAULT_DATA_BASE`
 - `.env.example` (and any local `.env`)
@@ -43,7 +45,7 @@ The web app reads the JSON over its plain public URL
 object-read on the bucket:
 
 ```bash
-gcloud storage buckets add-iam-policy-binding gs://beyclub.firebasestorage.app \
+gcloud storage buckets add-iam-policy-binding gs://beyclub-90e95.firebasestorage.app \
   --member=allUsers --role=roles/storage.objectViewer
 ```
 
@@ -55,7 +57,7 @@ snapshots — nothing sensitive.
 The test site is a different origin from the bucket, so the browser needs CORS:
 
 ```bash
-gcloud storage buckets update gs://beyclub.firebasestorage.app --cors-file=firebase/cors.json
+gcloud storage buckets update gs://beyclub-90e95.firebasestorage.app --cors-file=firebase/cors.json
 ```
 
 (`firebase/cors.json` allows `GET`/`HEAD` from any origin — fine for public data.)
@@ -68,18 +70,18 @@ One service account does both jobs — uploading data and deploying hosting:
 gcloud iam service-accounts create beyclub-ci --display-name="BeyClub CI"
 
 # Upload datasets to the bucket
-gcloud projects add-iam-policy-binding beyclub \
-  --member="serviceAccount:beyclub-ci@beyclub.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding beyclub-90e95 \
+  --member="serviceAccount:beyclub-ci@beyclub-90e95.iam.gserviceaccount.com" \
   --role=roles/storage.objectAdmin
 
 # Deploy Firebase Hosting
-gcloud projects add-iam-policy-binding beyclub \
-  --member="serviceAccount:beyclub-ci@beyclub.iam.gserviceaccount.com" \
+gcloud projects add-iam-policy-binding beyclub-90e95 \
+  --member="serviceAccount:beyclub-ci@beyclub-90e95.iam.gserviceaccount.com" \
   --role=roles/firebasehosting.admin
 
 # A key to hand to GitHub Actions
 gcloud iam service-accounts keys create key.json \
-  --iam-account=beyclub-ci@beyclub.iam.gserviceaccount.com
+  --iam-account=beyclub-ci@beyclub-90e95.iam.gserviceaccount.com
 ```
 
 ## 4. GitHub secrets and variables
@@ -90,7 +92,7 @@ In **Settings → Secrets and variables → Actions**:
   data workflows (to upload) and `firebase-hosting.yml` (to deploy). Delete the
   local `key.json` afterwards.
 - Variable **`DATA_BUCKET`** — your bucket name, only if it isn't the default
-  `beyclub.firebasestorage.app`.
+  `beyclub-90e95.firebasestorage.app`.
 - Secret **`DATA_PAT`** *(optional)* — a fine-grained PAT with `contents: write`.
   The scrapers no longer commit, so `keepalive.yml` uses this to make a weekly
   one-line heartbeat commit that keeps GitHub from auto-disabling the scheduled
@@ -105,7 +107,7 @@ JSON files there, and this branch has removed them:
 ```bash
 git checkout main
 npm ci
-GOOGLE_APPLICATION_CREDENTIALS=key.json DATA_BUCKET=beyclub.firebasestorage.app \
+GOOGLE_APPLICATION_CREDENTIALS=key.json DATA_BUCKET=beyclub-90e95.firebasestorage.app \
   npm run data:push        # uploads all five files
 ```
 
@@ -131,7 +133,7 @@ npm run deploy:firebase
 
 ## 7. Verify
 
-- `curl -I https://storage.googleapis.com/beyclub.firebasestorage.app/data/stock.json`
+- `curl -I https://storage.googleapis.com/beyclub-90e95.firebasestorage.app/data/stock.json`
   → `200`, `content-type: application/json`.
 - Open **beyclub.web.app** and the test site — both should render stock and tiers
   (they're now reading the bucket).

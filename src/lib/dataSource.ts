@@ -11,7 +11,7 @@
  * different bucket); the default is the production bucket so a plain
  * `vite build` or `vite dev` just works.
  */
-const DEFAULT_DATA_BASE = 'https://storage.googleapis.com/beyclub.firebasestorage.app/'
+const DEFAULT_DATA_BASE = 'https://storage.googleapis.com/beyclub-90e95.firebasestorage.app/'
 
 const configured = import.meta.env.VITE_DATA_BASE_URL || DEFAULT_DATA_BASE
 
