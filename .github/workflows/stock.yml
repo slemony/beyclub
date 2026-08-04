@@ -1,15 +1,17 @@
 name: Refresh KGB stock
 
-# Twice a day MYT — midnight and late afternoon — often enough to catch a
-# restock the day it happens without hammering someone else's shop. Readers can
-# also pull the latest deployed copy by hand, at most once an hour, from the
-# "Where this comes from" sheet on the Stock page.
+# Four times a day MYT — morning, noon, late afternoon and midnight — often
+# enough to catch a restock the day it happens without hammering someone else's
+# shop. Readers can also pull the latest deployed copy by hand, at most once an
+# hour, from the "Where this comes from" sheet on the Stock page.
 #
 # Scrape, commit, build and publish all happen in this one workflow on purpose.
 # A commit pushed with GITHUB_TOKEN does not trigger other workflows, so a
 # scrape-only job would update the repository and never reach the live site.
 on:
   schedule:
+    - cron: '30 0 * * *' # 00:30 UTC = 08:30 MYT (8:30am)
+    - cron: '0 4 * * *'  # 04:00 UTC = 12:00 MYT (12:00pm)
     - cron: '30 9 * * *' # 09:30 UTC = 17:30 MYT (5:30pm)
     - cron: '0 16 * * *' # 16:00 UTC = 00:00 MYT (12:00am)
   workflow_dispatch:
