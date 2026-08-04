@@ -99,7 +99,8 @@ export default function PartSheet({
   const recommended = parseCombo(part.combo)
   const community = parseCombo(part.communityCombo)
   const record = part.rating?.tournament
-  const usedBy = index ? index.bladesUsing(part).slice(0, 12) : []
+  const shipsWith = index ? index.bladesShipping(part).slice(0, 12) : []
+  const usedInBuild = index ? index.bladesUsingInBuild(part).slice(0, 12) : []
   const editorial = lookupNotes(notes, part)
   const sourceComments = [...recommended.notes, ...community.notes]
   const previous = stack.length > 1 ? stack[stack.length - 2] : null
@@ -147,7 +148,7 @@ export default function PartSheet({
         {part.product && <span className="chip chip-dim">{part.product}</span>}
       </div>
 
-      {(part.stockRatchet || part.stockBit) && (
+      {(part.stockRatchet || part.stockBit || part.stockAssist || part.stockOverblade) && (
         <section className="sheet-block">
           <h3>Comes with</h3>
           <div className="build-chips">
@@ -162,6 +163,20 @@ export default function PartSheet({
               <PartChip
                 code={part.stockBit}
                 part={index?.resolve(part.stockBit, 'bit')}
+                onOpen={onOpen}
+              />
+            )}
+            {part.stockAssist && (
+              <PartChip
+                code={part.stockAssist}
+                part={index?.resolve(part.stockAssist, 'assist')}
+                onOpen={onOpen}
+              />
+            )}
+            {part.stockOverblade && (
+              <PartChip
+                code={part.stockOverblade}
+                part={index?.resolve(part.stockOverblade, 'overblade')}
                 onOpen={onOpen}
               />
             )}
@@ -187,11 +202,25 @@ export default function PartSheet({
         </section>
       )}
 
-      {usedBy.length > 0 && (
+      {shipsWith.length > 0 && (
         <section className="sheet-block">
-          <h3>Blades that run this part</h3>
+          <h3>Comes in these blades</h3>
           <div className="build-chips">
-            {usedBy.map((blade) => (
+            {shipsWith.map((blade) => (
+              <button key={blade.id} className="part-chip" onClick={() => onOpen(blade)}>
+                <PartImage src={blade.img} alt={blade.name} size={26} />
+                <span className="chip-code">{blade.nameEn ?? blade.name}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {usedInBuild.length > 0 && (
+        <section className="sheet-block">
+          <h3>Suggested in builds</h3>
+          <div className="build-chips">
+            {usedInBuild.map((blade) => (
               <button key={blade.id} className="part-chip" onClick={() => onOpen(blade)}>
                 <PartImage src={blade.img} alt={blade.name} size={26} />
                 <span className="chip-code">{blade.nameEn ?? blade.name}</span>

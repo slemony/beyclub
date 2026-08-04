@@ -1,4 +1,4 @@
-export type PartCategory = 'blade' | 'ratchet' | 'bit' | 'assist'
+export type PartCategory = 'blade' | 'ratchet' | 'bit' | 'assist' | 'overblade'
 
 export type PartType =
   | 'attack'
@@ -32,9 +32,12 @@ export type Part = {
   stockRatchet?: string
   stockBit?: string
   stockAssist?: string
+  /** CX Expand Blade over blade in the box (blades only). */
+  stockOverblade?: string
   /** Blended grades of those stock parts, on the same scale as `tier`. */
   ratchetTier?: string
   bitTier?: string
+  overbladeTier?: string
   /** Free-text combo suggestion from the source. */
   combo?: string
   /** Alternate build submitted by the community (sheet column 15). */

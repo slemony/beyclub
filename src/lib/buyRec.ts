@@ -36,12 +36,14 @@ export function calculateBuyRec(
   ratchetTier?: string,
   bitTier?: string,
   assistTier?: string,
+  overbladeTier?: string,
 ): BuyAdvice {
   const weighted: [string | undefined, number][] = [
     [bladeTier, 2],
     [ratchetTier, 1],
     [bitTier, 1],
     [assistTier, 1],
+    [overbladeTier, 1],
   ]
 
   let totalScore = 0

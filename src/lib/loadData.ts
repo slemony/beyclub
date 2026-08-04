@@ -20,7 +20,7 @@ const EN_NAMES = bladeNamesEn as Record<string, string>
 const ZH_EN_NAMES = bladeNamesZhEn as Record<string, string>
 
 /** Per-row corrections for sheet quirks — see the note in the file itself. */
-type Override = { id?: string; nameEn?: string; blade?: string }
+type Override = { id?: string; nameEn?: string; blade?: string; assist?: string; overblade?: string }
 const OVERRIDES = partOverrides as Record<string, Override | string>
 const overrideFor = (id: string): Override =>
   typeof OVERRIDES[id] === 'object' ? (OVERRIDES[id] as Override) : {}
@@ -65,7 +65,7 @@ const cell = (row: string[], i: number) => (row[i] ?? '').trim()
 
 function toCategory(raw: string): PartCategory | null {
   const v = raw.toLowerCase()
-  if (v === 'blade' || v === 'ratchet' || v === 'bit' || v === 'assist') return v
+  if (v === 'blade' || v === 'ratchet' || v === 'bit' || v === 'assist' || v === 'overblade') return v
   return null
 }
 
@@ -152,7 +152,12 @@ async function loadCatalogue(): Promise<Raw[]> {
       key: fix.blade ?? baseName(name),
       stockRatchet: cell(row, 6) || undefined,
       stockBit: cell(row, 8) || undefined,
-      stockAssist: cell(row, 10) || undefined,
+      // `fix.assist` can backfill a genuinely-missing assist, but note that the
+      // blank assist columns on the CX booster rows are correct — those are
+      // UX/BX blades, which have no assist blade. The sheet has no over-blade
+      // column at all, so that value only ever comes from an override.
+      stockAssist: cell(row, 10) || fix.assist || undefined,
+      stockOverblade: fix.overblade || undefined,
       product: cell(row, 11) || undefined,
       img: cell(row, 12) || undefined,
       combo: [cell(row, 13), cell(row, 14)].filter(Boolean).join('\n') || undefined,
@@ -317,6 +322,9 @@ function merge(raw: Raw[], tournament: TournamentFile, japan: JapanFile): Part[]
     // catalogue keys them "輔助A", so this lookup found nothing and the fourth
     // term of the buy verdict never fired.
     const assistTier = grade('assist', part.stockAssist && `輔助${part.stockAssist}`)
+    // Over blades are keyed by their bare code (PO3, OW5), not a 輔助-style
+    // prefix, so no rewrite is needed before the lookup.
+    const overbladeTier = grade('overblade', part.stockOverblade)
 
     return {
       ...part,
@@ -326,13 +334,14 @@ function merge(raw: Raw[], tournament: TournamentFile, japan: JapanFile): Part[]
       credit,
       ratchetTier,
       bitTier,
+      overbladeTier,
       // Always computed from the grades this app blends, never read from a
       // source. A blade nobody has graded still drops out of the average rather
       // than out of the verdict — you are buying a box, and a box of good parts
       // is worth buying whether or not the blade in it has been assessed.
       buy:
         part.cat === 'blade'
-          ? calculateBuyRec(rating.tier, ratchetTier, bitTier, assistTier)
+          ? calculateBuyRec(rating.tier, ratchetTier, bitTier, assistTier, overbladeTier)
           : calculateBuyRec(rating.tier),
     }
   })
