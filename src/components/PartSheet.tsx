@@ -9,7 +9,7 @@ import { parseCombo, type Build } from '../lib/combo'
 import { formatMYR } from '../lib/stock'
 import { TIER_COLORS, TYPE_COLORS, TYPE_LABELS, tierLabel } from '../lib/tiers'
 import type { PartIndex } from '../lib/partIndex'
-import type { Part, PartNotes, StockProduct } from '../lib/types'
+import type { CustomBuild, Part, PartNotes, StockProduct } from '../lib/types'
 
 const NOTE_TRANSLATIONS = sourceNotes as Record<string, string>
 
@@ -59,6 +59,82 @@ function BuildRow({
           </div>
         ) : null,
       )}
+    </div>
+  )
+}
+
+/**
+ * A hand-curated modding build: the same part chips as a sheet build, plus the
+ * strength, difficulty and playing notes the one-line combo format can't hold.
+ */
+function CustomBuildCard({
+  build,
+  index,
+  onOpen,
+}: {
+  build: CustomBuild
+  index: PartIndex | null
+  onOpen: (part: Part) => void
+}) {
+  const parts: [string, string | undefined, 'ratchet' | 'bit' | 'assist'][] = [
+    ['Ratchet', build.ratchet, 'ratchet'],
+    ['Bit', build.bit, 'bit'],
+    ['Assist', build.assist, 'assist'],
+  ]
+
+  return (
+    <div className="custom-build">
+      {build.title && <p className="custom-build-title">{build.title}</p>}
+
+      <div className="build">
+        {parts.map(([label, code, cat]) =>
+          code ? (
+            <div className="build-line" key={label}>
+              <span className="build-label">{label}</span>
+              <div className="build-chips">
+                <PartChip code={code} part={index?.resolve(code, cat)} onOpen={onOpen} />
+              </div>
+            </div>
+          ) : null,
+        )}
+      </div>
+
+      {(build.modStrength || build.difficulty !== undefined) && (
+        <div className="custom-build-stats">
+          {build.modStrength && (
+            <div>
+              <strong>{build.modStrength}</strong>
+              <span>Mod strength{build.modStrengthMax ? ` · max ${build.modStrengthMax}` : ''}</span>
+            </div>
+          )}
+          {build.difficulty !== undefined && (
+            <div>
+              <strong>
+                {build.difficulty}
+                <span className="custom-build-of">/{build.difficultyMax ?? 5}</span>
+              </strong>
+              <span>Difficulty</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {build.notes && build.notes.length > 0 && (
+        <ul className="custom-build-notes">
+          {build.notes.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
+        </ul>
+      )}
+
+      <a
+        className="custom-build-credit"
+        href={build.credit.sourceUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Build by {build.credit.author} — {build.credit.sourceName}
+      </a>
     </div>
   )
 }
@@ -198,6 +274,17 @@ export default function PartSheet({
           <h3>Community build</h3>
           {community.builds.map((build, i) => (
             <BuildRow key={i} build={build} index={index} onOpen={onOpen} />
+          ))}
+        </section>
+      )}
+
+      {part.customBuilds && part.customBuilds.length > 0 && (
+        <section className="sheet-block">
+          <h3>
+            Custom builds <span className="editorial-badge">community tuned</span>
+          </h3>
+          {part.customBuilds.map((build, i) => (
+            <CustomBuildCard key={i} build={build} index={index} onOpen={onOpen} />
           ))}
         </section>
       )}

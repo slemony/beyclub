@@ -1,11 +1,13 @@
 import bladeNamesEn from '../data/bladeNamesEn.json'
 import bladeNamesZhEn from '../data/bladeNamesZhEn.json'
+import customBuilds from '../data/customBuilds.json'
 import manualParts from '../data/manualParts.json'
 import partOverrides from '../data/partOverrides.json'
 import { calculateBuyRec } from './buyRec'
 import { blendRating, tournamentScore } from './rating'
 import { baseName, normalize } from './text'
 import type {
+  CustomBuild,
   Dataset,
   Part,
   PartCategory,
@@ -90,6 +92,9 @@ type ManualPart = Partial<Raw> & {
 }
 
 const MANUAL_PARTS = manualParts.parts as ManualPart[]
+
+/** Hand-curated modding builds, joined onto their blade below — see the file's own note. */
+const CUSTOM_BUILDS = customBuilds.builds as CustomBuild[]
 
 /**
  * The Taiwan catalogue: which parts exist, what they look like and what they
@@ -192,6 +197,18 @@ async function loadCatalogue(): Promise<Raw[]> {
   const imgByKey = new Map<string, string>()
   for (const p of out) if (p.cat === 'blade' && p.img) imgByKey.set(p.key, p.img)
   for (const p of out) if (p.cat === 'blade' && !p.img) p.img = imgByKey.get(p.key)
+
+  // Hand-curated modding builds, matched onto every blade whose product id or
+  // base-name key the entry names — so a build written against a mold reaches
+  // all of its colour variants, not just the SKU that happens to list first.
+  for (const build of CUSTOM_BUILDS) {
+    for (const p of out) {
+      if (p.cat !== 'blade') continue
+      if (p.id === build.blade || p.key === build.blade) {
+        ;(p.customBuilds ??= []).push(build)
+      }
+    }
+  }
 
   return out
 }
