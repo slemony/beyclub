@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-05T03:46:15.875Z",
+  "updatedAt": "2026-08-05T06:17:42.595Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
@@ -7,7 +7,7 @@
   },
   "coverage": {
     "products": 157,
-    "inStock": 67,
+    "inStock": 69,
     "pages": 5
   },
   "products": [
@@ -559,7 +559,7 @@
       "kgbCategory": "Grip",
       "group": "launcher",
       "priceMYR": 29.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/1752028168/Rf0bpnHisVcod4gsepoH157cbUhVkfUj9VrkFwOS.png"
     },
     {
@@ -1351,7 +1351,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 85.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/a0a080f42e6f13b3a2df133f073095dd/EIFSCu7aesT22mX9R4X79d8toTC9uDDssU6HrIGL.png"
     },
     {
