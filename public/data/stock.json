@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-04T03:57:48.106Z",
+  "updatedAt": "2026-08-05T03:46:15.875Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
@@ -7,7 +7,7 @@
   },
   "coverage": {
     "products": 157,
-    "inStock": 64,
+    "inStock": 67,
     "pages": 5
   },
   "products": [
@@ -581,7 +581,7 @@
       "kgbCategory": "Booster",
       "group": "bey",
       "priceMYR": 52.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/1752036275/XSmhSyPnILZL9kG6CK9OpyCKpq8JDPzMhDH8ZSNO.png"
     },
     {
@@ -647,7 +647,7 @@
       "kgbCategory": "Booster",
       "group": "bey",
       "priceMYR": 52.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/8e296a067a37563370ded05f5a3bf3ec/w6yPhLNKgLTbgOA3KcViji5R09dSUIaTjMbzz9Sb.png"
     },
     {
@@ -955,7 +955,7 @@
       "kgbCategory": "Launcher",
       "group": "launcher",
       "priceMYR": 44.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1760097289/1mWEYp3x3LQzZEwEGcI7M6hXigQZH0T9C11u9dq9.png"
     },
     {
@@ -1109,7 +1109,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 129.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/1753012112/Scy4pISSvQHohfvArRwpobC8MuGuCz7gOX3KYViM.png"
     },
     {
@@ -1142,7 +1142,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 129.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/ad61ab143223efbc24c7d2583be69251/NXCguk84C04jHBvrm8uorD8pRvzyksn1riBdGcLu.png"
     },
     {
@@ -1219,7 +1219,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 85.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/c9f0f895fb98ab9159f51fd0297e236d/Wsx9RCdcVGn9XWku70pwIW94WWvOb7LBaygQKuYJ.png"
     },
     {
@@ -1351,7 +1351,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 85.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/a0a080f42e6f13b3a2df133f073095dd/EIFSCu7aesT22mX9R4X79d8toTC9uDDssU6HrIGL.png"
     },
     {
@@ -1430,9 +1430,9 @@
       "img": "https://kelabgasingbeyblade.my/storage/product/1753051731/XpQY0O2d7sRtraQfLc2q8KPh5uK8txBqnopGiZo5.jpg"
     },
     {
-      "slug": "limited-edition-merdeka-cup-2026-beyblade-x-premium-tee",
-      "url": "https://kelabgasingbeyblade.my/products/limited-edition-merdeka-cup-2026-beyblade-x-premium-tee",
-      "title": "Limited Edition Merdeka Cup 2026 BEYBLADE X PREMIUM TEE",
+      "slug": "limited-edition-merdeka-cup2026-beyblade-x-premium-tee",
+      "url": "https://kelabgasingbeyblade.my/products/limited-edition-merdeka-cup2026-beyblade-x-premium-tee",
+      "title": "LIMITED EDITION MERDEKA CUP2026 BEYBLADE X PREMIUM TEE",
       "kgbCategory": "T-Shirt",
       "group": "merch",
       "priceMYR": 129.9,
