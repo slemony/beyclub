@@ -42,6 +42,12 @@ export type Part = {
   combo?: string
   /** Alternate build submitted by the community (sheet column 15). */
   communityCombo?: string
+  /**
+   * Hand-curated modding builds for this blade, richer than the sheet's combo
+   * string — each carries a mod-strength grade, a difficulty and playing notes.
+   * Attached from customBuilds.json at load time (blades only).
+   */
+  customBuilds?: CustomBuild[]
   /** Product this part comes in. */
   product?: string
   /** How the blended tier was arrived at, and from what. */
@@ -96,6 +102,37 @@ export type Credit = {
   author: string
   sourceName: string
   sourceUrl: string
+}
+
+/**
+ * A hand-curated modding build for a blade — the kind of tuned setup a creator
+ * publishes with its own strength grade, difficulty and playing notes, which
+ * the sheet's one-line combo string has no room for. Authored in
+ * customBuilds.json and joined onto its blade in loadCatalogue().
+ */
+export type CustomBuild = {
+  /** Which blade this build is for — matched on the blade's id or its base-name key. */
+  blade: string
+  /** Short label for the build, e.g. "Precision Orbit". */
+  title?: string
+  /** The ratchet, bit and optional assist that make up the setup. */
+  ratchet: string
+  bit: string
+  assist?: string
+  /**
+   * Mod-strength grade on the community's T-scale (T2 is milder than T0). Free
+   * text so ranges like "T2~T2.5" read as written; `modStrengthMax` names the
+   * ceiling of the scale for context.
+   */
+  modStrength?: string
+  modStrengthMax?: string
+  /** Handling difficulty, out of `difficultyMax` (defaults to 5). */
+  difficulty?: number
+  difficultyMax?: number
+  /** Playing notes — how to launch and pilot the setup. */
+  notes?: string[]
+  /** Who published the build and where. */
+  credit: Credit
 }
 
 /** BeyClub's own editorial take on a part — never a source's opinion. */
