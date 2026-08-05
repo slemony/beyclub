@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-05T06:17:42.595Z",
+  "updatedAt": "2026-08-05T11:36:54.937Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
@@ -7,7 +7,7 @@
   },
   "coverage": {
     "products": 157,
-    "inStock": 69,
+    "inStock": 68,
     "pages": 5
   },
   "products": [
@@ -504,7 +504,7 @@
       "kgbCategory": "Booster",
       "group": "bey",
       "priceMYR": 54.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1752021891/fX2qEDA1Py5x0YOT4K7Rh25JGt9IdSCiQpgGhvru.png"
     },
     {
@@ -559,7 +559,7 @@
       "kgbCategory": "Grip",
       "group": "launcher",
       "priceMYR": 29.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1752028168/Rf0bpnHisVcod4gsepoH157cbUhVkfUj9VrkFwOS.png"
     },
     {
@@ -1307,7 +1307,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 89.9,
-      "inStock": false,
+      "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/f4b9ec30ad9f68f89b29639786cb62ef/ye9sVdcxSwY4fmupjxqKGYJOxon49Ok7ud8eWYxP.png"
     },
     {
@@ -1448,16 +1448,6 @@
       "priceMYR": 59.9,
       "inStock": true,
       "img": "https://kelabgasingbeyblade.my/storage/product/93db85ed909c13838ff95ccfa94cebd9/rYhO4s1UtPRZmc5kVQuFsg5H8BSHPMGnrMzumBpC.png"
-    },
-    {
-      "slug": "takara-tomy-beyblade-x-ux-19-starter-bullet-griffon",
-      "url": "https://kelabgasingbeyblade.my/products/takara-tomy-beyblade-x-ux-19-starter-bullet-griffon",
-      "title": "TAKARA TOMY BEYBLADE X UX-19 STARTER BULLET GRIFFON",
-      "kgbCategory": "Starter",
-      "group": "bey",
-      "priceMYR": 85.9,
-      "inStock": false,
-      "img": "https://kelabgasingbeyblade.my/storage/product/ec5decca5ed3d6b8079e2e7e7bacc9f2/1htaauknHAVqPgwgAWxTtYh7LmNioixgiIsNXiBX.png"
     },
     {
       "slug": "ux-01-dran-buster-1-60a",
@@ -1656,6 +1646,17 @@
       "priceMYR": 52.9,
       "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1767319844/U7RlQ3Q6GOyN5xZ6BxcU5OWSr3sDyMLbgTrhc6v1.png"
+    },
+    {
+      "slug": "ux-19-bullet-griffon-takara-tomy-beyblade-x-starter",
+      "url": "https://kelabgasingbeyblade.my/products/ux-19-bullet-griffon-takara-tomy-beyblade-x-starter",
+      "code": "UX-19",
+      "title": "UX-19 BULLET GRIFFON TAKARA TOMY BEYBLADE X  STARTER",
+      "kgbCategory": "Starter",
+      "group": "bey",
+      "priceMYR": 85.9,
+      "inStock": false,
+      "img": "https://kelabgasingbeyblade.my/storage/product/ec5decca5ed3d6b8079e2e7e7bacc9f2/1htaauknHAVqPgwgAWxTtYh7LmNioixgiIsNXiBX.png"
     },
     {
       "slug": "ux-20-glory-valkyrie-lf",
