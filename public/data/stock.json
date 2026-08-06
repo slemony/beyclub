@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-05T11:36:54.937Z",
+  "updatedAt": "2026-08-06T03:51:48.596Z",
   "source": {
     "name": "Kelab Gasing Beyblade",
     "url": "https://kelabgasingbeyblade.my/",
@@ -7,7 +7,7 @@
   },
   "coverage": {
     "products": 157,
-    "inStock": 68,
+    "inStock": 64,
     "pages": 5
   },
   "products": [
@@ -581,7 +581,7 @@
       "kgbCategory": "Booster",
       "group": "bey",
       "priceMYR": 52.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1752036275/XSmhSyPnILZL9kG6CK9OpyCKpq8JDPzMhDH8ZSNO.png"
     },
     {
@@ -1109,7 +1109,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 129.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1753012112/Scy4pISSvQHohfvArRwpobC8MuGuCz7gOX3KYViM.png"
     },
     {
@@ -1131,7 +1131,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 129.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/1753012262/WIEdGnAWSpYGHB79wW7wLeKvYkJvipDOqdfCQToz.png"
     },
     {
@@ -1142,7 +1142,7 @@
       "kgbCategory": "Starter",
       "group": "bey",
       "priceMYR": 129.9,
-      "inStock": true,
+      "inStock": false,
       "img": "https://kelabgasingbeyblade.my/storage/product/ad61ab143223efbc24c7d2583be69251/NXCguk84C04jHBvrm8uorD8pRvzyksn1riBdGcLu.png"
     },
     {
