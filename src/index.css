@@ -434,7 +434,76 @@ button {
 
 /* ── Ranking provenance (collapsed by default) ─────────────── */
 
-.notice-stale {
+.notice-text {
+  margin: 0;
+}
+
+.notice-sub {
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 184, 48, 0.2);
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Amber like the notice that holds them, so they read as part of the warning
+   rather than as unrelated chrome dropped into it. */
+.notice-btn {
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 184, 48, 0.45);
+  background: rgba(255, 184, 48, 0.14);
+  color: #ffd489;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.notice-btn.ghost {
+  background: transparent;
+  border-color: rgba(255, 184, 48, 0.25);
+  font-weight: 500;
+}
+
+/* A live view handed over from the shop by the grab-stock bookmarklet. Green
+   rather than amber: this is the one state where availability is current. */
+.notice.notice-live {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(125, 226, 168, 0.1);
+  border: 1px solid rgba(125, 226, 168, 0.28);
+  color: #a9edc6;
+  font-size: 12px;
+  margin: 0 0 10px;
+  text-align: left;
+}
+
+.notice-unknown {
+  text-align: left;
+}
+
+.unknown-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+.unknown-list li {
+  margin-bottom: 4px;
+}
+
+/* Both classes are applied together, and `.notice` centres its text further
+   down the file — so this needs the extra specificity for the left alignment
+   below to survive. A paragraph this long is unreadable centred. */
+.notice.notice-stale {
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   background: rgba(255, 184, 48, 0.1);
@@ -492,6 +561,13 @@ button {
   font-size: 12.5px;
   line-height: 1.55;
   color: var(--text-2);
+}
+
+/* Body copy in this sheet carries no links except deliberate ones, and a link
+   nobody can see is a link nobody follows. Matches the credits below. */
+.attr-blurb a {
+  color: var(--accent-2);
+  border-bottom: 1px solid rgba(139, 232, 255, 0.3);
 }
 
 .attr-credits {
@@ -985,6 +1061,45 @@ button {
   display: flex;
   align-items: center;
   gap: 13px;
+}
+
+/* Visible only to screen readers — the star alone doesn't say what it does. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.watch-star {
+  flex: none;
+  align-self: flex-start;
+  padding: 4px 6px;
+  border: 0;
+  background: none;
+  color: var(--text-3);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  /* A 44px target on a card that is mostly links — easy to hit, hard to hit by
+     accident on the way to the title. */
+  min-width: 32px;
+  min-height: 32px;
+}
+
+.watch-star.on {
+  color: #ffc94d;
+}
+
+/* A watched card earns a rail, not a fill: it has to stand out in a list of
+   sixty without turning the list into stripes. */
+.stock-card.watched {
+  border-left: 2px solid #ffc94d;
 }
 
 .stock-link {

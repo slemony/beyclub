@@ -10,6 +10,8 @@ type Props = {
   /** Catalogue parts inside this product, strongest first. */
   contents: Part[]
   onOpen: (part: Part) => void
+  watched: boolean
+  onToggleWatch: (slug: string) => void
 }
 
 /**
@@ -19,7 +21,7 @@ type Props = {
  * part inside opens its own sheet — so the title carries the link out to KGB
  * instead of the whole row.
  */
-export default function StockCard({ product, contents, onOpen }: Props) {
+export default function StockCard({ product, contents, onOpen, watched, onToggleWatch }: Props) {
   const best = gradedOn(contents)
   const verdict = best?.buy ? BUY_VERDICTS[best.buy] : undefined
   const tierColor = best ? (TIER_COLORS[best.tier] ?? '#6b7480') : undefined
@@ -36,8 +38,12 @@ export default function StockCard({ product, contents, onOpen }: Props) {
     else blades.push({ part, slots: 1 })
   }
 
+  const cls = ['stock-card', product.inStock ? '' : 'sold-out', watched ? 'watched' : '']
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <article className={product.inStock ? 'stock-card' : 'stock-card sold-out'}>
+    <article className={cls}>
       <div className="stock-head">
         <PartImage src={product.img} alt={product.title} size={54} />
 
@@ -61,6 +67,23 @@ export default function StockCard({ product, contents, onOpen }: Props) {
             </span>
           </p>
         </div>
+
+        {/*
+          Sits outside part-body so it stays pinned to the corner whatever the
+          title wraps to. Labelled rather than relying on the star alone, since
+          "watched" is not something an icon states unambiguously.
+        */}
+        <button
+          className={watched ? 'watch-star on' : 'watch-star'}
+          onClick={() => onToggleWatch(product.slug)}
+          aria-pressed={watched}
+          title={watched ? 'Stop watching' : 'Watch this'}
+        >
+          <span aria-hidden="true">{watched ? '★' : '☆'}</span>
+          <span className="sr-only">
+            {watched ? `Stop watching ${product.title}` : `Watch ${product.title}`}
+          </span>
+        </button>
       </div>
 
       {(best || verdict) && (
