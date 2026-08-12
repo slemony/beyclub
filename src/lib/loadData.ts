@@ -21,7 +21,7 @@ const EN_NAMES = bladeNamesEn as Record<string, string>
 const ZH_EN_NAMES = bladeNamesZhEn as Record<string, string>
 
 /** Per-row corrections for sheet quirks — see the note in the file itself. */
-type Override = { id?: string; nameEn?: string; blade?: string }
+type Override = { id?: string; name?: string; nameEn?: string; blade?: string }
 const OVERRIDES = partOverrides as Record<string, Override | string>
 const overrideFor = (id: string): Override =>
   typeof OVERRIDES[id] === 'object' ? (OVERRIDES[id] as Override) : {}
@@ -124,8 +124,8 @@ async function loadCatalogue(): Promise<Raw[]> {
     if (seen.has(key)) continue
     seen.add(key)
 
-    const name = cell(row, 1) || id
     const fix = overrideFor(id)
+    const name = fix.name ?? (cell(row, 1) || id)
 
     out.push({
       id: fix.id ?? id,
