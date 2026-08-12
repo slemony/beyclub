@@ -396,12 +396,23 @@ export default function StockPage() {
               shop's; KGB neither supplies it nor endorses it.
             </p>
             {stock?.health === 'gated' && (
-              <p className="attr-blurb">
-                KGB has since made the shop members-only, reserving places in the queue for
-                signed-in accounts, so it can no longer be read from out here. We have left the last
-                catalogue we saw in place and check once a day whether the door has reopened —
-                nothing on this page is a way around their sign-in.
-              </p>
+              <>
+                <p className="attr-blurb">
+                  KGB has since made the shop members-only, reserving places in the queue for
+                  signed-in accounts, so it can no longer be read from out here. We have left the
+                  last catalogue we saw in place and check once a day whether the door has reopened
+                  — nothing on this page is a way around their sign-in.
+                </p>
+                {/*
+                  The one place a reader wondering "why is this stale?" will look, so it is
+                  where the answer belongs. Not in the nav: that bar stays at two tabs.
+                */}
+                <p className="attr-blurb">
+                  If you're a member, <a href="./grab.html">Stock at a glance</a> sets up a button
+                  that shows everything in stock on one screen while you're signed in — so your 15
+                  minutes in the queue aren't spent paging through the shop.
+                </p>
+              </>
             )}
             <p className="attr-blurb">
               A booster or deck set has no ranking of its own, so it is graded on the strongest

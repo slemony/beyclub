@@ -524,6 +524,13 @@ button {
   color: var(--text-2);
 }
 
+/* Body copy in this sheet carries no links except deliberate ones, and a link
+   nobody can see is a link nobody follows. Matches the credits below. */
+.attr-blurb a {
+  color: var(--accent-2);
+  border-bottom: 1px solid rgba(139, 232, 255, 0.3);
+}
+
 .attr-credits {
   display: flex;
   flex-wrap: wrap;
