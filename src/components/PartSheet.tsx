@@ -6,10 +6,10 @@ import Sheet from './Sheet'
 import sourceNotes from '../data/sourceNotes.json'
 import { BUY_VERDICTS, explainVerdict } from '../lib/buyRec'
 import { parseCombo, type Build } from '../lib/combo'
-import { formatMYR } from '../lib/stock'
+import { formatMYR, type Listing } from '../lib/stock'
 import { TIER_COLORS, TYPE_COLORS, TYPE_LABELS, tierLabel } from '../lib/tiers'
 import type { PartIndex } from '../lib/partIndex'
-import type { Part, PartNotes, StockProduct } from '../lib/types'
+import type { Part, PartNotes } from '../lib/types'
 
 const NOTE_TRANSLATIONS = sourceNotes as Record<string, string>
 
@@ -18,7 +18,7 @@ type Props = {
   index: PartIndex | null
   notes: Record<string, PartNotes>
   /** KGB listings that carry this blade. Empty when the shop feed is unavailable. */
-  listings?: (part: Part) => StockProduct[]
+  listings?: (part: Part) => Listing[]
   onOpen: (part: Part) => void
   onBack: () => void
   onClose: () => void
@@ -275,7 +275,7 @@ export default function PartSheet({
       {forSale.length > 0 && (
         <section className="sheet-block">
           <h3>Where to buy</h3>
-          {forSale.map((product) => (
+          {forSale.map(({ product, bundleSize }) => (
             <a
               className="buy-row"
               key={product.slug}
@@ -285,7 +285,12 @@ export default function PartSheet({
             >
               <span className="buy-row-main">
                 <span className="chip-code">{product.code ?? product.title}</span>
-                <span className="buy-row-sub">{product.kgbCategory} · Kelab Gasing Beyblade</span>
+                <span className="buy-row-sub">
+                  {/* A deck set or booster holds more than this one blade — say so,
+                      or it reads as an unrelated result rather than a bundle. */}
+                  {bundleSize > 1 ? `${bundleSize}-blade set · ` : ''}
+                  {product.kgbCategory} · Kelab Gasing Beyblade
+                </span>
               </span>
               <span className="buy-row-end">
                 <span className="stock-price">{formatMYR(product.priceMYR)}</span>

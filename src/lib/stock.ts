@@ -51,11 +51,28 @@ export async function loadStock(): Promise<StockFile> {
  * exactly is tried as a prefix, and a booster resolves to the five blades a
  * buyer might actually pull.
  */
+/** One chip per blade, not per colourway — a random booster holding the same
+ * blade in two colours should count as one blade, not two. */
+export function distinctBlades(parts: Part[]): Part[] {
+  const out: Part[] = []
+  for (const part of parts) {
+    if (!out.some((p) => p.cat === part.cat && p.key === part.key)) out.push(part)
+  }
+  return out
+}
+
+/** A place to buy a part, plus whether it's a bundle that also holds others. */
+export type Listing = {
+  product: StockProduct
+  /** How many distinct blades this product holds. 1 means a plain 1:1 match. */
+  bundleSize: number
+}
+
 export type StockIndex = {
   /** The catalogue parts inside a product, strongest first. */
   contents: (product: StockProduct) => Part[]
   /** Where this part can be bought, in stock first. */
-  listingsFor: (part: Part) => StockProduct[]
+  listingsFor: (part: Part) => Listing[]
 }
 
 export function buildStockIndex(products: StockProduct[], parts: Part[]): StockIndex {
@@ -102,7 +119,11 @@ export function buildStockIndex(products: StockProduct[], parts: Part[]): StockI
 
   return {
     contents: (product) => contents.get(product.slug) ?? [],
-    listingsFor: (part) => listings.get(`${part.cat}|${part.key}`) ?? [],
+    listingsFor: (part) =>
+      (listings.get(`${part.cat}|${part.key}`) ?? []).map((product) => ({
+        product,
+        bundleSize: distinctBlades(contents.get(product.slug) ?? []).length,
+      })),
   }
 }
 

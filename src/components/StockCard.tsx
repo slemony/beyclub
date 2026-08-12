@@ -1,7 +1,7 @@
 import PartChip from './PartChip'
 import PartImage from './PartImage'
 import { BUY_VERDICTS } from '../lib/buyRec'
-import { formatMYR, gradedOn } from '../lib/stock'
+import { distinctBlades, formatMYR, gradedOn } from '../lib/stock'
 import { TIER_COLORS, tierLabel } from '../lib/tiers'
 import type { Part, StockProduct } from '../lib/types'
 
@@ -29,12 +29,10 @@ export default function StockCard({ product, contents, onOpen }: Props) {
    * two colours would otherwise print the same name twice and look broken —
    * whereas "×2" is the thing a buyer weighing the gamble actually wants.
    */
-  const blades: { part: Part; slots: number }[] = []
-  for (const part of contents) {
-    const seen = blades.find((b) => b.part.cat === part.cat && b.part.key === part.key)
-    if (seen) seen.slots++
-    else blades.push({ part, slots: 1 })
-  }
+  const blades = distinctBlades(contents).map((part) => ({
+    part,
+    slots: contents.filter((p) => p.cat === part.cat && p.key === part.key).length,
+  }))
 
   return (
     <article className={product.inStock ? 'stock-card' : 'stock-card sold-out'}>
