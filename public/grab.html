@@ -50,6 +50,44 @@
   .flow { counter-reset: none }
   .flow li { color: var(--dim) }
   .flow strong { color: var(--text) }
+
+  /* Side by side where there's room, stacked on a phone. */
+  .two { display: grid; grid-template-columns: 1fr; gap: 20px; margin: 14px 0 4px }
+  @media (min-width: 620px) { .two { grid-template-columns: 1fr 1fr } }
+  .where { margin: 0 0 8px; font-size: 12px; color: var(--faint) }
+  .where strong { color: var(--text) }
+  .where-note { margin: 8px 0 0; font-size: 12px }
+  .mock {
+    border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+    background: #07090e; font-size: 11px;
+  }
+  .mock.beyclub { background: var(--bg) }
+  .mock-bar {
+    display: flex; align-items: center; gap: 8px; padding: 9px 11px;
+    border-bottom: 1px solid var(--line); color: var(--text);
+  }
+  .mock-t { flex: 1 } .mock-t b { color: var(--accent) }
+  .mock-x { color: var(--faint) }
+  .mock-in {
+    margin: 9px 11px; padding: 7px 9px; border: 1px solid var(--line);
+    border-radius: 6px; color: #4a5264;
+  }
+  .mock-live {
+    padding: 8px 11px; background: rgba(125,226,168,.1);
+    border-bottom: 1px solid rgba(125,226,168,.25); color: var(--accent);
+  }
+  .mock-row {
+    display: flex; align-items: center; gap: 9px; padding: 9px 11px;
+    border-bottom: 1px solid #12161f; color: var(--dim);
+  }
+  .mock-row > span:nth-child(2) { flex: 1 }
+  .mock-row b { color: var(--text); font-size: 11px }
+  .mock-row i { font-style: normal; color: var(--faint); font-size: 10px }
+  .mock-row.starred { border-left: 2px solid #ffc94d }
+  .mock-img { width: 26px; height: 26px; border-radius: 5px; background: #141922; flex: none }
+  .mock-p { color: var(--accent); font-weight: 700 }
+  .mock-star { color: #ffc94d; font-size: 14px }
+  .mock-star.dim { color: #3a4152 }
   footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint) }
 </style>
 </head>
@@ -75,7 +113,38 @@
   linking straight to its product page.
 </p>
 
-<h2 style="border:0;padding-top:0">How it goes</h2>
+<h2 style="border:0;padding-top:0">What you'll see, and where</h2>
+<p>
+  Two different screens, and it matters which is which — the stars and tiers are
+  <em>not</em> on KGB's side.
+</p>
+
+<div class="two">
+  <div>
+    <p class="where">On <strong>kelabgasingbeyblade.my</strong>, after you tap it</p>
+    <div class="mock">
+      <div class="mock-bar"><span class="mock-t">KGB — <b>12 in stock of 36</b></span><span class="mock-x">✕</span></div>
+      <div class="mock-in">Filter by name or code…</div>
+      <div class="mock-row"><span class="mock-img"></span><span><b>BX-34 COBALT DRAGOON</b><br><i>Booster</i></span><span class="mock-p">RM 85.00</span></div>
+      <div class="mock-row"><span class="mock-img"></span><span><b>BX-10 XTREME STADIUM</b><br><i>Stadium</i></span><span class="mock-p">RM 150.00</span></div>
+      <div class="mock-row"><span class="mock-img"></span><span><b>UX-05 WIZARD ROD</b><br><i>Starter</i></span><span class="mock-p">RM 95.00</span></div>
+    </div>
+    <p class="where-note">A plain list, over their page. No stars, no tiers — this side can't read them.</p>
+  </div>
+
+  <div>
+    <p class="where">On <strong>BeyClub</strong>, after tapping “Rank these”</p>
+    <div class="mock beyclub">
+      <div class="mock-live">Your live view from KGB — 12 in stock</div>
+      <div class="mock-row starred"><span class="mock-img"></span><span><b>BX-34 COBALT DRAGOON</b><br><i>Tier A · Worth buying</i></span><span class="mock-star">★</span></div>
+      <div class="mock-row"><span class="mock-img"></span><span><b>UX-05 WIZARD ROD</b><br><i>Tier B · Situational</i></span><span class="mock-star dim">☆</span></div>
+      <div class="mock-row"><span class="mock-img"></span><span><b>BX-10 XTREME STADIUM</b><br><i>no tier</i></span><span class="mock-star dim">☆</span></div>
+    </div>
+    <p class="where-note">Your watchlist pinned on top, with tiers and buy verdicts attached.</p>
+  </div>
+</div>
+
+<h2>How it goes</h2>
 <ol class="flow">
   <li><strong>Once:</strong> install it below, for whichever device you use.</li>
   <li>Go to the KGB shop, sign in, wait for your place in the queue.</li>
