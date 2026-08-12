@@ -1,9 +1,70 @@
 import { TIER_SCORES } from './buyRec'
 import { tierRank } from './tiers'
 import { normalize } from './text'
-import type { Part, StockFile, StockProduct } from './types'
+import manualStock from '../data/manualStock.json'
+import type { Part, StockFile, StockGroup, StockProduct } from './types'
 
 const CACHE_KEY = 'beyclub:stock:v1'
+
+/**
+ * KGB's category labels, folded into the groups the filter row offers.
+ *
+ * This is the third copy of the same table — `GROUPS` in
+ * `scripts/fetch-stock.mjs` and `KIT` in `public/grab-stock.js` are the others.
+ * They cannot be shared: one runs in Node, one runs on KGB's own origin, and
+ * this one is bundled. Change one, change all three.
+ */
+const GROUP_BY_CATEGORY: Record<string, StockGroup> = {
+  Starter: 'bey',
+  Booster: 'bey',
+  'Random Booster': 'bey',
+  'Battle Set': 'bey',
+  'Deck Set': 'bey',
+  'Dash Set': 'bey',
+  'Custom Set': 'bey',
+  'Entry Package': 'bey',
+  Stadium: 'stadium',
+  Launcher: 'launcher',
+  Grip: 'launcher',
+  'Launcher Grip': 'launcher',
+  'Deck Case': 'case',
+  'Gear Case': 'case',
+}
+
+export const groupForCategory = (label: string): StockGroup =>
+  GROUP_BY_CATEGORY[label?.trim()] ?? 'merch'
+
+/**
+ * The product code a listing hangs its tier on, read off the slug the same way
+ * `parseCard()` in the scraper reads it: a letter prefix and a number, e.g.
+ * `ux-21-hells-nether-deck-set` → `UX-21`. Merchandise has no such code and
+ * gets none.
+ */
+export function codeFromSlug(slug: string): string | undefined {
+  const m = /^([a-z]+)-(\d+)/i.exec(slug)
+  return m ? `${m[1].toUpperCase()}-${m[2]}` : undefined
+}
+
+/**
+ * Products KGB sells that the frozen feed never saw. Hand-maintained, because
+ * the scraper cannot run while the shop is members-only and `public/data/` is
+ * generated. Carries no availability: this file is not entitled to claim any.
+ */
+type ManualListing = Omit<StockProduct, 'url' | 'inStock'>
+
+export function manualListings(): StockProduct[] {
+  return (manualStock as { products: ManualListing[] }).products.map((p) => ({
+    ...p,
+    url: `https://kelabgasingbeyblade.my/products/${p.slug}`,
+    inStock: false,
+  }))
+}
+
+/** Curated listings, minus anything the published file already covers. */
+export function withManualListings(products: StockProduct[]): StockProduct[] {
+  const known = new Set(products.map((p) => p.slug))
+  return [...products, ...manualListings().filter((p) => !known.has(p.slug))]
+}
 
 /** KGB prices in the form a Malaysian shopper reads them. */
 export function formatMYR(myr: number): string {
@@ -104,15 +165,18 @@ export async function loadStock(bust = false): Promise<StockFile> {
     const data = (await res.json()) as StockFile
 
     try {
+      // Cache what KGB actually gave us. The curated rows are compiled in, so
+      // caching them too would just pin an old copy of the source file.
       localStorage.setItem(CACHE_KEY, JSON.stringify(data))
     } catch {
       // Quota exceeded or private mode — cache is a nicety, not a requirement.
     }
-    return { ...data, stale: false }
+    return { ...data, products: withManualListings(data.products), stale: false }
   } catch (err) {
     try {
       const raw = localStorage.getItem(CACHE_KEY)
-      if (raw) return { ...(JSON.parse(raw) as StockFile), stale: true }
+      const cached = raw ? (JSON.parse(raw) as StockFile) : null
+      if (cached) return { ...cached, products: withManualListings(cached.products), stale: true }
     } catch {
       // Unreadable cache is no better than none.
     }

@@ -9,7 +9,9 @@ import { buildPartIndex } from '../lib/partIndex'
 import {
   buildStockIndex,
   canRefreshStockNow,
+  codeFromSlug,
   gradedOn,
+  groupForCategory,
   loadStock,
   markStockRefreshed,
   msToNextHour,
@@ -57,6 +59,9 @@ const SORT_LABELS: Record<SortKey, string> = {
 
 /** Same order the part sheet's own verdict reads in — best case first. */
 const BUY_RANK: Record<string, number> = { yes: 0, maybe: 1, no: 2, '': 3 }
+
+/** One product as the grab-stock overlay reports it: slug, title, price, category. */
+type LiveItem = { s: string; t?: string; p?: number; c?: string }
 
 const when = (iso?: string) =>
   iso
@@ -129,34 +134,65 @@ export default function StockPage() {
   }, [])
 
   /**
-   * A live view handed over by the grab-stock bookmarklet: the slugs it just
-   * saw on the shelf while you were signed in, passed in the URL fragment so
-   * they never reach a server. Published availability has been frozen since the
-   * shop went members-only, so when this is present it wins.
+   * A live view handed over by the grab-stock bookmarklet: what it just saw on
+   * the shelf while you were signed in, passed in the URL fragment so it never
+   * reaches a server. Published availability has been frozen since the shop
+   * went members-only, so when this is present it wins.
+   *
+   * Two shapes, because a bookmarklet installed before the payload changed is
+   * still out in the world and must keep working:
+   *   - current: JSON `[{ s, t, p, c }]` — slug, title, price, category
+   *   - legacy:  a comma-separated list of slugs
    */
-  const live = useMemo(() => {
+  const live = useMemo((): LiveItem[] | null => {
     const raw = params.get('live')
     if (!raw) return null
+
+    try {
+      const parsed: unknown = JSON.parse(raw)
+      if (Array.isArray(parsed)) {
+        const items = parsed
+          .filter((r): r is LiveItem => typeof r?.s === 'string' && r.s.length > 0)
+          .map((r) => ({ s: r.s, t: r.t, p: r.p, c: r.c }))
+        return items.length ? items : null
+      }
+    } catch {
+      // Not JSON — the older slugs-only form.
+    }
+
     const slugs = raw.split(',').map((s) => s.trim()).filter(Boolean)
-    return slugs.length ? slugs : null
+    return slugs.length ? slugs.map((s) => ({ s })) : null
   }, [params])
 
   const view = useMemo(() => {
-    const none = { products: [] as StockProduct[], unknown: [] as string[] }
-    if (!stock) return none
-    if (!live) return { products: stock.products, unknown: [] as string[] }
+    if (!stock) return { products: [] as StockProduct[] }
+    if (!live) return { products: stock.products }
 
     const bySlug = new Map(stock.products.map((p) => [p.slug, p]))
-    const products: StockProduct[] = []
-    const unknown: string[] = []
-    for (const slug of live) {
-      const known = bySlug.get(slug)
-      // The bookmarklet saw these on the shelf a moment ago, whatever the
-      // published file still says about them.
-      if (known) products.push({ ...known, inStock: true })
-      else unknown.push(slug)
-    }
-    return { products, unknown }
+
+    const products = live.map((item): StockProduct => {
+      const known = bySlug.get(item.s)
+      // The catalogue has been frozen since the shop closed, so anything KGB
+      // has listed since arrives unknown. Building it into a real product —
+      // rather than a bare link — is what lets it be sorted, watched, and
+      // graded, since the code parsed off its slug still reaches the tier data.
+      if (!known) {
+        return {
+          slug: item.s,
+          url: `https://kelabgasingbeyblade.my/products/${item.s}`,
+          title: item.t || item.s,
+          code: codeFromSlug(item.s),
+          kgbCategory: item.c || 'Unlisted',
+          group: item.c ? groupForCategory(item.c) : 'bey',
+          priceMYR: item.p ?? 0,
+          inStock: true,
+        }
+      }
+      // Prices move; prefer the one just read off the shelf over the frozen one.
+      return { ...known, inStock: true, priceMYR: item.p ?? known.priceMYR }
+    })
+
+    return { products }
   }, [stock, live])
 
   const parts = data?.parts ?? []
@@ -189,6 +225,13 @@ export default function StockPage() {
   }, [])
 
   /**
+   * Whether anything on this page can honestly speak to what is on the shelf.
+   * A live grab can; the published file, frozen since KGB closed the shop,
+   * cannot — and "Sold out" would be as much of an invention as "In stock".
+   */
+  const knowsAvailability = Boolean(live) || stock?.health === 'ok'
+
+  /**
    * A live grab is a moment, not a state — the page has no other way to say
    * "that worked", so record when one rendered and show it on the banner.
    */
@@ -204,7 +247,10 @@ export default function StockPage() {
     const products = view.products.filter(
       (p) =>
         (group === 'watching' ? watched.has(p.slug) : group === 'all' || p.group === group) &&
-        (showSoldOut || p.inStock),
+        // While the shop is closed to us the published flags are a week-old
+        // snapshot, so filtering on them would hide products on the strength of
+        // a guess. Only a live view has standing to sort by availability.
+        (!knowsAvailability || showSoldOut || p.inStock),
     )
 
     // Whatever the chosen sort, what you are waiting for comes first — the
@@ -344,7 +390,7 @@ export default function StockPage() {
     <>
       {' · '}
       <button className="attr-refresh" onClick={refreshStock}>
-        Check now
+        Check if reopened
       </button>
       <span className="attr-refresh-note">
         {refreshNote === 'error' ? ' — couldn’t start, try again' : ' — once an hour'}
@@ -403,8 +449,9 @@ export default function StockPage() {
         <div className="notice notice-stale">
           <p className="notice-text">
             <strong>KGB's shop is members-only now.</strong> It asks everyone to sign in and take a
-            place in the queue, so BeyClub can't read availability any more. Below is the shelf as
-            we last saw it on {shelfDay} — prices and tiers still hold, what's in stock may not.
+            place in the queue, so BeyClub can't read availability any more. Below is what the shop
+            sold as of {shelfDay} — prices and tiers still hold. Nothing here says in stock or sold
+            out, because nobody can check; only a live list from inside the shop can.
             {checkedDay && ` Checked again ${checkedDay}.`}
           </p>
           {/*
@@ -536,13 +583,16 @@ export default function StockPage() {
           <span>
             {visible.length} of {available} shown
           </span>
-          <button
-            className={showSoldOut ? 'info-toggle open' : 'info-toggle'}
-            onClick={() => setShowSoldOut((v) => !v)}
-            aria-pressed={showSoldOut}
-          >
-            {showSoldOut ? 'Hide sold out' : 'Show sold out'}
-          </button>
+          {/* Nothing to toggle when every card is silent about availability. */}
+          {knowsAvailability && (
+            <button
+              className={showSoldOut ? 'info-toggle open' : 'info-toggle'}
+              onClick={() => setShowSoldOut((v) => !v)}
+              aria-pressed={showSoldOut}
+            >
+              {showSoldOut ? 'Hide sold out' : 'Show sold out'}
+            </button>
+          )}
         </div>
       )}
 
@@ -556,7 +606,11 @@ export default function StockPage() {
 
       {stock && visible.length === 0 && (
         <div className="glass notice">
-          Nothing in this group is in stock right now — try “Show sold out”.
+          {group === 'watching'
+            ? 'Nothing starred yet — tap ★ on a product to keep an eye on it.'
+            : knowsAvailability
+              ? 'Nothing in this group is in stock right now — try “Show sold out”.'
+              : 'Nothing in this group.'}
         </div>
       )}
 
@@ -569,34 +623,10 @@ export default function StockPage() {
             onOpen={openPart}
             watched={watched.has(product.slug)}
             onToggleWatch={onToggleWatch}
+            showAvailability={knowsAvailability}
           />
         ))}
       </div>
-
-      {/*
-        Products the shop had but our catalogue has never seen — new since the
-        last successful scrape. Listed as plain links rather than dressed up as
-        cards: we know nothing about them beyond the slug, and inventing a tier
-        or a price would be worse than admitting that.
-      */}
-      {view.unknown.length > 0 && (
-        <div className="glass notice notice-unknown">
-          <strong>{view.unknown.length} in stock that BeyClub doesn't know yet</strong>
-          <ul className="unknown-list">
-            {view.unknown.map((slug) => (
-              <li key={slug}>
-                <a
-                  href={`https://kelabgasingbeyblade.my/products/${slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {slug} ↗
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
 
       <PartSheet
         stack={stack}

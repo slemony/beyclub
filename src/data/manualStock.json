@@ -1,0 +1,14 @@
+{
+  "_note": "Products Kelab Gasing Beyblade sells that public/data/stock.json never saw. The scraper has been unable to read the shop since it went members-only on 6 Aug 2026, so anything listed there since has to be added here by hand. There is deliberately no availability field: this records that a product exists and what it costs, not whether it is on the shelf today — only a live grab knows that. The published file wins on a slug clash, so a row left here after a real scrape picks it up is harmless, just noise worth deleting.",
+
+  "products": [
+    {
+      "slug": "ux-21-hells-nether-deck-set",
+      "code": "UX-21",
+      "title": "UX-21 HELLS NETHER DECK SET",
+      "kgbCategory": "Deck Set",
+      "group": "bey",
+      "priceMYR": 129.9
+    }
+  ]
+}
