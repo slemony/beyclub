@@ -541,7 +541,8 @@ button {
   width: 100%;
   padding: 11px 14px;
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  /* Below 16px, iOS Safari zooms the whole page in on focus. */
+  font-size: 16px;
   color: var(--text);
   outline: none;
 }
