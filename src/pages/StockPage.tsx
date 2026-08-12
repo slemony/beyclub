@@ -300,7 +300,6 @@ export default function StockPage() {
   useEffect(() => () => { if (pollRef.current) clearTimeout(pollRef.current) }, [])
 
   const updated = when(stock?.updatedAt)
-  const checked = when(stock?.checkedAt)
   const shelfDay = day(stock?.updatedAt)
   const checkedDay = day(stock?.checkedAt)
 
@@ -368,15 +367,37 @@ export default function StockPage() {
       )}
 
       {!live && stock?.health === 'gated' && (
-        <p className="notice notice-stale">
-          <strong>KGB's shop is members-only now.</strong> It asks everyone to sign in and take a
-          place in the queue, so BeyClub can't read availability any more. Below is the shelf as we
-          last saw it on {shelfDay} — prices and tiers still hold, what's in stock may not.
-          {checkedDay && ` Checked again ${checkedDay}.`}{' '}
-          <a href="https://kelabgasingbeyblade.my/shop" target="_blank" rel="noopener noreferrer">
-            Sign in at KGB ↗
-          </a>
-        </p>
+        <div className="notice notice-stale">
+          <p className="notice-text">
+            <strong>KGB's shop is members-only now.</strong> It asks everyone to sign in and take a
+            place in the queue, so BeyClub can't read availability any more. Below is the shelf as
+            we last saw it on {shelfDay} — prices and tiers still hold, what's in stock may not.
+            {checkedDay && ` Checked again ${checkedDay}.`}
+          </p>
+          {/*
+            The two things a reader can actually do about it, as buttons rather
+            than prose links — the tool is useless if nobody finds it.
+          */}
+          <div className="notice-actions">
+            {/*
+              "Set up" rather than "see": this opens instructions, not a stock
+              list. The script can only run on KGB's own page, so there is a
+              one-time install between the click and the payoff, and a label
+              promising the payoff just makes the page feel broken.
+            */}
+            <a className="notice-btn" href="./grab.html">
+              Set up "see all stock"
+            </a>
+            <a
+              className="notice-btn ghost"
+              href="https://kelabgasingbeyblade.my/shop"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Sign in at KGB ↗
+            </a>
+          </div>
+        </div>
       )}
 
       {!live && stock?.health === 'unreachable' && (
@@ -408,9 +429,10 @@ export default function StockPage() {
                   where the answer belongs. Not in the nav: that bar stays at two tabs.
                 */}
                 <p className="attr-blurb">
-                  If you're a member, <a href="./grab.html">Stock at a glance</a> sets up a button
-                  that shows everything in stock on one screen while you're signed in — so your 15
-                  minutes in the queue aren't spent paging through the shop.
+                  If you're a member, <a href="./grab.html">Stock at a glance</a> walks you through
+                  installing a button — once — that then shows everything in stock on one screen
+                  while you're signed in, so your 15 minutes in the queue aren't spent paging
+                  through the shop.
                 </p>
               </>
             )}
@@ -429,10 +451,6 @@ export default function StockPage() {
                 Stock last changed {updated} (MYT)
                 {refreshControl}
               </p>
-            )}
-            {/* The two are the same thing only while the shop is readable. */}
-            {checked && (
-              <p className="attr-time">Shop last checked {checked} (MYT)</p>
             )}
           </div>
         </Sheet>

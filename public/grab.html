@@ -43,6 +43,13 @@
   }
   .rules { border-left: 2px solid var(--warn); padding-left: 14px; margin: 18px 0 }
   .rules li { color: var(--dim) }
+  .setup-note {
+    background: rgba(125, 226, 168, .1); border: 1px solid rgba(125, 226, 168, .3);
+    border-radius: 8px; padding: 12px 14px; color: #a9edc6; margin-bottom: 16px;
+  }
+  .flow { counter-reset: none }
+  .flow li { color: var(--dim) }
+  .flow strong { color: var(--text) }
   footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint) }
 </style>
 </head>
@@ -50,15 +57,31 @@
 <main>
 
 <h1>Stock at a glance</h1>
+
+<p class="setup-note">
+  <strong>This page doesn't check stock.</strong> It installs a button that
+  does — once — and the button only works on KGB's own site, where you're signed
+  in. Nothing on BeyClub can read the shop for you.
+</p>
+
 <p class="lead">
   Kelab Gasing Beyblade's shop is members-only: you sign in, take a place in the
   queue, and get <strong>15 minutes</strong> inside to order. Clicking through
   five listing pages to find what's actually available spends a chunk of that.
 </p>
 <p class="lead">
-  This gathers every page at once and shows only what's in stock, on one screen,
-  each row linking straight to its product page.
+  Once installed, tapping the button <em>while you're inside the shop</em> gathers
+  every page at once and shows only what's in stock, on one screen, each row
+  linking straight to its product page.
 </p>
+
+<h2 style="border:0;padding-top:0">How it goes</h2>
+<ol class="flow">
+  <li><strong>Once:</strong> install it below, for whichever device you use.</li>
+  <li>Go to the KGB shop, sign in, wait for your place in the queue.</li>
+  <li><strong>Inside the shop</strong>, tap the button. The list appears over their page.</li>
+  <li>Optional: tap <em>Rank these</em> to see them with BeyClub's tiers attached.</li>
+</ol>
 
 <div class="rules">
   <p style="color:var(--warn);margin-bottom:8px"><strong>What it doesn't do</strong></p>
@@ -76,10 +99,15 @@
 
 <h2>Desktop — bookmarklet</h2>
 <div class="card">
-  <p>Drag this to your bookmarks bar, then click it while you're on the shop.</p>
+  <p>
+    <strong style="color:var(--text)">Drag</strong> the chip below onto your bookmarks bar —
+    don't click it here, it does nothing on this page. Press
+    <code>⌘⇧B</code> / <code>Ctrl+Shift+B</code> first if your bookmarks bar is hidden.
+  </p>
   <p><a class="grab" id="bookmarklet" href="#">KGB stock</a></p>
   <p style="margin:12px 0 0;font-size:13px">
-    Right-clicking it won't work in every browser — dragging is the reliable way.
+    Then open the shop, sign in, and <strong style="color:var(--text)">click the bookmark
+    while you're inside</strong> — that's when it runs.
   </p>
 </div>
 

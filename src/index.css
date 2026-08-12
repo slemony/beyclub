@@ -434,6 +434,37 @@ button {
 
 /* ── Ranking provenance (collapsed by default) ─────────────── */
 
+.notice-text {
+  margin: 0;
+}
+
+.notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Amber like the notice that holds them, so they read as part of the warning
+   rather than as unrelated chrome dropped into it. */
+.notice-btn {
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 184, 48, 0.45);
+  background: rgba(255, 184, 48, 0.14);
+  color: #ffd489;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.notice-btn.ghost {
+  background: transparent;
+  border-color: rgba(255, 184, 48, 0.25);
+  font-weight: 500;
+}
+
 /* A live view handed over from the shop by the grab-stock bookmarklet. Green
    rather than amber: this is the one state where availability is current. */
 .notice.notice-live {
