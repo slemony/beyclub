@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Stock at a glance — BeyClub MY</title>
+<style>
+  :root {
+    --bg: #0a0c11; --panel: #0f131c; --line: #1e2433;
+    --text: #e8ecf5; --dim: #8b95a9; --faint: #6c7689;
+    --accent: #7de2a8; --link: #8ab4ff; --warn: #ffd489;
+  }
+  * { box-sizing: border-box }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 28px 18px 60px;
+  }
+  main { max-width: 680px; margin: 0 auto }
+  h1 { font-size: 22px; margin: 0 0 6px }
+  h2 { font-size: 15px; margin: 34px 0 10px; padding-top: 18px; border-top: 1px solid var(--line) }
+  p { margin: 0 0 12px; color: var(--dim) }
+  p.lead { color: var(--text) }
+  ol, ul { color: var(--dim); padding-left: 20px; margin: 0 0 12px }
+  li { margin-bottom: 7px }
+  code { background: #151a25; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--text) }
+  a { color: var(--link) }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 14px }
+  .grab {
+    display: inline-block; background: #1c2740; border: 1px solid #35507f; color: #cfe0ff;
+    padding: 11px 18px; border-radius: 9px; font-weight: 700; text-decoration: none; cursor: grab;
+  }
+  button {
+    font: inherit; font-size: 13px; padding: 9px 14px; border-radius: 8px;
+    border: 1px solid #2b3345; background: #151a25; color: var(--text); cursor: pointer;
+  }
+  button:hover { background: #1d2431 }
+  textarea {
+    width: 100%; height: 90px; margin-top: 10px; padding: 10px; border-radius: 8px;
+    border: 1px solid var(--line); background: #080a0f; color: var(--faint);
+    font-family: ui-monospace, Menlo, monospace; font-size: 11px; resize: vertical;
+  }
+  .rules { border-left: 2px solid var(--warn); padding-left: 14px; margin: 18px 0 }
+  .rules li { color: var(--dim) }
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint) }
+</style>
+</head>
+<body>
+<main>
+
+<h1>Stock at a glance</h1>
+<p class="lead">
+  Kelab Gasing Beyblade's shop is members-only: you sign in, take a place in the
+  queue, and get <strong>15 minutes</strong> inside to order. Clicking through
+  five listing pages to find what's actually available spends a chunk of that.
+</p>
+<p class="lead">
+  This gathers every page at once and shows only what's in stock, on one screen,
+  each row linking straight to its product page.
+</p>
+
+<div class="rules">
+  <p style="color:var(--warn);margin-bottom:8px"><strong>What it doesn't do</strong></p>
+  <ul>
+    <li>It never signs in and never enters the queue. Run it once you're already inside — it takes no place in line.</li>
+    <li>It never runs on its own. No schedule, no polling; only when you tap it.</li>
+    <li>Nothing leaves your browser. It uploads nothing, and none of what it reads
+        reaches BeyClub's published stock data.</li>
+  </ul>
+  <p style="margin:0">
+    It makes the same five page requests you'd make by hand, spaced out — well
+    inside the shop's own limit.
+  </p>
+</div>
+
+<h2>Desktop — bookmarklet</h2>
+<div class="card">
+  <p>Drag this to your bookmarks bar, then click it while you're on the shop.</p>
+  <p><a class="grab" id="bookmarklet" href="#">KGB stock</a></p>
+  <p style="margin:12px 0 0;font-size:13px">
+    Right-clicking it won't work in every browser — dragging is the reliable way.
+  </p>
+</div>
+
+<h2>iPhone &amp; iPad — Shortcut (best on mobile)</h2>
+<div class="card">
+  <p>One-time setup, then it lives in Safari's Share sheet:</p>
+  <ol>
+    <li>Open the <strong>Shortcuts</strong> app → <strong>+</strong> to make a new one.</li>
+    <li>Add the action <strong>Run JavaScript on Web Page</strong>
+        (search "JavaScript"; it's under Safari).</li>
+    <li>Tap the script box, delete the placeholder, and paste the code below.</li>
+    <li>Open the shortcut's settings (ⓘ) → turn on <strong>Show in Share Sheet</strong>.</li>
+    <li>Name it something you'll recognise, e.g. <em>KGB stock</em>.</li>
+  </ol>
+  <p>
+    Then, inside the shop: <strong>Share</strong> → scroll down → <strong>KGB stock</strong>.
+  </p>
+  <p style="margin-top:14px"><button data-copy>Copy the script</button></p>
+  <textarea id="src" readonly spellcheck="false"></textarea>
+</div>
+
+<h2>Android</h2>
+<div class="card">
+  <p>
+    Chrome for Android can't run a bookmarklet from a tap. Two options, in order
+    of how pleasant they are:
+  </p>
+  <ul>
+    <li>
+      <strong>Firefox + Tampermonkey</strong> — install the Tampermonkey add-on,
+      add a new script, paste the code above. Runs properly, like the desktop version.
+    </li>
+    <li>
+      <strong>Chrome, the awkward way</strong> — bookmark any page, edit the
+      bookmark, replace its URL with the bookmarklet code (copy it below) and name
+      it <code>kgb</code>. To run it, type <code>kgb</code> in the address bar and
+      pick the bookmark from the suggestions.
+    </li>
+  </ul>
+  <p style="margin-top:14px"><button data-copy-bm>Copy the bookmarklet code</button></p>
+</div>
+
+<h2>If it stops working</h2>
+<p>
+  It reads the shop's own page markup, so a redesign there can break it. It'll
+  say so plainly rather than showing you an empty list — if you see
+  <em>"found no product cards"</em>, that's this needing an update, not the shop
+  being empty.
+</p>
+
+<footer>
+  Part of <a href="./">BeyClub MY</a>. BeyClub is not affiliated with Kelab Gasing
+  Beyblade. This is a convenience for looking at a shop you're already signed in
+  to — please don't use it to work around anything.
+</footer>
+
+</main>
+
+<script>
+  // Single source of truth: the script served next door, never a second copy
+  // pasted in here that could drift out of step with it.
+  fetch('./grab-stock.js')
+    .then((r) => {
+      if (!r.ok) throw new Error(r.status)
+      return r.text()
+    })
+    .then((src) => {
+      document.getElementById('src').value = src
+
+      const bookmarklet = 'javascript:' + encodeURIComponent(src)
+      document.getElementById('bookmarklet').href = bookmarklet
+
+      const copy = (text, btn, label) => {
+        navigator.clipboard.writeText(text).then(
+          () => {
+            const was = btn.textContent
+            btn.textContent = label
+            setTimeout(() => (btn.textContent = was), 1600)
+          },
+          () => alert('Copy failed — select the text in the box and copy it by hand.'),
+        )
+      }
+
+      document.querySelector('[data-copy]').addEventListener('click', (e) => copy(src, e.target, 'Copied ✓'))
+      document.querySelector('[data-copy-bm]').addEventListener('click', (e) => copy(bookmarklet, e.target, 'Copied ✓'))
+    })
+    .catch(() => {
+      document.getElementById('src').value = "Couldn't load grab-stock.js — reload the page."
+    })
+</script>
+</body>
+</html>

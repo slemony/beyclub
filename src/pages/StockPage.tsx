@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
 import PartSheet from '../components/PartSheet'
 import Sheet from '../components/Sheet'
@@ -77,6 +78,7 @@ const day = (iso?: string) =>
     : null
 
 export default function StockPage() {
+  const [params] = useSearchParams()
   const [stock, setStock] = useState<StockFile | null>(null)
   const [data, setData] = useState<Dataset | null>(null)
   const [notes, setNotes] = useState<Record<string, PartNotes>>({})
@@ -123,11 +125,42 @@ export default function StockPage() {
     }
   }, [])
 
+  /**
+   * A live view handed over by the grab-stock bookmarklet: the slugs it just
+   * saw on the shelf while you were signed in, passed in the URL fragment so
+   * they never reach a server. Published availability has been frozen since the
+   * shop went members-only, so when this is present it wins.
+   */
+  const live = useMemo(() => {
+    const raw = params.get('live')
+    if (!raw) return null
+    const slugs = raw.split(',').map((s) => s.trim()).filter(Boolean)
+    return slugs.length ? slugs : null
+  }, [params])
+
+  const view = useMemo(() => {
+    const none = { products: [] as StockProduct[], unknown: [] as string[] }
+    if (!stock) return none
+    if (!live) return { products: stock.products, unknown: [] as string[] }
+
+    const bySlug = new Map(stock.products.map((p) => [p.slug, p]))
+    const products: StockProduct[] = []
+    const unknown: string[] = []
+    for (const slug of live) {
+      const known = bySlug.get(slug)
+      // The bookmarklet saw these on the shelf a moment ago, whatever the
+      // published file still says about them.
+      if (known) products.push({ ...known, inStock: true })
+      else unknown.push(slug)
+    }
+    return { products, unknown }
+  }, [stock, live])
+
   const parts = data?.parts ?? []
   const partIndex = useMemo(() => buildPartIndex(parts), [parts])
   const stockIndex = useMemo(
-    () => buildStockIndex(stock?.products ?? [], parts),
-    [stock, parts],
+    () => buildStockIndex(view.products, parts),
+    [view, parts],
   )
 
   /**
@@ -136,9 +169,9 @@ export default function StockPage() {
    */
   const bestBySlug = useMemo(() => {
     const map = new Map<string, Part | undefined>()
-    for (const p of stock?.products ?? []) map.set(p.slug, gradedOn(stockIndex.contents(p)))
+    for (const p of view.products) map.set(p.slug, gradedOn(stockIndex.contents(p)))
     return map
-  }, [stock, stockIndex])
+  }, [view, stockIndex])
 
   const featuredOrder = useCallback(
     (a: StockProduct, b: StockProduct) =>
@@ -149,7 +182,7 @@ export default function StockPage() {
   )
 
   const visible = useMemo(() => {
-    const products = (stock?.products ?? []).filter(
+    const products = view.products.filter(
       (p) => (group === 'all' || p.group === group) && (showSoldOut || p.inStock),
     )
 
@@ -171,11 +204,11 @@ export default function StockPage() {
       return products.sort((a, b) => a.priceMYR - b.priceMYR || featuredOrder(a, b))
     }
     return products.sort(featuredOrder)
-  }, [stock, group, showSoldOut, sort, bestBySlug, featuredOrder])
+  }, [view, group, showSoldOut, sort, bestBySlug, featuredOrder])
 
   const available = useMemo(
-    () => (stock?.products ?? []).filter((p) => group === 'all' || p.group === group).length,
-    [stock, group],
+    () => view.products.filter((p) => group === 'all' || p.group === group).length,
+    [view, group],
   )
 
   const openPart = useCallback((part: Part) => {
@@ -325,7 +358,16 @@ export default function StockPage() {
         shop went members-only that day and we have not been able to see the
         shelf at all. Say which of the two it is.
       */}
-      {stock?.health === 'gated' && (
+      {live && (
+        <p className="notice notice-live">
+          <strong>Your live view from KGB.</strong> {view.products.length} in stock, ranked by the
+          same tiers and verdicts as the rest of the app. This came from your own signed-in session
+          a moment ago — it is not published, and nobody else sees it.{' '}
+          <a href="#/stock">Back to the published list</a>
+        </p>
+      )}
+
+      {!live && stock?.health === 'gated' && (
         <p className="notice notice-stale">
           <strong>KGB's shop is members-only now.</strong> It asks everyone to sign in and take a
           place in the queue, so BeyClub can't read availability any more. Below is the shelf as we
@@ -337,7 +379,7 @@ export default function StockPage() {
         </p>
       )}
 
-      {stock?.health === 'unreachable' && (
+      {!live && stock?.health === 'unreachable' && (
         <p className="notice notice-stale">
           <strong>Couldn't reach the KGB shop.</strong> Below is the shelf as we last saw it on{' '}
           {shelfDay}.{checkedDay && ` Tried again ${checkedDay}.`}
@@ -455,6 +497,31 @@ export default function StockPage() {
           />
         ))}
       </div>
+
+      {/*
+        Products the shop had but our catalogue has never seen — new since the
+        last successful scrape. Listed as plain links rather than dressed up as
+        cards: we know nothing about them beyond the slug, and inventing a tier
+        or a price would be worse than admitting that.
+      */}
+      {view.unknown.length > 0 && (
+        <div className="glass notice notice-unknown">
+          <strong>{view.unknown.length} in stock that BeyClub doesn't know yet</strong>
+          <ul className="unknown-list">
+            {view.unknown.map((slug) => (
+              <li key={slug}>
+                <a
+                  href={`https://kelabgasingbeyblade.my/products/${slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {slug} ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <PartSheet
         stack={stack}

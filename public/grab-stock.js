@@ -1,0 +1,293 @@
+/**
+ * "Everything in stock, on one screen."
+ *
+ * Run this while you are signed in to Kelab Gasing Beyblade and already inside
+ * the shop. Your place in the queue lasts 15 minutes; clicking through five
+ * listing pages to find what is actually available spends a good part of it.
+ * This gathers every page at once and shows only what is in stock, each row a
+ * direct link to its product page.
+ *
+ * What it deliberately does NOT do, and must never be extended to do:
+ *
+ *   - sign in, or enter the queue. It runs only when you are already inside,
+ *     on a page you opened yourself, using the session your browser already
+ *     holds. It takes no place in line.
+ *   - run on a schedule, or without your click.
+ *   - send anything anywhere. Nothing it reads leaves the tab: no upload, no
+ *     request to BeyClub, nothing written to the published stock data. The
+ *     "open in BeyClub" button passes product slugs in a URL *fragment*, which
+ *     browsers never send to a server.
+ *
+ * The shop's own limit is 120 requests a minute; this makes five, paced, per
+ * click — the same requests you would make by hand, in less of your window.
+ *
+ * Installation for desktop, iPhone and Android: /beyclub/grab.html
+ */
+;(() => {
+  'use strict'
+
+  const SHOP = 'https://kelabgasingbeyblade.my'
+  const BEYCLUB = 'https://slemony.github.io/beyclub/'
+  /** Pagination stops on the first empty page; this only stops a runaway. */
+  const MAX_PAGES = 15
+  /** Space the page requests out rather than firing five at once. */
+  const PACE_MS = 300
+  const HOST_ID = 'beyclub-grab-overlay'
+
+  /**
+   * iOS Shortcuts' "Run JavaScript on Web Page" hands the script a `completion`
+   * it must call or the Shortcut hangs waiting. It does not exist in a
+   * bookmarklet or a userscript, hence the typeof guard rather than a bare call.
+   */
+  const finish = () => {
+    try {
+      if (typeof completion === 'function') completion('done')
+    } catch {
+      /* not running under Shortcuts */
+    }
+  }
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+  const money = (n) => (n === undefined ? '' : `RM ${n.toFixed(2)}`)
+
+  // ── Reading the shop ──────────────────────────────────────────────
+
+  /**
+   * One listing card, read through the DOM rather than by regex. The scraper in
+   * scripts/fetch-stock.mjs matches HTML with a regex because it runs in Node
+   * with no DOM; here there is a real parser, so use it.
+   */
+  function readCard(el) {
+    // Historically the card is wrapped in the product link, but the shop's
+    // markup has already been reworked once — so fall back to a link inside the
+    // card, then to one alongside it, before giving up on the row.
+    const link =
+      el.closest('a[href*="/products/"]') ||
+      el.querySelector('a[href*="/products/"]') ||
+      el.parentElement?.querySelector('a[href*="/products/"]')
+    if (!link?.href) return null
+
+    const text = el.textContent || ''
+    // A discounted card prints the old price before the payable one, so the
+    // last figure on the card is the one you actually hand over.
+    const prices = [...text.matchAll(/MYR\s*([\d,]+(?:\.\d+)?)/g)].map((m) =>
+      Number(m[1].replace(/,/g, '')),
+    )
+
+    return {
+      url: link.href,
+      slug: link.href.split('?')[0].split('/').filter(Boolean).pop(),
+      title: el.querySelector('.product-title')?.textContent.trim() || link.textContent.trim(),
+      // The shop writes this as "[ Starter ]", spaces and all.
+      category: ((el.querySelector('.product-desc')?.textContent.match(/\[([^\]]+)\]/) || [])[1] || '').trim(),
+      price: prices.length ? prices[prices.length - 1] : undefined,
+      // "Select Variant" in place of a button means the card says nothing about
+      // availability. Left undefined and treated as unknown rather than guessed.
+      inStock: /Add to Cart/i.test(text) ? true : /Out of Stock/i.test(text) ? false : undefined,
+      img: el.querySelector('img')?.src,
+    }
+  }
+
+  const readPage = (doc) => [...doc.querySelectorAll('.product-container')].map(readCard).filter(Boolean)
+
+  async function fetchPage(n) {
+    // Same-origin, so the browser attaches the session cookie you signed in with.
+    const res = await fetch(`${SHOP}/shop?page=${n}`, { credentials: 'same-origin' })
+    if (!res.ok) throw new Error(`The shop returned ${res.status} for page ${n}.`)
+
+    const html = await res.text()
+    if (/Sign in to (?:queue|shop)|places in line are reserved/i.test(html)) {
+      throw new Error(
+        'The shop is showing its sign-in queue, so this session is not inside. Sign in, wait for your place, then run this again.',
+      )
+    }
+    return new DOMParser().parseFromString(html, 'text/html')
+  }
+
+  async function collect(onProgress) {
+    const bySlug = new Map()
+
+    for (let n = 1; n <= MAX_PAGES; n++) {
+      const cards = readPage(await fetchPage(n))
+
+      if (!cards.length) {
+        // An empty page 1 is not "the shop is empty" — it means the markup this
+        // reads no longer matches, which is worth saying rather than showing a
+        // blank list and letting you believe there is nothing in stock.
+        if (n === 1) {
+          throw new Error(
+            'Found no product cards on the first page. The shop\'s markup has changed since this was written, so it cannot read the listing any more.',
+          )
+        }
+        break
+      }
+
+      // Later pages re-list nothing, but a shifting catalogue can repeat a
+      // product across a page boundary. First sighting wins.
+      for (const c of cards) if (!bySlug.has(c.slug)) bySlug.set(c.slug, c)
+      onProgress(n, bySlug.size)
+      await sleep(PACE_MS)
+    }
+
+    return [...bySlug.values()]
+  }
+
+  // ── The overlay ───────────────────────────────────────────────────
+
+  /**
+   * Rendered into a shadow root so the shop's own stylesheet cannot reach in and
+   * neither can ours reach out. Sized for a phone first — that is where a
+   * 15-minute window is usually spent.
+   */
+  function mount() {
+    document.getElementById(HOST_ID)?.remove()
+
+    const host = document.createElement('div')
+    host.id = HOST_ID
+    host.style.cssText = 'position:fixed;inset:0;z-index:2147483647'
+    const root = host.attachShadow({ mode: 'open' })
+
+    root.innerHTML = `
+      <style>
+        :host { all: initial }
+        * { box-sizing: border-box; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif }
+        .back { position: fixed; inset: 0; background: rgba(4, 6, 20, .72) }
+        .panel {
+          position: fixed; inset: 0; display: flex; flex-direction: column;
+          background: #0a0c11; color: #e8ecf5;
+          max-width: 720px; margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,.6);
+        }
+        header { padding: 14px 16px 10px; border-bottom: 1px solid #1e2433; flex: none }
+        .row1 { display: flex; align-items: center; gap: 10px }
+        h1 { margin: 0; font-size: 15px; font-weight: 700; flex: 1 }
+        .count { color: #7de2a8; font-weight: 600 }
+        button {
+          font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 8px;
+          border: 1px solid #2b3345; background: #151a25; color: #e8ecf5; cursor: pointer;
+        }
+        button:hover { background: #1d2431 }
+        .x { padding: 7px 11px; font-size: 15px; line-height: 1 }
+        input {
+          font: inherit; font-size: 16px; width: 100%; margin-top: 10px; padding: 9px 12px;
+          border-radius: 8px; border: 1px solid #2b3345; background: #0f131c; color: #e8ecf5;
+        }
+        input::placeholder { color: #5b6478 }
+        ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1 }
+        li { border-bottom: 1px solid #161b27 }
+        a { display: flex; gap: 12px; align-items: center; padding: 11px 16px; text-decoration: none; color: inherit }
+        a:hover { background: #12172080 }
+        img { width: 44px; height: 44px; object-fit: contain; border-radius: 6px; background: #11151e; flex: none }
+        .meta { flex: 1; min-width: 0 }
+        .t { font-size: 13px; font-weight: 600; line-height: 1.3 }
+        .s { font-size: 11px; color: #8b95a9; margin-top: 3px }
+        .p { font-size: 13px; font-weight: 700; color: #7de2a8; white-space: nowrap }
+        .msg { padding: 22px 18px; font-size: 13px; line-height: 1.55; color: #b9c2d4 }
+        .err { color: #ffb0bd }
+        footer { padding: 10px 16px; border-top: 1px solid #1e2433; font-size: 11px; color: #6c7689; flex: none }
+      </style>
+      <div class="back" part="back"></div>
+      <div class="panel">
+        <header>
+          <div class="row1">
+            <h1>KGB — <span class="count">reading…</span></h1>
+            <button class="rank" hidden>Rank these</button>
+            <button class="x">✕</button>
+          </div>
+          <input class="filter" placeholder="Filter by name or code…" hidden>
+        </header>
+        <ul></ul>
+        <footer>Your own view of a shop you are signed in to. Nothing here is published.</footer>
+      </div>`
+
+    const close = () => host.remove()
+    root.querySelector('.x').addEventListener('click', close)
+    root.querySelector('.back').addEventListener('click', close)
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key !== 'Escape') return
+      document.removeEventListener('keydown', esc)
+      close()
+    })
+
+    document.body.appendChild(host)
+    return root
+  }
+
+  const say = (root, html, isError) => {
+    root.querySelector('ul').innerHTML = `<li><p class="msg${isError ? ' err' : ''}">${html}</p></li>`
+  }
+
+  function render(root, items) {
+    const list = root.querySelector('ul')
+    const draw = (rows) => {
+      list.innerHTML =
+        rows
+          .map(
+            (p) => `
+        <li><a href="${p.url}" target="_blank" rel="noopener">
+          ${p.img ? `<img src="${p.img}" alt="">` : '<img alt="">'}
+          <span class="meta">
+            <span class="t">${p.title}</span>
+            <span class="s">${[p.category, p.slug].filter(Boolean).join(' · ')}</span>
+          </span>
+          <span class="p">${money(p.price)}</span>
+        </a></li>`,
+          )
+          .join('') || '<li><p class="msg">Nothing matches that filter.</p></li>'
+    }
+
+    draw(items)
+
+    const filter = root.querySelector('.filter')
+    filter.hidden = false
+    filter.addEventListener('input', () => {
+      const q = filter.value.trim().toLowerCase()
+      draw(!q ? items : items.filter((p) => `${p.title} ${p.slug} ${p.category}`.toLowerCase().includes(q)))
+    })
+
+    // Hands the slugs to BeyClub, which already knows each blade's tier and
+    // whether it is worth buying. A fragment is never sent to the server, so
+    // this stays inside your browser.
+    const rank = root.querySelector('.rank')
+    rank.hidden = false
+    rank.addEventListener('click', () => {
+      const slugs = items.map((p) => p.slug).join(',')
+      window.open(`${BEYCLUB}#/stock?live=${encodeURIComponent(slugs)}`, '_blank', 'noopener')
+    })
+  }
+
+  // ── Run ───────────────────────────────────────────────────────────
+
+  async function run() {
+    if (!location.hostname.endsWith('kelabgasingbeyblade.my')) {
+      const root = mount()
+      root.querySelector('.count').textContent = 'wrong site'
+      say(root, `Open <a href="${SHOP}/shop" style="color:#8ab4ff">the KGB shop</a> and run this there.`, true)
+      return
+    }
+
+    const root = mount()
+    const count = root.querySelector('.count')
+    say(root, 'Reading the shop…')
+
+    try {
+      const all = await collect((page, seen) => {
+        count.textContent = `page ${page}, ${seen} seen`
+      })
+
+      const inStock = all.filter((p) => p.inStock !== false)
+      inStock.sort((a, b) => (a.category || '').localeCompare(b.category || '') || a.title.localeCompare(b.title))
+
+      count.textContent = `${inStock.length} in stock of ${all.length}`
+      if (!inStock.length) {
+        say(root, 'Nothing is in stock right now — every card on the shelf says sold out.')
+        return
+      }
+      render(root, inStock)
+    } catch (err) {
+      count.textContent = 'stopped'
+      say(root, err.message, true)
+    }
+  }
+
+  run().finally(finish)
+})()

@@ -434,6 +434,33 @@ button {
 
 /* ── Ranking provenance (collapsed by default) ─────────────── */
 
+/* A live view handed over from the shop by the grab-stock bookmarklet. Green
+   rather than amber: this is the one state where availability is current. */
+.notice.notice-live {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(125, 226, 168, 0.1);
+  border: 1px solid rgba(125, 226, 168, 0.28);
+  color: #a9edc6;
+  font-size: 12px;
+  margin: 0 0 10px;
+  text-align: left;
+}
+
+.notice-unknown {
+  text-align: left;
+}
+
+.unknown-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+.unknown-list li {
+  margin-bottom: 4px;
+}
+
 /* Both classes are applied together, and `.notice` centres its text further
    down the file — so this needs the extra specificity for the left alignment
    below to survive. A paragraph this long is unreadable centred. */
