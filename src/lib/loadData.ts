@@ -101,9 +101,16 @@ const CUSTOM_BUILDS = customBuilds.builds as CustomBuild[]
  * ship with. Its tier column becomes one input to the blend rather than the
  * final word.
  */
-async function loadCatalogue(): Promise<Raw[]> {
-  const { blades, parts } = await loadCatalogueFile()
+const loadCatalogue = async (): Promise<Raw[]> => parseCatalogue(await loadCatalogueFile())
 
+/**
+ * Split from the fetch above so the same assembly can run outside a browser.
+ * scripts/build-product-tiers.ts reads the files off disk and calls this and
+ * `merge` directly — the published tier of a product has to be the one the app
+ * shows, and the only way to guarantee that is to compute it with this code
+ * rather than a second copy of it.
+ */
+export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
   const out: Raw[] = []
   const seen = new Set<string>()
 
@@ -252,7 +259,7 @@ export async function loadPartNotes(): Promise<Record<string, PartNotes>> {
  * looked for its own tournament record three of them would come back empty and
  * read as untested.
  */
-function merge(raw: Raw[], tournament: TournamentFile, japan: JapanFile): Part[] {
+export function merge(raw: Raw[], tournament: TournamentFile, japan: JapanFile): Part[] {
   const records = new Map<string, TournamentRecord & { topRatchet?: string; topBit?: string }>()
   const tops: Record<string, { allTime: number; recent90: number }> = {}
 

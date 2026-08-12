@@ -77,14 +77,44 @@
   ])
 
   /**
-   * Beys first, then the gear, in the order a buyer cares about them.
-   *
-   * This cannot sort by tier: tiers are BeyClub's own blended ranking, computed
-   * from tournament results and community ratings that live on the other origin,
-   * and there is no product-to-tier map published for a script on KGB's page to
-   * read. "View rank in BeyClub" opens the list where that ranking exists, and
-   * it arrives sorted by tier.
+   * BeyClub's blended ranking, best first. Mirrors TIERS in src/lib/tiers.ts;
+   * an unrecognised or missing grade sorts last rather than in the middle.
    */
+  const TIER_ORDER = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D']
+  const tierRank = (t) => {
+    const i = TIER_ORDER.indexOf(t)
+    return i === -1 ? 99 : i
+  }
+
+  /**
+   * The product code the tier map is keyed by, read off the slug the same way
+   * the scraper reads it: "ux-21-hells-nether-deck-set" → "UX-21".
+   */
+  const codeFromSlug = (slug) => {
+    const m = /^([a-z]+)-(\d+)/i.exec(slug || '')
+    return m ? `${m[1].toUpperCase()}-${m[2]}` : undefined
+  }
+
+  /**
+   * Tiers cannot be computed here — they are blended from tournament results,
+   * the Taiwan sheet and the Japanese list, none of which this page can reach.
+   * BeyClub publishes the finished map instead, and GitHub Pages serves it with
+   * `access-control-allow-origin: *`, so it is readable from KGB's origin.
+   *
+   * Failing to load it is not fatal: the shelf is still worth showing grouped.
+   */
+  async function loadTiers() {
+    try {
+      const res = await fetch(`${BEYCLUB}data/product-tiers.json`, { cache: 'no-store' })
+      if (!res.ok) return null
+      const { tiers } = await res.json()
+      return tiers && Object.keys(tiers).length ? tiers : null
+    } catch {
+      return null
+    }
+  }
+
+  /** Beys first, then the gear — the fallback when no tier is known. */
   const GROUP_RANK = {
     Starter: 0,
     Booster: 0,
@@ -266,6 +296,7 @@
         }
         .t { font-size: 12px; font-weight: 600; line-height: 1.3; display: block }
         .s { font-size: 10px; color: #8b95a9; margin-top: 3px; display: block }
+        .tier { color: #8be8ff; font-weight: 700 }
         .p { font-size: 13px; font-weight: 700; color: #7de2a8; margin-top: 6px; display: block }
         .msg { padding: 22px 18px; font-size: 13px; line-height: 1.55; color: #b9c2d4 }
         .err { color: #ffb0bd }
@@ -322,7 +353,7 @@
         <li><a href="${p.url}" target="_blank" rel="noopener">
           ${p.img ? `<img src="${p.img}" alt="">` : '<img alt="">'}
           <span class="t">${p.title}</span>
-          <span class="s">${p.category || ''}</span>
+          <span class="s">${p.tier ? `<b class="tier">${p.tier}</b> · ` : ''}${p.category || ''}</span>
           <span class="p">${money(p.price)}</span>
         </a></li>`,
           )
@@ -403,8 +434,24 @@
       })
 
       const inStock = all.filter((p) => p.inStock !== false)
+
+      // Attach what BeyClub knows about each product before ordering them.
+      const tiers = await loadTiers()
+      for (const p of inStock) {
+        const graded = tiers?.[codeFromSlug(p.slug)]
+        p.tier = graded?.tier
+        p.buy = graded?.buy
+      }
+
+      /*
+       * Highest tier first — the question a 15-minute queue place actually asks.
+       * Ungraded products (merch, and anything the ranking has no verdict on)
+       * fall to the back but keep the beys-before-gear order among themselves,
+       * which is also the whole ordering if the tier map could not be fetched.
+       */
       inStock.sort(
         (a, b) =>
+          tierRank(a.tier) - tierRank(b.tier) ||
           rankOf(a.category) - rankOf(b.category) ||
           (a.category || '').localeCompare(b.category || '') ||
           a.title.localeCompare(b.title),

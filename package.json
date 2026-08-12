@@ -13,6 +13,7 @@
     "refresh:tournament": "node --experimental-strip-types scripts/fetch-tournament.mjs",
     "refresh:stock": "node scripts/fetch-stock.mjs",
     "refresh:catalogue": "node --experimental-strip-types scripts/fetch-catalogue.mjs",
+    "build:tiers": "node scripts/build-product-tiers.mjs",
     "deploy": "npm run build && gh-pages -d dist -b gh-pages --dotfiles"
   },
   "dependencies": {

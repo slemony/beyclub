@@ -47,15 +47,19 @@ jobs:
       - name: Scrape Kelab Gasing Beyblade
         run: npm run refresh:stock
 
+      # New products carry new codes, so the tier map has to keep up with them.
+      - name: Rebuild the product tier map
+        run: npm run build:tiers
+
       - name: Commit if the stock moved
         run: |
-          if git diff --quiet -- public/data/stock.json; then
+          if git diff --quiet -- public/data/stock.json public/data/product-tiers.json; then
             echo "No change in stock."
             exit 0
           fi
           git config user.name  "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add public/data/stock.json
+          git add public/data/stock.json public/data/product-tiers.json
           git commit -m "Refresh stock from Kelab Gasing Beyblade"
           git push
 

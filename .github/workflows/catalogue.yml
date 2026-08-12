@@ -52,14 +52,20 @@ jobs:
       - name: Snapshot the Taiwan community sheet
         run: npm run refresh:catalogue
 
+      # The tier of a product is derived from this sheet, so a moved sheet means
+      # a stale map. Rebuilt here rather than left to drift, because the one
+      # reader that cannot recompute it is the overlay on KGB's own page.
+      - name: Rebuild the product tier map
+        run: npm run build:tiers
+
       - name: Commit if the catalogue moved
         run: |
           # Staged before the comparison, unlike the sibling workflows: their
           # data files are already tracked, but the very first snapshot is not,
           # and `git diff` alone never reports an untracked file as a change —
           # so the run that creates it would report "no change" and drop it.
-          git add public/data/catalogue.json
-          if git diff --cached --quiet -- public/data/catalogue.json; then
+          git add public/data/catalogue.json public/data/product-tiers.json
+          if git diff --cached --quiet -- public/data/catalogue.json public/data/product-tiers.json; then
             echo "No change in catalogue."
             exit 0
           fi

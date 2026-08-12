@@ -72,6 +72,10 @@ It reads the shop's markup through the DOM, over the session your browser alread
 
 `src/data/manualStock.json` covers the other half of the freeze: products KGB has listed since the shop closed, which the scraper will never see. Hand-maintained, deduped against the published file (which wins), and deliberately carrying no availability field.
 
+The overlay sorts by tier, best first, which it cannot compute: the blend needs tournament results, the Taiwan sheet and the Japanese list, none of them reachable from KGB's origin. So `npm run build:tiers` publishes [`public/data/product-tiers.json`](public/data/product-tiers.json) — product code to blended tier — and the overlay fetches it (GitHub Pages serves it `access-control-allow-origin: *`). Keyed by code rather than slug so a product listed after the last successful scrape still resolves, since its code is readable from its slug. If the fetch fails the overlay simply groups beys ahead of gear instead.
+
+`scripts/build-product-tiers.ts` imports the app's own `parseCatalogue`, `merge`, `buildStockIndex` and `gradedOn`, so the published tier is by construction the tier the app shows. Node can't load those modules directly — extensionless TS imports, JSON without import attributes — so `scripts/build-product-tiers.mjs` bundles it with esbuild first. Both `stock.yml` and `catalogue.yml` rebuild the map before committing; the output carries no timestamp, so an unchanged catalogue produces an identical file and no needless redeploy.
+
 ## Roadmap
 
 Requirements and acceptance criteria for every stage live in [claude-project-master-plan.md](claude-project-master-plan.md).
