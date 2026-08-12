@@ -12,6 +12,12 @@ type Props = {
   onOpen: (part: Part) => void
   watched: boolean
   onToggleWatch: (slug: string) => void
+  /**
+   * False while KGB's shop is closed to us: the published flags are a snapshot
+   * from the last day we could read it, and repeating them as "In stock" — or
+   * as "Sold out" — states something nobody here has checked.
+   */
+  showAvailability: boolean
 }
 
 /**
@@ -21,7 +27,14 @@ type Props = {
  * part inside opens its own sheet — so the title carries the link out to KGB
  * instead of the whole row.
  */
-export default function StockCard({ product, contents, onOpen, watched, onToggleWatch }: Props) {
+export default function StockCard({
+  product,
+  contents,
+  onOpen,
+  watched,
+  onToggleWatch,
+  showAvailability,
+}: Props) {
   const best = gradedOn(contents)
   const verdict = best?.buy ? BUY_VERDICTS[best.buy] : undefined
   const tierColor = best ? (TIER_COLORS[best.tier] ?? '#6b7480') : undefined
@@ -38,7 +51,13 @@ export default function StockCard({ product, contents, onOpen, watched, onToggle
     else blades.push({ part, slots: 1 })
   }
 
-  const cls = ['stock-card', product.inStock ? '' : 'sold-out', watched ? 'watched' : '']
+  // Dimming a card is itself a claim that it is sold out, so it goes with the
+  // chip: no dimming when availability is unknown.
+  const cls = [
+    'stock-card',
+    showAvailability && !product.inStock ? 'sold-out' : '',
+    watched ? 'watched' : '',
+  ]
     .filter(Boolean)
     .join(' ')
 
@@ -62,9 +81,11 @@ export default function StockCard({ product, contents, onOpen, watched, onToggle
           </a>
           <p className="stock-line">
             <span className="stock-price">{formatMYR(product.priceMYR)}</span>
-            <span className={product.inStock ? 'stock-status in' : 'stock-status out'}>
-              {product.inStock ? 'In stock' : 'Sold out'}
-            </span>
+            {showAvailability && (
+              <span className={product.inStock ? 'stock-status in' : 'stock-status out'}>
+                {product.inStock ? 'In stock' : 'Sold out'}
+              </span>
+            )}
           </p>
         </div>
 

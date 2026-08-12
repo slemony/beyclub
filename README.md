@@ -29,7 +29,7 @@ Pages serves from the `gh-pages` branch. The app uses `HashRouter` and a relativ
 
 - `deploy.yml` — publishes on every push to `main`.
 - `tournament.yml` — refreshes tournament data weekly (see below).
-- `stock.yml` — refreshes KGB stock twice daily (see below).
+- `stock.yml` — a daily watchdog on the KGB shop, closed to us since 6 Aug 2026 (see below).
 
 Pushing workflow files needs the `workflow` OAuth scope. If a push is rejected for lacking it, run `gh auth refresh -s workflow` and try again.
 
@@ -54,13 +54,23 @@ Two things keep it running unattended:
 npm run refresh:stock   # rewrite public/data/stock.json from kelabgasingbeyblade.my
 ```
 
-`stock.yml` runs this once a day at 08:30 MYT and, like the tournament job, commits, builds and publishes in one run. The **"Check now"** link in the "Where this comes from" sheet fires the *same* workflow on demand — throttled to once per clock hour — so a reader can force a fresh scan rather than wait for the schedule. A public page can't hold the token that dispatch needs, so it goes through a tiny Cloudflare Worker that does; deploy and wiring live in [`worker/`](worker/README.md). Until that Worker is deployed and `STOCK_REFRESH_URL` is set (as an Actions **variable**, passed to the build as `VITE_STOCK_REFRESH_URL`), "Check now" falls back to simply re-pulling the last published file. The whole catalogue costs five requests: KGB's `/shop` listing already carries title, category, price, image and an in-stock button, so only the dozen products sold in several sizes need their own page fetched for the availability their card omits.
+`stock.yml` runs this once a day at 08:30 MYT and, like the tournament job, commits, builds and publishes in one run. The **"Check if reopened"** link in the "Where this comes from" sheet fires the *same* workflow on demand — throttled to once per clock hour. A public page can't hold the token that dispatch needs, so it goes through a tiny Cloudflare Worker that does; deploy and wiring live in [`worker/`](worker/README.md). Until that Worker is deployed and `STOCK_REFRESH_URL` is set (as an Actions **variable**, passed to the build as `VITE_STOCK_REFRESH_URL`), the link falls back to simply re-pulling the last published file. When the shop is readable the whole catalogue costs five requests: KGB's `/shop` listing already carries title, category, price, image and an in-stock button, so only the dozen products sold in several sizes need their own page fetched for the availability their card omits.
 
 The scraper holds `updatedAt` at its old value when nothing has changed, so it goes on meaning **when stock last changed**; `checkedAt` and `health` record when we last *looked* and what we found. It exits non-zero if a card parses incompletely, if no bey survives the parse, or if the catalogue shrinks by more than a quarter.
 
 > **Stock is frozen as of 6 Aug 2026.** Kelab Gasing Beyblade made its shop members-only that day: `/shop` and every product page answer anonymous callers with a "Sign in to queue" interstitial, because places in the queue are now tied to accounts rather than networks. This is not a bot filter and not an IP block — the same request fails from a residential Malaysian connection exactly as it does from a CI runner, and the scraper deliberately does not try to get around it.
 >
-> So the daily run is a watchdog: it records `health: "gated"`, keeps the last catalogue it genuinely saw, and the Stock page says as much rather than presenting stale availability as current. If KGB reopens the shop, or grants BeyClub a feed, real stock resumes publishing with no code change. Anything that depends on live availability — restock alerts, a watchlist worth notifying on — is blocked until then.
+> So the daily run is a watchdog: it records `health: "gated"`, keeps the last catalogue it genuinely saw, and the Stock page says as much rather than presenting stale availability as current. If KGB reopens the shop, or grants BeyClub a feed, real stock resumes publishing with no code change. Restock alerts stay impossible until then: notifying you needs something watching the shelf while you are not, which is exactly what the gate forecloses.
+>
+> While gated, **no card claims availability at all** — prices and tiers only. "Sold out" would be as much of an invention as "In stock"; nobody here has looked. The one thing that can speak to today's shelf is a live grab, below.
+
+### Stock at a glance — the members-only path
+
+[`public/grab.html`](public/grab.html) installs a button that lists everything in stock on one screen **while you are signed in to KGB yourself** — a desktop bookmarklet, an Apple Shortcut for Safari on Mac and iOS, or a Tampermonkey userscript on Android. All three wrap one source, [`public/grab-stock.js`](public/grab-stock.js), served raw so the page can build each wrapper from it with no build step.
+
+It reads the shop's markup through the DOM, over the session your browser already holds. It never signs in, never takes a place in the queue, never runs unattended, and publishes nothing: the products it finds reach the Stock page through a URL **fragment**, which browsers do not send to servers. On arrival they render as ordinary cards — watchable, sortable, and graded, since the product code parsed off a slug still reaches the tier data. Merchandise is left behind.
+
+`src/data/manualStock.json` covers the other half of the freeze: products KGB has listed since the shop closed, which the scraper will never see. Hand-maintained, deduped against the published file (which wins), and deliberately carrying no availability field.
 
 ## Roadmap
 

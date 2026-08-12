@@ -15,8 +15,8 @@
  *   - run on a schedule, or without your click.
  *   - send anything anywhere. Nothing it reads leaves the tab: no upload, no
  *     request to BeyClub, nothing written to the published stock data. The
- *     "open in BeyClub" button passes product slugs in a URL *fragment*, which
- *     browsers never send to a server.
+ *     "View rank in BeyClub" button passes what it found in a URL *fragment*,
+ *     which browsers never send to a server.
  *
  * The shop's own limit is 120 requests a minute; this makes five, paced, per
  * click — the same requests you would make by hand, in less of your window.
@@ -75,6 +75,33 @@
     'Deck Case',
     'Gear Case',
   ])
+
+  /**
+   * Beys first, then the gear, in the order a buyer cares about them.
+   *
+   * This cannot sort by tier: tiers are BeyClub's own blended ranking, computed
+   * from tournament results and community ratings that live on the other origin,
+   * and there is no product-to-tier map published for a script on KGB's page to
+   * read. "View rank in BeyClub" opens the list where that ranking exists, and
+   * it arrives sorted by tier.
+   */
+  const GROUP_RANK = {
+    Starter: 0,
+    Booster: 0,
+    'Random Booster': 0,
+    'Battle Set': 0,
+    'Deck Set': 0,
+    'Dash Set': 0,
+    'Custom Set': 0,
+    'Entry Package': 0,
+    Stadium: 1,
+    Launcher: 2,
+    Grip: 2,
+    'Launcher Grip': 2,
+    'Deck Case': 3,
+    'Gear Case': 3,
+  }
+  const rankOf = (cat) => GROUP_RANK[cat] ?? 9
 
   // ── Reading the shop ──────────────────────────────────────────────
 
@@ -185,7 +212,10 @@
         }
         header { padding: 14px 16px 10px; border-bottom: 1px solid #1e2433; flex: none }
         .row1 { display: flex; align-items: center; gap: 10px }
-        h1 { margin: 0; font-size: 15px; font-weight: 700; flex: 1 }
+        /* min-width:0 lets the heading shrink instead of shoving the buttons
+           off the edge of a phone once the count grows. */
+        h1 { margin: 0; font-size: 15px; font-weight: 700; flex: 1; min-width: 0 }
+        .rank { white-space: nowrap }
         .count { color: #7de2a8; font-weight: 600 }
         button {
           font: inherit; font-size: 13px; padding: 7px 12px; border-radius: 8px;
@@ -199,15 +229,44 @@
         }
         input::placeholder { color: #5b6478 }
         .merch { margin-top: 8px; width: 100%; font-size: 12px; color: #8b95a9 }
-        ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1 }
-        li { border-bottom: 1px solid #161b27 }
-        a { display: flex; gap: 12px; align-items: center; padding: 11px 16px; text-decoration: none; color: inherit }
-        a:hover { background: #12172080 }
-        img { width: 44px; height: 44px; object-fit: contain; border-radius: 6px; background: #11151e; flex: none }
-        .meta { flex: 1; min-width: 0 }
-        .t { font-size: 13px; font-weight: 600; line-height: 1.3 }
-        .s { font-size: 11px; color: #8b95a9; margin-top: 3px }
-        .p { font-size: 13px; font-weight: 700; color: #7de2a8; white-space: nowrap }
+        /* A grid of cards rather than a list of rows: with the picture large
+           enough to recognise, a shelf is something you scan, not read. */
+        ul {
+          list-style: none; margin: 0; padding: 12px; overflow-y: auto; flex: 1;
+          display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;
+          align-content: start;
+          /*
+           * Required, not cosmetic. This grid is also the scroll container and a
+           * flex item with a definite height, and in that arrangement implicit
+           * auto-sized rows collapse once there are more rows than fit — 60-odd
+           * products crushed every card to a 9px sliver of image. Sizing rows to
+           * their content instead is what keeps them whole.
+           */
+          grid-auto-rows: max-content;
+        }
+        /*
+         * display:flex, not the default list-item, and no percentage height on
+         * the link. A list-item's marker box is the only thing an auto grid row
+         * measures here, and a percentage height inside an auto-sized row is a cyclic
+         * dependency the browser resolves by ignoring the card's real content —
+         * between them the rows collapsed to 9px and every card was a sliver.
+         * Stretching the link as a flex child keeps cards equal height without
+         * either problem.
+         */
+        li {
+          display: flex; border: 1px solid #1a2030; border-radius: 10px;
+          background: #0f131c; overflow: hidden;
+        }
+        li.wide { grid-column: 1 / -1; border: 0; background: none }
+        a { display: block; flex: 1; padding: 10px; text-decoration: none; color: inherit }
+        a:hover { background: #151b27 }
+        img {
+          width: 100%; height: 90px; object-fit: contain; border-radius: 6px;
+          background: #11151e; display: block; margin-bottom: 8px;
+        }
+        .t { font-size: 12px; font-weight: 600; line-height: 1.3; display: block }
+        .s { font-size: 10px; color: #8b95a9; margin-top: 3px; display: block }
+        .p { font-size: 13px; font-weight: 700; color: #7de2a8; margin-top: 6px; display: block }
         .msg { padding: 22px 18px; font-size: 13px; line-height: 1.55; color: #b9c2d4 }
         .err { color: #ffb0bd }
         footer { padding: 10px 16px; border-top: 1px solid #1e2433; font-size: 11px; color: #6c7689; flex: none }
@@ -217,7 +276,7 @@
         <header>
           <div class="row1">
             <h1>KGB — <span class="count">reading…</span></h1>
-            <button class="rank" hidden>Rank these</button>
+            <button class="rank" hidden>View rank in BeyClub</button>
             <button class="x">✕</button>
           </div>
           <input class="filter" placeholder="Filter by name or code…" hidden>
@@ -262,14 +321,12 @@
             (p) => `
         <li><a href="${p.url}" target="_blank" rel="noopener">
           ${p.img ? `<img src="${p.img}" alt="">` : '<img alt="">'}
-          <span class="meta">
-            <span class="t">${p.title}</span>
-            <span class="s">${[p.category, p.slug].filter(Boolean).join(' · ')}</span>
-          </span>
+          <span class="t">${p.title}</span>
+          <span class="s">${p.category || ''}</span>
           <span class="p">${money(p.price)}</span>
         </a></li>`,
           )
-          .join('') || '<li><p class="msg">Nothing matches that filter.</p></li>'
+          .join('') || '<li class="wide"><p class="msg">Nothing matches that filter.</p></li>'
     }
 
     const redraw = () => {
@@ -303,14 +360,26 @@
 
     redraw()
 
-    // Hands the slugs to BeyClub, which already knows each blade's tier and
-    // whether it is worth buying. A fragment is never sent to the server, so
-    // this stays inside your browser. Merch is left behind here too.
+    /*
+     * Hands the shelf to BeyClub, which knows each blade's tier and whether it
+     * is worth buying. A fragment is never sent to a server, so this stays
+     * inside your browser; merch is left behind here too.
+     *
+     * Title, price and category travel with the slug because BeyClub's own
+     * catalogue has been frozen since the shop closed: anything KGB has listed
+     * since is a slug it cannot resolve, and without these fields such a
+     * product could only be drawn as a bare link — not a card, and not
+     * something you could add to a watchlist.
+     */
     const rank = root.querySelector('.rank')
     rank.hidden = false
     rank.addEventListener('click', () => {
-      const slugs = rowsNow().map((p) => p.slug).join(',')
-      window.open(`${BEYCLUB}#/stock?live=${encodeURIComponent(slugs)}`, '_blank', 'noopener')
+      const payload = rowsNow().map((p) => ({ s: p.slug, t: p.title, p: p.price, c: p.category }))
+      window.open(
+        `${BEYCLUB}#/stock?live=${encodeURIComponent(JSON.stringify(payload))}`,
+        '_blank',
+        'noopener',
+      )
     })
   }
 
@@ -334,7 +403,12 @@
       })
 
       const inStock = all.filter((p) => p.inStock !== false)
-      inStock.sort((a, b) => (a.category || '').localeCompare(b.category || '') || a.title.localeCompare(b.title))
+      inStock.sort(
+        (a, b) =>
+          rankOf(a.category) - rankOf(b.category) ||
+          (a.category || '').localeCompare(b.category || '') ||
+          a.title.localeCompare(b.title),
+      )
 
       const kit = inStock.filter((p) => KIT.has(p.category))
       const merch = inStock.filter((p) => !KIT.has(p.category))
