@@ -76,6 +76,33 @@
     'Gear Case',
   ])
 
+  /**
+   * Beys first, then the gear, in the order a buyer cares about them.
+   *
+   * This cannot sort by tier: tiers are BeyClub's own blended ranking, computed
+   * from tournament results and community ratings that live on the other origin,
+   * and there is no product-to-tier map published for a script on KGB's page to
+   * read. "View rank in BeyClub" opens the list where that ranking exists, and
+   * it arrives sorted by tier.
+   */
+  const GROUP_RANK = {
+    Starter: 0,
+    Booster: 0,
+    'Random Booster': 0,
+    'Battle Set': 0,
+    'Deck Set': 0,
+    'Dash Set': 0,
+    'Custom Set': 0,
+    'Entry Package': 0,
+    Stadium: 1,
+    Launcher: 2,
+    Grip: 2,
+    'Launcher Grip': 2,
+    'Deck Case': 3,
+    'Gear Case': 3,
+  }
+  const rankOf = (cat) => GROUP_RANK[cat] ?? 9
+
   // ── Reading the shop ──────────────────────────────────────────────
 
   /**
@@ -208,10 +235,30 @@
           list-style: none; margin: 0; padding: 12px; overflow-y: auto; flex: 1;
           display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;
           align-content: start;
+          /*
+           * Required, not cosmetic. This grid is also the scroll container and a
+           * flex item with a definite height, and in that arrangement implicit
+           * auto-sized rows collapse once there are more rows than fit — 60-odd
+           * products crushed every card to a 9px sliver of image. Sizing rows to
+           * their content instead is what keeps them whole.
+           */
+          grid-auto-rows: max-content;
         }
-        li { border: 1px solid #1a2030; border-radius: 10px; background: #0f131c; overflow: hidden }
+        /*
+         * display:flex, not the default list-item, and no percentage height on
+         * the link. A list-item's marker box is the only thing an auto grid row
+         * measures here, and a percentage height inside an auto-sized row is a cyclic
+         * dependency the browser resolves by ignoring the card's real content —
+         * between them the rows collapsed to 9px and every card was a sliver.
+         * Stretching the link as a flex child keeps cards equal height without
+         * either problem.
+         */
+        li {
+          display: flex; border: 1px solid #1a2030; border-radius: 10px;
+          background: #0f131c; overflow: hidden;
+        }
         li.wide { grid-column: 1 / -1; border: 0; background: none }
-        a { display: block; padding: 10px; text-decoration: none; color: inherit; height: 100% }
+        a { display: block; flex: 1; padding: 10px; text-decoration: none; color: inherit }
         a:hover { background: #151b27 }
         img {
           width: 100%; height: 90px; object-fit: contain; border-radius: 6px;
@@ -356,7 +403,12 @@
       })
 
       const inStock = all.filter((p) => p.inStock !== false)
-      inStock.sort((a, b) => (a.category || '').localeCompare(b.category || '') || a.title.localeCompare(b.title))
+      inStock.sort(
+        (a, b) =>
+          rankOf(a.category) - rankOf(b.category) ||
+          (a.category || '').localeCompare(b.category || '') ||
+          a.title.localeCompare(b.title),
+      )
 
       const kit = inStock.filter((p) => KIT.has(p.category))
       const merch = inStock.filter((p) => !KIT.has(p.category))

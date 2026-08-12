@@ -241,6 +241,10 @@ export default function StockPage() {
     // A grab arriving into whatever chip was left selected shows a fraction of
     // what it just found, which reads as the grab having failed.
     setGroup('all')
+    // The shop can only order by category; this is the one place that knows
+    // which of what's on the shelf is actually worth the queue place, so a
+    // grab lands ranked rather than alphabetical.
+    setSort('tier')
   }, [live])
 
   const visible = useMemo(() => {
