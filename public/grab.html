@@ -180,19 +180,32 @@
   </p>
 </div>
 
-<h2>iPhone &amp; iPad — Shortcut (best on mobile)</h2>
+<h2>Safari — Shortcut (Mac, iPhone &amp; iPad)</h2>
 <div class="card">
-  <p>One-time setup, then it lives in Safari's Share sheet:</p>
+  <p>
+    <strong style="color:var(--text)">Safari can't take a bookmarklet the easy way</strong> — its
+    Add Bookmark dialog won't let you type an address, and it strips
+    <code>javascript:</code> when you paste. Use a Shortcut instead. Set it up
+    once on any Apple device and iCloud syncs it to the rest.
+  </p>
+  <p>Then it lives in Safari's Share menu, on Mac and on the phone:</p>
   <ol>
     <li>Open the <strong>Shortcuts</strong> app → <strong>+</strong> to make a new one.</li>
     <li>Add the action <strong>Run JavaScript on Web Page</strong>
         (search "JavaScript"; it's under Safari).</li>
-    <li>Tap the script box, delete the placeholder, and paste the code below.</li>
-    <li>Open the shortcut's settings (ⓘ) → turn on <strong>Show in Share Sheet</strong>.</li>
+    <li>Click the script box, delete the placeholder, and paste the code below.</li>
+    <li>Turn on <strong>Show in Share Sheet</strong> — in the details pane on a Mac, under ⓘ on a phone.</li>
     <li>Name it something you'll recognise, e.g. <em>KGB stock</em>.</li>
   </ol>
   <p>
-    Then, inside the shop: <strong>Share</strong> → scroll down → <strong>KGB stock</strong>.
+    Then, inside the shop: <strong>Share</strong> → <strong>KGB stock</strong>.
+    On a phone you may have to scroll the sheet down to find it.
+  </p>
+  <p style="font-size:13px">
+    Prefer a bookmark anyway? Press <code>⌘D</code> to bookmark any page, then
+    <code>⌥⌘B</code> to open Edit Bookmarks, right-click it → <strong>Edit
+    Address</strong>, and paste there. If the <code>javascript:</code> prefix
+    disappears when you paste, type it back in by hand.
   </p>
   <p style="margin-top:14px"><button data-copy>Copy the script</button></p>
   <textarea id="src" readonly spellcheck="false"></textarea>

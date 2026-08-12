@@ -50,6 +50,32 @@
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
   const money = (n) => (n === undefined ? '' : `RM ${n.toFixed(2)}`)
 
+  /**
+   * KGB's own category labels for the things worth queueing for. Kept in step
+   * with GROUPS in scripts/fetch-stock.mjs by hand — two lists, because that
+   * one runs in Node and this runs on KGB's page, with no way to share.
+   *
+   * Anything not named here is merchandise — pillows, keychains, activity books
+   * — and is hidden by default. It is counted rather than silently dropped, so
+   * that a category KGB adds later shows up as "hidden" instead of vanishing.
+   */
+  const KIT = new Set([
+    'Starter',
+    'Booster',
+    'Random Booster',
+    'Battle Set',
+    'Deck Set',
+    'Dash Set',
+    'Custom Set',
+    'Entry Package',
+    'Stadium',
+    'Launcher',
+    'Grip',
+    'Launcher Grip',
+    'Deck Case',
+    'Gear Case',
+  ])
+
   // ── Reading the shop ──────────────────────────────────────────────
 
   /**
@@ -172,6 +198,7 @@
           border-radius: 8px; border: 1px solid #2b3345; background: #0f131c; color: #e8ecf5;
         }
         input::placeholder { color: #5b6478 }
+        .merch { margin-top: 8px; width: 100%; font-size: 12px; color: #8b95a9 }
         ul { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1 }
         li { border-bottom: 1px solid #161b27 }
         a { display: flex; gap: 12px; align-items: center; padding: 11px 16px; text-decoration: none; color: inherit }
@@ -194,6 +221,7 @@
             <button class="x">✕</button>
           </div>
           <input class="filter" placeholder="Filter by name or code…" hidden>
+          <button class="merch" hidden></button>
         </header>
         <ul></ul>
         <footer>Your own view of a shop you are signed in to. Nothing here is published.</footer>
@@ -216,8 +244,17 @@
     root.querySelector('ul').innerHTML = `<li><p class="msg${isError ? ' err' : ''}">${html}</p></li>`
   }
 
-  function render(root, items) {
+  function render(root, kit, merch) {
     const list = root.querySelector('ul')
+    let showMerch = false
+    let query = ''
+
+    const rowsNow = () => {
+      const base = showMerch ? [...kit, ...merch] : kit
+      if (!query) return base
+      return base.filter((p) => `${p.title} ${p.slug} ${p.category}`.toLowerCase().includes(query))
+    }
+
     const draw = (rows) => {
       list.innerHTML =
         rows
@@ -235,22 +272,44 @@
           .join('') || '<li><p class="msg">Nothing matches that filter.</p></li>'
     }
 
-    draw(items)
+    const redraw = () => {
+      draw(rowsNow())
+      if (merch.length) {
+        toggle.textContent = showMerch
+          ? `Hide ${merch.length} merch`
+          : `${merch.length} merch hidden — show`
+      }
+    }
+
+    // Merchandise is not what a 15-minute queue place is for, so it starts
+    // hidden. Shown as a count rather than dropped, because "merch" here means
+    // "a category label this script doesn't recognise" — a new kind of bey
+    // would land in it, and silently swallowing that would be the worst outcome.
+    const toggle = root.querySelector('.merch')
+    if (merch.length) {
+      toggle.hidden = false
+      toggle.addEventListener('click', () => {
+        showMerch = !showMerch
+        redraw()
+      })
+    }
 
     const filter = root.querySelector('.filter')
     filter.hidden = false
     filter.addEventListener('input', () => {
-      const q = filter.value.trim().toLowerCase()
-      draw(!q ? items : items.filter((p) => `${p.title} ${p.slug} ${p.category}`.toLowerCase().includes(q)))
+      query = filter.value.trim().toLowerCase()
+      redraw()
     })
+
+    redraw()
 
     // Hands the slugs to BeyClub, which already knows each blade's tier and
     // whether it is worth buying. A fragment is never sent to the server, so
-    // this stays inside your browser.
+    // this stays inside your browser. Merch is left behind here too.
     const rank = root.querySelector('.rank')
     rank.hidden = false
     rank.addEventListener('click', () => {
-      const slugs = items.map((p) => p.slug).join(',')
+      const slugs = rowsNow().map((p) => p.slug).join(',')
       window.open(`${BEYCLUB}#/stock?live=${encodeURIComponent(slugs)}`, '_blank', 'noopener')
     })
   }
@@ -277,12 +336,19 @@
       const inStock = all.filter((p) => p.inStock !== false)
       inStock.sort((a, b) => (a.category || '').localeCompare(b.category || '') || a.title.localeCompare(b.title))
 
-      count.textContent = `${inStock.length} in stock of ${all.length}`
+      const kit = inStock.filter((p) => KIT.has(p.category))
+      const merch = inStock.filter((p) => !KIT.has(p.category))
+
+      count.textContent = `${kit.length} in stock of ${all.length}`
       if (!inStock.length) {
         say(root, 'Nothing is in stock right now — every card on the shelf says sold out.')
         return
       }
-      render(root, inStock)
+      if (!kit.length) {
+        say(root, `Nothing but merchandise in stock — ${merch.length} item(s), none of it beys or gear.`)
+        return
+      }
+      render(root, kit, merch)
     } catch (err) {
       count.textContent = 'stopped'
       say(root, err.message, true)
