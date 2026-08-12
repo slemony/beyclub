@@ -5,7 +5,14 @@
  * KGB is a server-rendered Laravel shop whose `/shop` listing already carries
  * everything we need — title, category, price, image and an Add to Cart /
  * Out of Stock button — so the whole catalogue costs five requests rather than
- * one per product. Its robots.txt is an empty `Disallow:`.
+ * one per product. Its robots.txt allows `*` everywhere but `/admin`.
+ *
+ * Since 6 Aug 2026 none of that is reachable anonymously: `/shop` answers with
+ * a "Sign in to queue" page instead, because KGB now reserves places in line
+ * for signed-in members. This script deliberately does not try to get around
+ * that — it records the closed door (see `ShopClosed`) and keeps publishing the
+ * last shelf it genuinely saw, so the app can say so plainly. If the shop
+ * reopens, or grants BeyClub a feed, the scrape resumes on its own.
  *
  * The product slug is the useful part: it spells out the product code and the
  * build it ships as ("bx-34-cobalt-dragoon-2-60c"). The code is what lets the
@@ -61,10 +68,44 @@ const die = (msg) => {
   process.exit(1)
 }
 
+/**
+ * KGB's members-only interstitial, served with a 200 in place of whatever page
+ * was asked for. Since 6 Aug 2026 every anonymous request to /shop and
+ * /products/* gets this: places in line are reserved for signed-in members, so
+ * the catalogue is no longer public. Hosted runners see a bare 403 instead.
+ *
+ * Matched on the sign-in copy rather than the title alone, so that a reworded
+ * heading reads as "still gated" and not as a catalogue that has gone empty.
+ */
+const GATE = /Sign in to (?:queue|shop)|places in line are reserved for signed-in members/i
+
+/**
+ * A shop we cannot read is not the same as a scraper that is broken, and the
+ * difference has to survive as far as the page. These carry the distinction out
+ * of `get()` so the caller can record it, instead of dying and leaving the
+ * published file frozen with no explanation.
+ */
+class ShopClosed extends Error {
+  constructor(health, detail) {
+    super(detail)
+    this.health = health
+  }
+}
+
 async function get(url) {
-  const res = await fetch(url, { headers: { 'user-agent': 'beyclub-stock-refresh' } })
-  if (!res.ok) die(`${url} returned ${res.status} ${res.statusText}`)
-  return res.text()
+  let res
+  try {
+    res = await fetch(url, { headers: { 'user-agent': 'beyclub-stock-refresh' } })
+  } catch (err) {
+    throw new ShopClosed('unreachable', `${url} — ${err.message}`)
+  }
+  if (!res.ok) throw new ShopClosed('unreachable', `${url} returned ${res.status} ${res.statusText}`)
+
+  const html = await res.text()
+  if (GATE.test(html)) {
+    throw new ShopClosed('gated', `${url} answered with the members-only sign-in queue`)
+  }
+  return html
 }
 
 /**
@@ -151,8 +192,54 @@ async function settleAvailability(products) {
   return open.length
 }
 
-const { products, pages } = await scrape()
-const settled = await settleAvailability(products)
+/** Everything published about the shop except the shelf itself. */
+const meta = (health) => ({ checkedAt: new Date().toISOString(), health })
+
+/**
+ * Nothing new to publish — but the fact that we looked, and what we found, is
+ * itself worth publishing. Without it the page keeps announcing "stock last
+ * changed 6 Aug", which a reader takes to mean KGB has not restocked in all
+ * that time rather than that we can no longer see the shelf.
+ *
+ * Exits 0: a shop that has closed its doors is not a failed run, and flagging
+ * it red every day would train us to ignore the one that matters.
+ */
+function recordClosed(err) {
+  console.error(`✗ ${err.message}`)
+  if (!existsSync(OUT)) die('and no previous stock to fall back on')
+
+  const prev = JSON.parse(readFileSync(OUT, 'utf8'))
+  const kept = { ...prev, ...meta(err.health) }
+  // Rebuilt in the published key order rather than spread onto the end, so the
+  // status does not land after a 157-entry array.
+  writeFileSync(
+    OUT,
+    `${JSON.stringify(
+      {
+        updatedAt: kept.updatedAt,
+        ...meta(err.health),
+        source: kept.source,
+        coverage: kept.coverage,
+        products: kept.products,
+      },
+      null,
+      2,
+    )}\n`,
+  )
+
+  const n = prev.products?.length ?? 0
+  console.log(`  recorded health "${err.health}" — keeping ${n} products last seen ${prev.updatedAt}`)
+  process.exit(0)
+}
+
+let products, pages, settled
+try {
+  ;({ products, pages } = await scrape())
+  settled = await settleAvailability(products)
+} catch (err) {
+  if (err instanceof ShopClosed) recordClosed(err)
+  throw err
+}
 
 if (!products.length) die('no product cards on /shop — KGB markup changed')
 
@@ -169,9 +256,10 @@ if (broken.length) {
 const beys = products.filter((p) => p.group === 'bey')
 if (!beys.length) die('not one bey in the catalogue — the category labels changed')
 
+const prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : undefined
+
 // A catalogue that quietly halves would empty the page without failing the run.
-if (existsSync(OUT)) {
-  const prev = JSON.parse(readFileSync(OUT, 'utf8'))
+if (prev) {
   const was = prev.products?.length ?? 0
   if (products.length < was * COVERAGE_FLOOR) {
     die(`catalogue collapsed: ${was} products -> ${products.length}. Keeping previous data.`)
@@ -181,9 +269,15 @@ if (existsSync(OUT)) {
 products.sort((a, b) => a.slug.localeCompare(b.slug))
 
 const inStock = products.filter((p) => p.inStock).length
+const unchanged = prev && JSON.stringify(prev.products) === JSON.stringify(products)
 
 const data = {
-  updatedAt: new Date().toISOString(),
+  /**
+   * Held at its old value when the shelf has not moved, so it goes on meaning
+   * "when stock last changed" rather than "when we last ran".
+   */
+  updatedAt: unchanged ? prev.updatedAt : new Date().toISOString(),
+  ...meta('ok'),
   source: {
     name: 'Kelab Gasing Beyblade',
     url: `${SHOP}/`,
@@ -194,22 +288,16 @@ const data = {
 }
 
 /**
- * The workflow commits on `git diff --quiet`, so rewriting the timestamp on
- * every run would commit twice a day forever. Leaving the file alone when the
- * shelf has not moved is what makes `updatedAt` mean "when stock last changed".
+ * Written on every run, not only when the shelf moves, because `checkedAt` is
+ * the whole point: a file that changes daily is how the page can say when it
+ * last saw the shop. That costs one commit and one redeploy a day, which is
+ * also what keeps a public repo's scheduled workflows from being switched off
+ * for inactivity.
  */
-if (existsSync(OUT)) {
-  const prev = JSON.parse(readFileSync(OUT, 'utf8'))
-  if (JSON.stringify(prev.products) === JSON.stringify(products)) {
-    console.log(`✓ unchanged — ${products.length} products, ${inStock} in stock`)
-    process.exit(0)
-  }
-}
-
 writeFileSync(OUT, `${JSON.stringify(data, null, 2)}\n`)
 
 const groups = products.reduce((acc, p) => ({ ...acc, [p.group]: (acc[p.group] ?? 0) + 1 }), {})
-console.log(`✓ ${products.length} products over ${pages} pages · ${inStock} in stock`)
+console.log(`✓ ${unchanged ? 'unchanged — ' : ''}${products.length} products over ${pages} pages · ${inStock} in stock`)
 console.log(`  ${Object.entries(groups).map(([k, v]) => `${k} ${v}`).join(' · ')}`)
 console.log(`  ${products.filter((p) => p.code).length} carry a product code`)
 if (settled) console.log(`  ${settled} settled against the product page's own availability`)

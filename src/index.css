@@ -434,7 +434,10 @@ button {
 
 /* ── Ranking provenance (collapsed by default) ─────────────── */
 
-.notice-stale {
+/* Both classes are applied together, and `.notice` centres its text further
+   down the file — so this needs the extra specificity for the left alignment
+   below to survive. A paragraph this long is unreadable centred. */
+.notice.notice-stale {
   padding: 10px 14px;
   border-radius: var(--radius-sm);
   background: rgba(255, 184, 48, 0.1);

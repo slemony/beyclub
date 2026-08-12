@@ -205,13 +205,30 @@ export type StockProduct = {
   img?: string
 }
 
+/**
+ * Whether the last look at the shop actually saw the shelf.
+ *
+ * `gated` is KGB's own doing: since 6 Aug 2026 `/shop` answers everyone with a
+ * "Sign in to queue" page, because places in line are now reserved for
+ * signed-in members. There is nothing to fix at this end, so the scrape records
+ * it and the page says so rather than presenting six-day-old stock as current.
+ */
+export type StockHealth = 'ok' | 'gated' | 'unreachable'
+
 export type StockFile = {
   /**
    * When the shelf last moved — not when it was last checked. The refresh job
-   * leaves the file alone when nothing changed, so that it commits only on a
-   * real change.
+   * leaves the products alone when nothing changed, so that this only advances
+   * on a real change. For when we last *looked*, read `checkedAt`.
    */
   updatedAt: string
+  /**
+   * When the shop was last looked at, whatever the answer. Absent on files
+   * written before the shop closed to anonymous readers.
+   */
+  checkedAt?: string
+  /** What that look found. Absent means the file predates the check. */
+  health?: StockHealth
   source: { name: string; url: string; currency: string }
   coverage: { products: number; inStock: number; pages: number }
   products: StockProduct[]

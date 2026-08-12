@@ -1,9 +1,11 @@
 name: Refresh KGB stock
 
-# Four times a day MYT — morning, noon, late afternoon and midnight — often
-# enough to catch a restock the day it happens without hammering someone else's
-# shop. Readers can also pull the latest deployed copy by hand, at most once an
-# hour, from the "Where this comes from" sheet on the Stock page.
+# Once a day. This ran four times daily to catch a restock the day it happened,
+# which stopped being the job on 6 Aug 2026: KGB made the shop members-only, so
+# /shop answers every anonymous caller with a sign-in queue and there is no
+# shelf to read. The scrape is now a watchdog — it records that the door is
+# still shut, and resumes publishing real stock by itself if it ever reopens.
+# Asking four times a day for a page we know is closed would be rude.
 #
 # Scrape, commit, build and publish all happen in this one workflow on purpose.
 # A commit pushed with GITHUB_TOKEN does not trigger other workflows, so a
@@ -11,9 +13,6 @@ name: Refresh KGB stock
 on:
   schedule:
     - cron: '30 0 * * *' # 00:30 UTC = 08:30 MYT (8:30am)
-    - cron: '0 4 * * *'  # 04:00 UTC = 12:00 MYT (12:00pm)
-    - cron: '30 9 * * *' # 09:30 UTC = 17:30 MYT (5:30pm)
-    - cron: '0 16 * * *' # 16:00 UTC = 00:00 MYT (12:00am)
   workflow_dispatch:
 
 permissions:

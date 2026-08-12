@@ -66,6 +66,16 @@ const when = (iso?: string) =>
       })
     : null
 
+/** Just the day. A banner about a shelf we last saw last week owes no minute. */
+const day = (iso?: string) =>
+  iso
+    ? new Date(iso).toLocaleDateString('en-MY', {
+        timeZone: 'Asia/Kuala_Lumpur',
+        day: 'numeric',
+        month: 'short',
+      })
+    : null
+
 export default function StockPage() {
   const [stock, setStock] = useState<StockFile | null>(null)
   const [data, setData] = useState<Dataset | null>(null)
@@ -257,6 +267,9 @@ export default function StockPage() {
   useEffect(() => () => { if (pollRef.current) clearTimeout(pollRef.current) }, [])
 
   const updated = when(stock?.updatedAt)
+  const checked = when(stock?.checkedAt)
+  const shelfDay = day(stock?.updatedAt)
+  const checkedDay = day(stock?.checkedAt)
 
   // One line, several states: scanning while a run is in flight, the outcome
   // once it settles, otherwise the button (or when it frees up again).
@@ -306,15 +319,48 @@ export default function StockPage() {
         </p>
       )}
 
+      {/*
+        Without this the page says "Stock last changed 6 Aug" and a reader
+        reasonably concludes KGB has not restocked since — when in truth the
+        shop went members-only that day and we have not been able to see the
+        shelf at all. Say which of the two it is.
+      */}
+      {stock?.health === 'gated' && (
+        <p className="notice notice-stale">
+          <strong>KGB's shop is members-only now.</strong> It asks everyone to sign in and take a
+          place in the queue, so BeyClub can't read availability any more. Below is the shelf as we
+          last saw it on {shelfDay} — prices and tiers still hold, what's in stock may not.
+          {checkedDay && ` Checked again ${checkedDay}.`}{' '}
+          <a href="https://kelabgasingbeyblade.my/shop" target="_blank" rel="noopener noreferrer">
+            Sign in at KGB ↗
+          </a>
+        </p>
+      )}
+
+      {stock?.health === 'unreachable' && (
+        <p className="notice notice-stale">
+          <strong>Couldn't reach the KGB shop.</strong> Below is the shelf as we last saw it on{' '}
+          {shelfDay}.{checkedDay && ` Tried again ${checkedDay}.`}
+        </p>
+      )}
+
       {showSource && (
         <Sheet label="Where this comes from" onClose={() => setShowSource(false)}>
           <div className="attribution">
             <h2 className="sheet-name">Where this comes from</h2>
             <p className="attr-blurb">
-              Prices and availability are read twice a day straight from the Kelab Gasing Beyblade
-              shop — nobody types them in here. The tier against each bey is our own blended
-              ranking, not the shop's; KGB neither supplies it nor endorses it.
+              Prices and availability are read straight from the Kelab Gasing Beyblade shop — nobody
+              types them in here. The tier against each bey is our own blended ranking, not the
+              shop's; KGB neither supplies it nor endorses it.
             </p>
+            {stock?.health === 'gated' && (
+              <p className="attr-blurb">
+                KGB has since made the shop members-only, reserving places in the queue for
+                signed-in accounts, so it can no longer be read from out here. We have left the last
+                catalogue we saw in place and check once a day whether the door has reopened —
+                nothing on this page is a way around their sign-in.
+              </p>
+            )}
             <p className="attr-blurb">
               A booster or deck set has no ranking of its own, so it is graded on the strongest
               blade in the box, and every blade inside is listed so you can judge the rest. A
@@ -330,6 +376,10 @@ export default function StockPage() {
                 Stock last changed {updated} (MYT)
                 {refreshControl}
               </p>
+            )}
+            {/* The two are the same thing only while the shop is readable. */}
+            {checked && (
+              <p className="attr-time">Shop last checked {checked} (MYT)</p>
             )}
           </div>
         </Sheet>
