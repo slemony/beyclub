@@ -18,14 +18,16 @@ import {
   triggerStockScrape,
 } from '../lib/stock'
 import { tierRank } from '../lib/tiers'
+import { lastLiveCheck, markLiveChecked, readWatchlist, toggleWatch, watchedFirst } from '../lib/watchlist'
 import type { Dataset, Part, PartNotes, StockFile, StockGroup, StockProduct } from '../lib/types'
 
-type Filter = StockGroup | 'all'
+type Filter = StockGroup | 'all' | 'watching'
 
-const FILTERS: Filter[] = ['all', 'bey', 'stadium', 'launcher', 'case', 'merch']
+const FILTERS: Filter[] = ['all', 'watching', 'bey', 'stadium', 'launcher', 'case', 'merch']
 
 const GROUP_LABELS: Record<Filter, string> = {
   all: 'All',
+  watching: '★ Watching',
   bey: 'Beys',
   stadium: 'Stadiums',
   launcher: 'Launchers',
@@ -89,6 +91,7 @@ export default function StockPage() {
   const [showSoldOut, setShowSoldOut] = useState(false)
   const [stack, setStack] = useState<Part[]>([])
   const [showSource, setShowSource] = useState(false)
+  const [watched, setWatched] = useState<Set<string>>(() => readWatchlist())
   const [canRefresh, setCanRefresh] = useState(() => canRefreshStockNow())
   const [refreshing, setRefreshing] = useState(false)
   // The outcome of the last manual check, shown next to the timestamp so the
@@ -181,14 +184,37 @@ export default function StockPage() {
     [],
   )
 
+  const onToggleWatch = useCallback((slug: string) => {
+    setWatched((prev) => toggleWatch(slug, prev))
+  }, [])
+
+  /**
+   * A live grab is a moment, not a state — the page has no other way to say
+   * "that worked", so record when one rendered and show it on the banner.
+   */
+  useEffect(() => {
+    if (!live) return
+    markLiveChecked()
+    // A grab arriving into whatever chip was left selected shows a fraction of
+    // what it just found, which reads as the grab having failed.
+    setGroup('all')
+  }, [live])
+
   const visible = useMemo(() => {
     const products = view.products.filter(
-      (p) => (group === 'all' || p.group === group) && (showSoldOut || p.inStock),
+      (p) =>
+        (group === 'watching' ? watched.has(p.slug) : group === 'all' || p.group === group) &&
+        (showSoldOut || p.inStock),
     )
+
+    // Whatever the chosen sort, what you are waiting for comes first — the
+    // point of starring something is not having to find it again.
+    const byWatch = watchedFirst(watched)
 
     if (sort === 'tier') {
       return products.sort(
         (a, b) =>
+          byWatch(a, b) ||
           tierRank(bestBySlug.get(a.slug)?.tier ?? '-') - tierRank(bestBySlug.get(b.slug)?.tier ?? '-') ||
           featuredOrder(a, b),
       )
@@ -196,19 +222,23 @@ export default function StockPage() {
     if (sort === 'buy') {
       return products.sort(
         (a, b) =>
+          byWatch(a, b) ||
           BUY_RANK[bestBySlug.get(a.slug)?.buy ?? ''] - BUY_RANK[bestBySlug.get(b.slug)?.buy ?? ''] ||
           featuredOrder(a, b),
       )
     }
     if (sort === 'price') {
-      return products.sort((a, b) => a.priceMYR - b.priceMYR || featuredOrder(a, b))
+      return products.sort((a, b) => byWatch(a, b) || a.priceMYR - b.priceMYR || featuredOrder(a, b))
     }
-    return products.sort(featuredOrder)
-  }, [view, group, showSoldOut, sort, bestBySlug, featuredOrder])
+    return products.sort((a, b) => byWatch(a, b) || featuredOrder(a, b))
+  }, [view, group, showSoldOut, sort, bestBySlug, featuredOrder, watched])
 
   const available = useMemo(
-    () => view.products.filter((p) => group === 'all' || p.group === group).length,
-    [view, group],
+    () =>
+      view.products.filter((p) =>
+        group === 'watching' ? watched.has(p.slug) : group === 'all' || p.group === group,
+      ).length,
+    [view, group, watched],
   )
 
   const openPart = useCallback((part: Part) => {
@@ -302,6 +332,9 @@ export default function StockPage() {
   const updated = when(stock?.updatedAt)
   const shelfDay = day(stock?.updatedAt)
   const checkedDay = day(stock?.checkedAt)
+  // Read at render rather than held in state: it is written by the live view on
+  // a different visit, so state here would go stale the moment you came back.
+  const liveAt = when(lastLiveCheck() ?? undefined)
 
   // One line, several states: scanning while a run is in flight, the outcome
   // once it settles, otherwise the button (or when it frees up again).
@@ -374,6 +407,17 @@ export default function StockPage() {
             we last saw it on {shelfDay} — prices and tiers still hold, what's in stock may not.
             {checkedDay && ` Checked again ${checkedDay}.`}
           </p>
+          {/*
+            The only proof the grab actually ran, and the answer to "did that
+            do anything?" — the published shelf below deliberately does not
+            change when it does.
+          */}
+          {liveAt && (
+            <p className="notice-sub">
+              You last pulled a live list from the shop {liveAt}. It isn't saved here — the shelf
+              below stays as KGB last let us read it.
+            </p>
+          )}
           {/*
             The two things a reader can actually do about it, as buttons rather
             than prose links — the tool is useless if nobody finds it.
@@ -523,6 +567,8 @@ export default function StockPage() {
             product={product}
             contents={stockIndex.contents(product)}
             onOpen={openPart}
+            watched={watched.has(product.slug)}
+            onToggleWatch={onToggleWatch}
           />
         ))}
       </div>
