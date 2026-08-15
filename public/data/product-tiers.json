@@ -14,7 +14,7 @@
       "buy": "maybe"
     },
     "BX-04": {
-      "tier": "C+",
+      "tier": "B",
       "buy": "no"
     },
     "BX-05": {
@@ -22,7 +22,7 @@
       "buy": "maybe"
     },
     "BX-06": {
-      "tier": "C+",
+      "tier": "B",
       "buy": "no"
     },
     "BX-07": {
@@ -163,7 +163,7 @@
     },
     "BXG-32": {
       "tier": "C+",
-      "buy": "maybe"
+      "buy": "no"
     },
     "BXG-33": {
       "tier": "E",
