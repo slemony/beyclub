@@ -203,6 +203,12 @@ export type StockProduct = {
   priceMYR: number
   inStock: boolean
   img?: string
+  /**
+   * True when this row was added to a live view because it's watched, not
+   * because the grab actually saw it on the shelf this pull — so `inStock`
+   * here is a guess carried over from the frozen catalogue, not a live read.
+   */
+  notOnThisPull?: boolean
 }
 
 /**
@@ -244,4 +250,88 @@ export type Dataset = {
   fetchedAt: string
   /** True when served from cache after a failed refresh. */
   stale: boolean
+}
+
+/**
+ * Where one batch of copies came from. A part owned twice over because two
+ * different boxes shipped it is one entry with two sources — that's the whole
+ * point of the split: "2× 3-60" alone loses the fact that pulling a third
+ * would mean buying a set you already own most of.
+ */
+export type CollectionSource = {
+  id: string
+  /** The set it came in, e.g. "CX-13" or "BX-35 booster". Absent for a loose part. */
+  from?: string
+  qty: number
+  /** 3D-printed or third-party rather than an official part — counted apart. */
+  unofficial: boolean
+  notes?: string
+  addedAt: string
+}
+
+/**
+ * One part in a collection, however many you own of it. `code` resolves
+ * against the catalogue via partIndex; `name` carries a part the catalogue
+ * has never heard of (an unofficial mold, a prototype), in which case there's
+ * nothing to resolve and the name is all there is.
+ */
+export type CollectionEntry = {
+  /** Locally generated, stable across devices once synced. */
+  id: string
+  cat: PartCategory
+  code?: string
+  name?: string
+  sources: CollectionSource[]
+  addedAt: string
+  /** Last-write-wins key when merging local and synced copies. */
+  updatedAt: string
+}
+
+/**
+ * A bey the user has put together, stored as bare part codes so it re-reads
+ * against a refreshed catalogue rather than freezing today's tiers into it.
+ * Every slot is optional — a half-finished build is still worth keeping.
+ */
+export type SavedBuild = {
+  id: string
+  name?: string
+  blade?: string
+  ratchet?: string
+  bit?: string
+  assist?: string
+  overblade?: string
+  notes?: string
+  /** How this build has actually done, kept by its owner. */
+  record?: BuildRecord
+  createdAt: string
+  updatedAt: string
+}
+
+/**
+ * The user's own results for a build — deliberately the same three counts the
+ * tier list reports for a part (top-4 placements and firsts, over so many
+ * events), so a personal record reads on the same terms as the published one.
+ */
+export type BuildRecord = {
+  events: number
+  placements: number
+  firsts: number
+  notes?: string
+}
+
+/** Three beys taken to a tournament together. */
+export type Deck = {
+  id: string
+  name: string
+  /** Build ids, up to three. */
+  buildIds: string[]
+  notes?: string
+  /**
+   * Silences the repeated-part warning. A deck normally can't reuse one
+   * physical part across two beys, but plenty of people own doubles — so the
+   * check warns and this turns the warning off rather than the rule blocking.
+   */
+  allowDuplicates?: boolean
+  createdAt: string
+  updatedAt: string
 }

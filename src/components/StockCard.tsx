@@ -52,10 +52,11 @@ export default function StockCard({
   }
 
   // Dimming a card is itself a claim that it is sold out, so it goes with the
-  // chip: no dimming when availability is unknown.
+  // chip: no dimming when availability is unknown, and none for a watched
+  // item this pull never actually saw — that's not the same claim as "sold out".
   const cls = [
     'stock-card',
-    showAvailability && !product.inStock ? 'sold-out' : '',
+    showAvailability && !product.inStock && !product.notOnThisPull ? 'sold-out' : '',
     watched ? 'watched' : '',
   ]
     .filter(Boolean)
@@ -81,7 +82,10 @@ export default function StockCard({
           </a>
           <p className="stock-line">
             <span className="stock-price">{formatMYR(product.priceMYR)}</span>
-            {showAvailability && (
+            {showAvailability && product.notOnThisPull && (
+              <span className="stock-status unknown">Not on this pull</span>
+            )}
+            {showAvailability && !product.notOnThisPull && (
               <span className={product.inStock ? 'stock-status in' : 'stock-status out'}>
                 {product.inStock ? 'In stock' : 'Sold out'}
               </span>

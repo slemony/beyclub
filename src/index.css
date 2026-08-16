@@ -1137,6 +1137,11 @@ button {
   color: var(--text-3);
 }
 
+.stock-status.unknown {
+  color: var(--text-3);
+  font-style: italic;
+}
+
 .stock-flag.good {
   color: #7fe0a4;
   border-color: rgba(78, 195, 122, 0.32);
@@ -1751,6 +1756,870 @@ button {
   border: 1px solid var(--hairline);
   font-size: 14px;
   font-weight: 600;
+}
+
+/* ── Collection ────────────────────────────────────────────── */
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Tiles rather than full-width rows: a collection is browsed by recognising
+   a part, which the image does — the row form spent most of its width on
+   whitespace and fitted three parts on a phone screen. */
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+}
+
+.collection-group {
+  margin-bottom: 20px;
+}
+
+.collection-group-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+
+.collection-tile {
+  display: flex;
+  flex-direction: column;
+  padding: 9px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+/* A tile is only a thumbnail wide, which the source rows (origin, stepper,
+   remove) cannot share — so an opened one takes the whole row instead. */
+.collection-tile.open {
+  grid-column: 1 / -1;
+}
+
+.collection-tile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+  width: 100%;
+}
+
+.collection-tile-top {
+  position: relative;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.collection-tile-tier {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 10px;
+  min-width: 24px;
+  padding: 2px 5px;
+}
+
+.collection-count {
+  position: absolute;
+  left: 30px;
+  bottom: -2px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #08090d;
+  background: #4da3ff;
+}
+
+.collection-tile-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collection-tile-code,
+.collection-tile-flag {
+  font-size: 10px;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collection-tile-flag {
+  color: #ffd489;
+}
+
+.collection-tile-toggle {
+  margin-top: 7px;
+  padding: 4px 0 0;
+  border-top: 1px solid var(--hairline);
+  font-size: 10.5px;
+  color: var(--text-3);
+  text-align: left;
+}
+
+.collection-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.collection-source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.collection-source .collection-controls {
+  margin-top: 0;
+  margin-left: auto;
+}
+
+.collection-source .collection-notes {
+  flex-basis: 100%;
+}
+
+.collection-source-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.collection-source-from {
+  font-size: 11px;
+  color: var(--text-2);
+}
+
+.collection-notes {
+  font-size: 11px;
+  color: var(--text-3);
+  line-height: 1.45;
+}
+
+.collection-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.collection-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px;
+  border-radius: 999px;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.collection-stepper button {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.collection-stepper span {
+  min-width: 16px;
+  text-align: center;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.collection-remove {
+  font-size: 11.5px;
+  color: var(--text-3);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  flex-shrink: 0;
+}
+
+.collection-remove:hover {
+  color: #ff8a8a;
+}
+
+.collection-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.collection-field label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+
+.collection-field input[type='text'],
+.collection-field textarea {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--glass);
+  border: 1px solid var(--hairline);
+  outline: none;
+  font-family: inherit;
+}
+
+.collection-field textarea {
+  min-height: 64px;
+  resize: vertical;
+}
+
+.collection-field input:focus,
+.collection-field textarea:focus {
+  border-color: rgba(77, 163, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(77, 163, 255, 0.12);
+}
+
+.collection-results {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 40vh;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.collection-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+  width: 100%;
+}
+
+.collection-result:active {
+  background: var(--glass-strong);
+}
+
+.collection-result-check {
+  cursor: pointer;
+}
+
+.collection-result-check input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4da3ff;
+  flex-shrink: 0;
+}
+
+.collection-selected {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.04);
+  margin-top: 10px;
+}
+
+.collection-submit {
+  width: 100%;
+  margin-top: 14px;
+  padding: 13px;
+  border-radius: 14px;
+  background: rgba(77, 163, 255, 0.16);
+  border: 1px solid rgba(77, 163, 255, 0.4);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.collection-submit:disabled {
+  opacity: 0.5;
+}
+
+.collection-empty-hint {
+  font-size: 11px;
+  color: var(--text-3);
+  margin: 4px 0 0;
+}
+
+/* The sheet title sat flush against the controls under it. */
+.sheet-name-lead {
+  margin-bottom: 16px;
+}
+
+.collection-custom-out {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+}
+
+.collection-custom-out .chip-row {
+  margin-top: 9px;
+  margin-bottom: 0;
+}
+
+.collection-check-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12.5px;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.collection-check-line input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4da3ff;
+  flex-shrink: 0;
+}
+
+.collection-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.collection-actions .collection-submit {
+  flex: 1;
+}
+
+.collection-back {
+  margin-top: 14px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  background: var(--glass-strong);
+  border: 1px solid var(--hairline);
+  font-size: 14px;
+  color: var(--text-2);
+  flex-shrink: 0;
+}
+
+/* ── Builds & decks ────────────────────────────────────────── */
+
+.build-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Builds and decks card up like the collection does — wider cells than the
+   part tiles, since each carries a title and a row of parts. */
+.build-grid,
+.pick-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.build-grid {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.pick-grid {
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  max-height: 46vh;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.build-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 11px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  text-align: left;
+}
+
+.build-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.build-card-record {
+  font-size: 10.5px;
+  color: var(--text-3);
+}
+
+/* A build already in the deck — the tick and the lit border are the whole
+   affordance, since the card itself is the checkbox. */
+.build-card.selected {
+  border-color: rgba(77, 163, 255, 0.55);
+  background: rgba(77, 163, 255, 0.1);
+}
+
+.build-card.dim {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.build-tick {
+  display: inline-grid;
+  place-items: center;
+  width: 15px;
+  height: 15px;
+  margin-right: 6px;
+  border-radius: 4px;
+  border: 1px solid var(--hairline-strong);
+  font-size: 10px;
+  line-height: 1;
+  vertical-align: -2px;
+}
+
+.build-tick.on {
+  background: #4da3ff;
+  border-color: #4da3ff;
+  color: #04121f;
+  font-weight: 700;
+}
+
+/* ── Modal ─────────────────────────────────────────────────────── */
+
+/* Above the sheet backdrop (z-index 60), since a confirm is always asked
+   about something on the sheet underneath it. */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: fadeIn 0.16s ease both;
+}
+
+/* Nearly opaque, unlike the sheet: a dialog asking a question has to be
+   readable against whatever it interrupted, and the sheet's own translucency
+   would stack with it. */
+.modal {
+  width: 100%;
+  max-width: 360px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 18px;
+  background: #161b24;
+  border-color: var(--hairline-strong);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  animation: modalIn 0.2s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+
+.modal-title {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-size: 17px;
+}
+
+.modal-body {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.modal-btn {
+  flex: 1;
+  padding: 11px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  background: var(--glass-strong);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.modal-btn.danger {
+  border-color: rgba(255, 122, 122, 0.45);
+  background: rgba(255, 122, 122, 0.14);
+  color: #ffb4b4;
+}
+
+.modal-btn.primary {
+  border-color: rgba(77, 163, 255, 0.45);
+  background: rgba(77, 163, 255, 0.16);
+}
+
+.arrival-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+}
+
+.arrival-section h4 {
+  margin: 0 0 4px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.arrival-names {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.sync-notice {
+  position: relative;
+  padding-right: 34px;
+}
+
+.sync-notice code {
+  font-size: 11px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.sync-notice-dismiss {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.65;
+}
+
+.sync-notice-dismiss:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.remove-all {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.remove-all-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 122, 122, 0.08);
+  border: 1px solid rgba(255, 122, 122, 0.3);
+  font-size: 12px;
+  color: #ffb4b4;
+}
+
+.remove-all-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.remove-all-actions .collection-back {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* What you already own of a part, shown while adding more of it. */
+.have-chip {
+  background: rgba(125, 226, 168, 0.14);
+  border-color: rgba(125, 226, 168, 0.4);
+  color: #a9edc6;
+  flex-shrink: 0;
+}
+
+.deck-beys {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 2px;
+}
+
+.deck-bey {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.deck-bey-name {
+  font-size: 11px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collection-tile.not-owned {
+  opacity: 0.62;
+}
+
+.collection-tile-flag.dim {
+  color: var(--text-3);
+}
+
+.detail-open-part {
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px;
+  font-size: 12.5px;
+}
+
+.record-row {
+  display: flex;
+  gap: 8px;
+}
+
+.record-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 6px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--hairline);
+}
+
+.record-label {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.build-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+}
+
+.deck-row {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  text-align: left;
+  width: 100%;
+}
+
+.build-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.build-row-title {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.build-row-parts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.build-row-part {
+  position: relative;
+  display: block;
+}
+
+.build-row-tier {
+  position: absolute;
+  right: -4px;
+  bottom: -3px;
+  min-width: 0;
+  padding: 0 4px;
+  font-size: 9px;
+  background: var(--bg, #0b0e14);
+}
+
+.build-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 14px;
+}
+
+.build-slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.build-slot-label {
+  width: 62px;
+  flex-shrink: 0;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.build-slot-body {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.03);
+  text-align: left;
+}
+
+.build-slot-empty {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* A slot the chosen blade's line does not have — shown so the shape of the
+   bey is legible, but not offered. */
+.build-slot.disabled {
+  opacity: 0.45;
+}
+
+.build-slot.disabled .build-slot-body {
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.build-notes-field {
+  margin-top: 16px;
+}
+
+.build-suggest {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(77, 163, 255, 0.28);
+  background: rgba(77, 163, 255, 0.08);
+}
+
+.build-suggest-list {
+  margin: 8px 0 0;
+  padding-left: 16px;
+  font-size: 11.5px;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+
+.build-suggest-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+}
+
+.build-owned-toggle {
+  margin-top: 10px;
+}
+
+.deck-warning {
+  margin: 14px 0 12px;
+}
+
+.deck-delete {
+  width: 100%;
+}
+
+.collection-result.dim {
+  opacity: 0.72;
+}
+
+.signin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.signin-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* ── Motion ────────────────────────────────────────────────── */

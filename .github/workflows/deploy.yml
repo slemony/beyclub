@@ -30,6 +30,15 @@ jobs:
           # The stock "Check now" dispatcher URL (worker/). Unset until deployed,
           # which leaves the button falling back to a plain re-fetch.
           VITE_STOCK_REFRESH_URL: ${{ vars.STOCK_REFRESH_URL }}
+          # Firebase web config for the collection tracker's Google sign-in and
+          # sync. Not secret — Firestore rules do the actual access control —
+          # but kept as repo variables for parity with STOCK_REFRESH_URL above.
+          # Unset until the user creates their own Firebase project, which
+          # leaves sign-in hidden and the tracker running local-only.
+          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

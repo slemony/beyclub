@@ -74,6 +74,26 @@ export function CommunityIcon({ className }: Props) {
   )
 }
 
+export function CollectionIcon({ className }: Props) {
+  return (
+    <svg {...base} className={className}>
+      <rect x="2.5" y="7.5" width="19" height="12" rx="2.5" />
+      <path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5" />
+      <path d="M2.5 13h19M10 11.5v3M14 11.5v3" />
+    </svg>
+  )
+}
+
+export function BuildsIcon({ className }: Props) {
+  return (
+    <svg {...base} className={className}>
+      <path d="M14.4 6.2a4 4 0 0 1 5.5-1.1l-3 3 2 2 3-3a4 4 0 0 1-5.1 5.4" />
+      <path d="m13.9 12.2-8 8a2.1 2.1 0 0 1-3-3l8-8" />
+      <path d="m10.6 5.6 2.6-2.6 4.2 4.2-2.6 2.6" />
+    </svg>
+  )
+}
+
 export function ChevronIcon({ className }: Props) {
   return (
     <svg {...base} className={className} width="18" height="18">

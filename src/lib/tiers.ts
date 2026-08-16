@@ -55,6 +55,15 @@ export const CATEGORY_LABELS: Record<PartCategory | 'all', string> = {
   overblade: 'Over Blade',
 }
 
+/** Singular forms, for prose like "Choose a ratchet" — the labels above are plural for filter chips. */
+export const CATEGORY_SINGULAR: Record<PartCategory, string> = {
+  blade: 'Blade',
+  ratchet: 'Ratchet',
+  bit: 'Bit',
+  assist: 'Assist blade',
+  overblade: 'Over blade',
+}
+
 export const BUY_LABELS: Record<string, string> = {
   yes: 'Worth buying',
   maybe: 'Situational',
@@ -89,3 +98,10 @@ export function comparePartsInTier(a: Part, b: Part): number {
 export function tierLabel(tier: string): string {
   return tier === '-' ? 'Unrated' : tier
 }
+
+/**
+ * Whether a part has no grade at all. Worth asking wherever a tier is drawn
+ * as a badge: every real grade is one or two characters, but "Unrated" is
+ * seven, so a badge sized for "S+" gets overrun by it.
+ */
+export const isUnrated = (tier: string): boolean => tier === '-'

@@ -92,7 +92,12 @@ export default function StockPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [group, setGroup] = useState<Filter>('all')
-  const [sort, setSort] = useState<SortKey>('default')
+  // Ranked, not alphabetical. "Featured" is the shop's own order — in stock
+  // first, then category, then title — which buries an X-tier bey behind
+  // whatever happens to start with B. The reason to open this page is to see
+  // what on the shelf is worth buying, so lead with that; Featured is still
+  // one tap away for anyone who wants to browse the shop's order.
+  const [sort, setSort] = useState<SortKey>('tier')
   const [showSoldOut, setShowSoldOut] = useState(false)
   const [stack, setStack] = useState<Part[]>([])
   const [showSource, setShowSource] = useState(false)
@@ -192,8 +197,22 @@ export default function StockPage() {
       return { ...known, inStock: true, priceMYR: item.p ?? known.priceMYR }
     })
 
+    // A live pull only ever shows what the grab happened to scrape, which is
+    // rarely everything — so a starred product left out of it would otherwise
+    // vanish from this view entirely, breaking the promise (see watchlist.ts)
+    // that watched things are pinned on every list, including this one. Carry
+    // over anything still watched that this pull didn't see, without claiming
+    // it's in stock — that's not something this pull confirmed either way.
+    const seen = new Set(products.map((p) => p.slug))
+    for (const slug of watched) {
+      if (seen.has(slug)) continue
+      const known = bySlug.get(slug)
+      if (!known) continue
+      products.push({ ...known, notOnThisPull: true })
+    }
+
     return { products }
-  }, [stock, live])
+  }, [stock, live, watched])
 
   const parts = data?.parts ?? []
   const partIndex = useMemo(() => buildPartIndex(parts), [parts])
@@ -253,8 +272,12 @@ export default function StockPage() {
         (group === 'watching' ? watched.has(p.slug) : group === 'all' || p.group === group) &&
         // While the shop is closed to us the published flags are a week-old
         // snapshot, so filtering on them would hide products on the strength of
-        // a guess. Only a live view has standing to sort by availability.
-        (!knowsAvailability || showSoldOut || p.inStock),
+        // a guess. Only a live view has standing to sort by availability. A
+        // watched item this pull didn't see is a different case again — its
+        // `inStock: false` isn't a sold-out claim, just an unconfirmed guess,
+        // so hiding it behind "Show sold out" would defeat the point of
+        // carrying it into this view at all.
+        (!knowsAvailability || showSoldOut || p.inStock || p.notOnThisPull),
     )
 
     // Whatever the chosen sort, what you are waiting for comes first — the
@@ -449,15 +472,32 @@ export default function StockPage() {
         </p>
       )}
 
-      {!live && stock?.health === 'gated' && (
+      {/*
+        Shown for either way of losing sight of the shelf — members-only, or
+        simply unreachable. The reason differs and is worth saying, but the
+        two things a reader can do about it are the same, and gating the grab
+        tool on `gated` alone meant it silently vanished the day a scrape
+        failed instead of being turned away.
+      */}
+      {!live && stock?.health && stock.health !== 'ok' && (
         <div className="notice notice-stale">
-          <p className="notice-text">
-            <strong>KGB's shop is members-only now.</strong> It asks everyone to sign in and take a
-            place in the queue, so BeyClub can't read availability any more. Below is what the shop
-            sold as of {shelfDay} — prices and tiers still hold. Nothing here says in stock or sold
-            out, because nobody can check; only a live list from inside the shop can.
-            {checkedDay && ` Checked again ${checkedDay}.`}
-          </p>
+          {stock.health === 'gated' ? (
+            <p className="notice-text">
+              <strong>KGB's shop is members-only now.</strong> It asks everyone to sign in and take a
+              place in the queue, so BeyClub can't read availability any more. Below is what the shop
+              sold as of {shelfDay} — prices and tiers still hold. Nothing here says in stock or sold
+              out, because nobody can check; only a live list from inside the shop can.
+              {checkedDay && ` Checked again ${checkedDay}.`}
+            </p>
+          ) : (
+            <p className="notice-text">
+              <strong>Couldn't reach the KGB shop.</strong> Below is what it sold as of {shelfDay} —
+              prices and tiers still hold, but nothing here says in stock or sold out, because the
+              shelf couldn't be read.
+              {checkedDay && ` Tried again ${checkedDay}.`} If you're a member, you can still pull a
+              live list from inside the shop yourself.
+            </p>
+          )}
           {/*
             The only proof the grab actually ran, and the answer to "did that
             do anything?" — the published shelf below deliberately does not
@@ -495,13 +535,6 @@ export default function StockPage() {
         </div>
       )}
 
-      {!live && stock?.health === 'unreachable' && (
-        <p className="notice notice-stale">
-          <strong>Couldn't reach the KGB shop.</strong> Below is the shelf as we last saw it on{' '}
-          {shelfDay}.{checkedDay && ` Tried again ${checkedDay}.`}
-        </p>
-      )}
-
       {showSource && (
         <Sheet label="Where this comes from" onClose={() => setShowSource(false)}>
           <div className="attribution">
@@ -511,13 +544,16 @@ export default function StockPage() {
               types them in here. The tier against each bey is our own blended ranking, not the
               shop's; KGB neither supplies it nor endorses it.
             </p>
-            {stock?.health === 'gated' && (
+            {stock?.health && stock.health !== 'ok' && (
               <>
                 <p className="attr-blurb">
-                  KGB has since made the shop members-only, reserving places in the queue for
-                  signed-in accounts, so it can no longer be read from out here. We have left the
-                  last catalogue we saw in place and check once a day whether the door has reopened
-                  — nothing on this page is a way around their sign-in.
+                  {stock.health === 'gated'
+                    ? `KGB has since made the shop members-only, reserving places in the queue for
+                       signed-in accounts, so it can no longer be read from out here. We have left
+                       the last catalogue we saw in place and check once a day whether the door has
+                       reopened — nothing on this page is a way around their sign-in.`
+                    : `The shop could not be reached on the last check, so availability below is the
+                       last catalogue we saw rather than a live read. We try again once a day.`}
                 </p>
                 {/*
                   The one place a reader wondering "why is this stale?" will look, so it is
