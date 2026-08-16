@@ -77,10 +77,17 @@
   ])
 
   /**
-   * BeyClub's blended ranking, best first. Mirrors TIERS in src/lib/tiers.ts;
-   * an unrecognised or missing grade sorts last rather than in the middle.
+   * BeyClub's blended ranking, best first. An unrecognised or missing grade
+   * sorts last rather than in the middle.
+   *
+   * Must stay identical to BLADE_TIERS in src/lib/tiers.ts — this file runs
+   * on KGB's own origin and cannot import from the bundle, so the list is
+   * copied by hand. It had drifted: this copy was missing X entirely, which
+   * sent the single best thing on the shelf to the bottom of the list under
+   * the "unknown grade" fallback, alongside the E-tier it was also missing.
+   * If you change the scale there, change it here.
    */
-  const TIER_ORDER = ['S+', 'S', 'S-', 'A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D']
+  const TIER_ORDER = ['X', 'S+', 'S', 'A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'E+', 'E']
   const tierRank = (t) => {
     const i = TIER_ORDER.indexOf(t)
     return i === -1 ? 99 : i
