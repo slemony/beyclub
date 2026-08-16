@@ -330,14 +330,18 @@ export function merge(raw: Raw[], tournament: TournamentFile, japan: JapanFile):
   // Stock part grades have to come from the blend too, or a blade's buy verdict
   // would weigh our tier against BeyTier's — two scales that were never
   // measured the same way.
-  // Normalised, because the sheet's stock-part columns are hand-typed and every
-  // other code lookup in the app (partIndex.resolve, PartChip) tolerates the
-  // same drift in case, spacing and hyphens.
-  const tierOf = new Map(
+  // Exact id first, normalised as a fallback: the sheet lists "NR" and "Nr" as
+  // two different bits on different grades, and normalize() folds both to the
+  // same key, so a normalize()-only map lets whichever is inserted last
+  // silently steal the other's tier. Stock-part columns are still hand-typed
+  // and do drift in case/spacing/hyphens, so the normalised map stays as a
+  // fallback for codes that genuinely don't match exactly.
+  const tierByExact = new Map(rated.map(({ part, rating }) => [`${part.cat}|${part.id}`, rating.tier]))
+  const tierByNormalized = new Map(
     rated.map(({ part, rating }) => [`${part.cat}|${normalize(part.id)}`, rating.tier]),
   )
   const grade = (cat: PartCategory, code?: string) =>
-    code ? tierOf.get(`${cat}|${normalize(code)}`) : undefined
+    code ? (tierByExact.get(`${cat}|${code}`) ?? tierByNormalized.get(`${cat}|${normalize(code)}`)) : undefined
 
   return rated.map(({ part, rating, credit }) => {
     const ratchetTier = grade('ratchet', part.stockRatchet)

@@ -18,21 +18,31 @@ export type PartIndex = {
 
 const CATEGORY_FALLBACKS: PartCategory[] = ['ratchet', 'bit', 'assist', 'overblade', 'blade']
 
-export function buildPartIndex(parts: Part[]): PartIndex {
-  /**
-   * The bare code a part is referenced by. Assist blades are catalogued as
-   * "輔助X", but every reference to them — a blade's stock column, a build
-   * string — names the bare "X". Strip the prefix so both sides meet.
-   */
-  const partCode = (cat: PartCategory, id: string) =>
-    cat === 'assist' ? id.replace(/^輔助/, '') : id
+/**
+ * The bare code a part is referenced by. Assist blades are catalogued as
+ * "輔助X", but every reference to them — a blade's stock column, a build
+ * string, a `resolve()` call — names the bare "X". Strip the prefix so both
+ * sides meet. Exported so any caller that starts from a Part's own `id`
+ * (rather than a code already read off a blade's stock/combo columns) can
+ * derive the same code `resolve()` expects back.
+ */
+export const partCode = (cat: PartCategory, id: string) =>
+  cat === 'assist' ? id.replace(/^輔助/, '') : id
 
+export function buildPartIndex(parts: Part[]): PartIndex {
   /** Category-tagged code, so a bit "J" and an assist "J" never cross-match. */
   const tag = (cat: PartCategory, code: string) => `${cat}|${normalize(code)}`
 
+  // Exact code first, normalised as a fallback: "NR" and "Nr" are two
+  // different bits on different grades, and normalize() folds both to the
+  // same key, so a normalized-only map would let whichever is inserted last
+  // silently resolve every reference to the other one.
+  const byExact = new Map<string, Part>()
   const byKey = new Map<string, Part>()
   for (const part of parts) {
-    byKey.set(`${normalize(partCode(part.cat, part.id))}|${part.cat}`, part)
+    const code = partCode(part.cat, part.id)
+    byExact.set(`${code}|${part.cat}`, part)
+    byKey.set(`${normalize(code)}|${part.cat}`, part)
   }
 
   const blades = parts.filter((p) => p.cat === 'blade')
@@ -80,14 +90,16 @@ export function buildPartIndex(parts: Part[]): PartIndex {
   return {
     resolve(code, expected) {
       const key = normalize(code)
-      const direct = byKey.get(`${key}|${expected}`)
+      const tryCategory = (cat: PartCategory) => byExact.get(`${code}|${cat}`) ?? byKey.get(`${key}|${cat}`)
+
+      const direct = tryCategory(expected)
       if (direct) return direct
 
       // Build strings are positionally ambiguous — a bare letter can be a bit
       // or an assist. Trust the catalogue over the position it was written in.
       for (const cat of CATEGORY_FALLBACKS) {
         if (cat === expected) continue
-        const found = byKey.get(`${key}|${cat}`)
+        const found = tryCategory(cat)
         if (found) return found
       }
       return undefined
