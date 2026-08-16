@@ -19,12 +19,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
+      # An unset Firebase variable is invisible otherwise: the build succeeds
+      # and publishes a bundle identical to the last one, so sign-in stays
+      # hidden on the live site with nothing in the log to say why. Values
+      # are not printed — only whether each one arrived.
+      - name: Check Firebase config reached the build
+        run: |
+          missing=0
+          for v in FIREBASE_API_KEY FIREBASE_AUTH_DOMAIN FIREBASE_PROJECT_ID FIREBASE_APP_ID; do
+            if [ -z "${!v}" ]; then echo "::warning::$v is empty — sign-in will be hidden on the deployed site"; missing=1
+            else echo "$v: set"; fi
+          done
+          if [ "$missing" = "1" ]; then
+            echo "::warning::Set these under Settings > Secrets and variables > Actions > Variables (repository, not environment)."
+          fi
+        env:
+          FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+
       - run: npm run build
         env:
           # The stock "Check now" dispatcher URL (worker/). Unset until deployed,
