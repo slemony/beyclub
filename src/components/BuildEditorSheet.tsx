@@ -94,7 +94,6 @@ export default function BuildEditorSheet({ build, parts, index, owned, onSave, o
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name or code"
             aria-label="Search parts"
-            autoFocus
           />
         </div>
 
