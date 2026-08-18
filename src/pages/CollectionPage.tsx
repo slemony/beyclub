@@ -70,22 +70,39 @@ export default function CollectionPage() {
     })
   }, [])
 
-  const onChangeSourceQty = useCallback(
-    (entryId: string, sourceId: string, qty: number) =>
-      applyLocal({ entries: setSourceQty(entryId, sourceId, qty, entries) }),
-    [entries],
-  )
-
-  const onRemoveSource = useCallback(
-    (entryId: string, sourceId: string) => {
-      const next = removeSource(entryId, sourceId, entries)
-      // Dropping the last source removes the whole entry, which needs a
-      // tombstone; trimming one of several is just an update.
-      const gone = entries.some((e) => e.id === entryId) && !next.some((e) => e.id === entryId)
-      if (gone) applyDelete({ entries: next }, [entryId])
+  /**
+   * Saves a shortened collection, tombstoning whatever it lost.
+   *
+   * Both the row and the individual acquisitions need one: the sync unions
+   * acquisitions across devices, so a "came from CX-13" removed here without a
+   * tombstone is handed straight back by the other device's copy.
+   */
+  const applyRemoval = useCallback(
+    (next: CollectionEntry[]) => {
+      const survivors = new Set<string>()
+      for (const entry of next) {
+        survivors.add(entry.id)
+        for (const source of entry.sources) survivors.add(source.id)
+      }
+      const gone: string[] = []
+      for (const entry of entries) {
+        if (!survivors.has(entry.id)) gone.push(entry.id)
+        for (const source of entry.sources) if (!survivors.has(source.id)) gone.push(source.id)
+      }
+      if (gone.length) applyDelete({ entries: next }, gone)
       else applyLocal({ entries: next })
     },
     [entries],
+  )
+
+  const onChangeSourceQty = useCallback(
+    (entryId: string, sourceId: string, qty: number) => applyRemoval(setSourceQty(entryId, sourceId, qty, entries)),
+    [entries, applyRemoval],
+  )
+
+  const onRemoveSource = useCallback(
+    (entryId: string, sourceId: string) => applyRemoval(removeSource(entryId, sourceId, entries)),
+    [entries, applyRemoval],
   )
 
   return (
@@ -170,7 +187,7 @@ export default function CollectionPage() {
               onChangeSourceQty={onChangeSourceQty}
               onRemoveSource={onRemoveSource}
               onRemoveEntry={(id) => {
-                applyDelete({ entries: removeEntry(id, entries) }, [id])
+                applyRemoval(removeEntry(id, entries))
                 setDetail(null)
               }}
               onClose={() => setDetail(null)}

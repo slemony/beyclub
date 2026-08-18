@@ -104,6 +104,13 @@ Use the **Variables** tab, not Secrets — `.github/workflows/deploy.yml`
 reads them as `${{ vars.FIREBASE_* }}`, and secrets wouldn't be found there.
 If they're missing the site still builds and deploys, just without sign-in.
 
+**Four workflows publish this site, not one.** `deploy.yml` runs on a push to
+`main`, but `stock.yml`, `catalogue.yml` and `tournament.yml` each rebuild and
+republish after committing their data refresh — so every one of them needs the
+same `env:` block on its `npm run build` step. Leave it off one of them and the
+next scheduled refresh quietly republishes a bundle with sign-in missing, hours
+after the deploy that worked.
+
 ## 7. Check it works
 
 1. `npm run dev`, open the Collection tab, add a part or two while signed
@@ -114,8 +121,11 @@ If they're missing the site still builds and deploys, just without sign-in.
    `users` collection with one document named after your user id, holding
    your entries, builds and decks. Those parts you added while signed out
    migrated up on first sign-in.
-4. Open the app in a different browser or profile, sign into the same Google
-   account, and the same collection should appear.
+4. Open the app in a different browser or profile and sign into the same
+   Google account. The account's records are **offered** rather than applied:
+   a dialog lists what this device doesn't have, everything ticked, and only
+   what stays ticked is written locally. Whatever you untick stays in the
+   account for your other devices and is not offered here again.
 
 ## If something goes wrong
 
