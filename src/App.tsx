@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import BottomNav from './components/BottomNav'
-import SyncArrivalDialog from './components/SyncArrivalDialog'
+import SyncOfferDialog from './components/SyncOfferDialog'
 import TopBar from './components/TopBar'
 import { useAuthUser } from './lib/auth'
 import { useScrollMemory } from './lib/useScrollMemory'
@@ -50,7 +50,7 @@ export default function App() {
         </Routes>
       </main>
       <BottomNav />
-      <SyncArrivalDialog />
+      <SyncOfferDialog />
     </div>
   )
 }

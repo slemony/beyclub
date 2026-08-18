@@ -1,8 +1,8 @@
 import { useSyncExternalStore } from 'react'
 import { readBuilds, writeBuilds, type BuildsFile } from './builds'
-import { readCollection, writeCollection } from './collection'
+import { entryKey, readCollection, writeCollection } from './collection'
 import { firebaseEnabled, loadFirebase } from './firebase'
-import type { CollectionEntry, Deck, SavedBuild } from './types'
+import type { CollectionEntry, CollectionSource, Deck, SavedBuild } from './types'
 import type { User } from 'firebase/auth'
 
 /**
@@ -46,6 +46,13 @@ const TOMBSTONE_TTL_MS = 180 * 24 * 60 * 60 * 1000
 
 const TOMBSTONE_KEY = 'beyclub:tombstones:v1'
 
+/**
+ * Ids of records this device was offered at sign-in and chose not to take.
+ * Local-only and never uploaded: the account keeps them for the devices that
+ * do want them, and this one simply stops being handed them.
+ */
+const DECLINED_KEY = 'beyclub:declined:v1'
+
 let unsubscribe: (() => void) | null = null
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
 let currentUid: string | null = null
@@ -65,6 +72,24 @@ function writeTombstones(tombstones: Record<string, string>): void {
   } catch {
     // Nothing to persist to. A lost tombstone can only resurrect a deleted
     // record on the next merge, never destroy a live one.
+  }
+}
+
+function readDeclined(): Set<string> {
+  try {
+    const raw = localStorage.getItem(DECLINED_KEY)
+    return new Set(raw ? (JSON.parse(raw) as string[]) : [])
+  } catch {
+    return new Set()
+  }
+}
+
+function writeDeclined(ids: Set<string>): void {
+  try {
+    localStorage.setItem(DECLINED_KEY, JSON.stringify([...ids]))
+  } catch {
+    // Nothing to persist to. The worst case is being offered the same
+    // records again on the next sign-in.
   }
 }
 
@@ -130,50 +155,74 @@ export function applyDelete(patch: Partial<UserData>, deletedIds: string[]): voi
 /** Ids the current snapshot considers deleted — exported for tests and debugging. */
 export const deletedIds = (): string[] => Object.keys(snapshot.tombstones)
 
-/* ── What a sign-in brought down ───────────────────────────────── */
+/* ── What a sign-in offers to bring down ───────────────────────── */
 
 /**
- * Records that came from the account and weren't on this device. Worth
- * showing: signing in on a new phone can drop a hundred parts into what
- * looked like an empty collection, and silently changing what someone is
- * looking at is alarming rather than helpful.
+ * Records the account has that this device doesn't — offered rather than
+ * applied. Signing in on a shared or borrowed phone can otherwise drop a
+ * hundred parts into someone else's collection, and even on your own second
+ * device the answer isn't always "all of it": a deck built for one
+ * tournament is not something you want on every phone you own.
+ *
+ * Nothing here is a threat to the account. Whichever way the boxes are
+ * ticked, this device's own records have already gone up, and everything
+ * left unticked stays in the account for the devices that do want it.
  */
-export type Arrival = { entries: CollectionEntry[]; builds: SavedBuild[]; decks: Deck[] }
+export type Offer = { entries: CollectionEntry[]; builds: SavedBuild[]; decks: Deck[] }
 
-let arrival: Arrival | null = null
-const arrivalListeners = new Set<() => void>()
+type Pending = { offer: Offer; decide: (chosen: Set<string>) => void }
 
-function setArrival(next: Arrival | null): void {
-  arrival = next
-  arrivalListeners.forEach((l) => l())
+let pending: Pending | null = null
+const pendingListeners = new Set<() => void>()
+
+function setPending(next: Pending | null): void {
+  pending = next
+  pendingListeners.forEach((l) => l())
 }
 
-export function useArrival(): Arrival | null {
+/** The sign-in offer waiting on an answer, or null when there's nothing to decide. */
+export function useOffer(): Offer | null {
   return useSyncExternalStore(
     (cb) => {
-      arrivalListeners.add(cb)
-      return () => arrivalListeners.delete(cb)
+      pendingListeners.add(cb)
+      return () => pendingListeners.delete(cb)
     },
-    () => arrival,
+    () => pending?.offer ?? null,
   )
 }
 
-export const clearArrival = (): void => setArrival(null)
-
-/** Records present after the merge that this device didn't already have. */
-function newlyArrived(before: UserData, after: UserData): Arrival {
-  const added = <T extends { id: string }>(a: T[], b: T[]) => {
-    const had = new Set(a.map((i) => i.id))
-    return b.filter((i) => !had.has(i.id))
-  }
-  return {
-    entries: added(before.entries, after.entries),
-    builds: added(before.builds, after.builds),
-    decks: added(before.decks, after.decks),
-  }
+/** Answers the offer: the ids given are pulled down, the rest are left in the account. */
+export function resolveOffer(chosenIds: string[]): void {
+  const waiting = pending
+  if (!waiting) return
+  setPending(null)
+  waiting.decide(new Set(chosenIds))
 }
 
-const isEmptyArrival = (a: Arrival) => !a.entries.length && !a.builds.length && !a.decks.length
+export const offerIds = (offer: Offer): string[] => [...offer.entries, ...offer.builds, ...offer.decks].map((r) => r.id)
+
+const isEmptyOffer = (o: Offer) => !o.entries.length && !o.builds.length && !o.decks.length
+
+/**
+ * What the account is carrying that this device is not — the entries by part
+ * rather than by row id, since the same part added on two devices is one
+ * part, not an arrival.
+ */
+function offerFrom(local: UserData, cloud: UserData, tombstones: Record<string, string>): Offer {
+  const declined = readDeclined()
+  const localKeys = new Set(local.entries.map(entryKey))
+  const localIds = new Set([...local.builds, ...local.decks].map((r) => r.id))
+  const wanted = <T extends { id: string; updatedAt: string }>(record: T) => {
+    if (declined.has(record.id)) return false
+    const deletedAt = tombstones[record.id]
+    return !deletedAt || record.updatedAt > deletedAt
+  }
+  return {
+    entries: cloud.entries.filter((e) => !localKeys.has(entryKey(e)) && wanted(e)),
+    builds: cloud.builds.filter((b) => !localIds.has(b.id) && wanted(b)),
+    decks: cloud.decks.filter((d) => !localIds.has(d.id) && wanted(d)),
+  }
+}
 
 /* ── Firestore ─────────────────────────────────────────────────── */
 
@@ -186,6 +235,80 @@ function mergeById<T extends { id: string; updatedAt: string }>(a: T[], b: T[]):
     if (!existing || item.updatedAt > existing.updatedAt) byId.set(item.id, item)
   }
   return [...byId.values()]
+}
+
+/**
+ * Which row id two copies of the same part settle on.
+ *
+ * They have to settle on one, and every device has to reach the same answer
+ * independently: a delete records a tombstone against an id, so two devices
+ * holding one part under two ids means deleting it on either leaves it alive
+ * on the other. Oldest wins, with the id itself as the tie-break, so the
+ * answer doesn't depend on which side of the merge a copy arrived from.
+ */
+function settledId(a: CollectionEntry, b: CollectionEntry): string {
+  if (a.addedAt !== b.addedAt) return a.addedAt < b.addedAt ? a.id : b.id
+  return a.id < b.id ? a.id : b.id
+}
+
+/**
+ * Two copies of one part, folded into one row.
+ *
+ * The acquisitions are unioned rather than replaced: buying a 3-60 on the
+ * phone and another on the laptop leaves you owning two, and taking the
+ * newer row wholesale would quietly throw one away. A source edited on both
+ * devices is last-write-wins like everything else, by its row's `updatedAt`.
+ */
+function foldEntry(a: CollectionEntry, b: CollectionEntry): CollectionEntry {
+  const [newer, older] = a.updatedAt >= b.updatedAt ? [a, b] : [b, a]
+  const sources = new Map<string, CollectionSource>()
+  for (const source of older.sources) sources.set(source.id, source)
+  for (const source of newer.sources) sources.set(source.id, source)
+  return {
+    ...newer,
+    id: settledId(a, b),
+    addedAt: a.addedAt < b.addedAt ? a.addedAt : b.addedAt,
+    sources: [...sources.values()],
+  }
+}
+
+/**
+ * Union by *part*, not by row id.
+ *
+ * collection.ts has always keyed a part on its category and code — adding a
+ * part you already own folds onto the row you have. Merging by row id broke
+ * that across devices: two people-hours of adding the same booster on a phone
+ * and a laptop produced two identical cards for one part, each with its own
+ * count, and no way to tell them apart or put them back together.
+ */
+function mergeEntries(a: CollectionEntry[], b: CollectionEntry[]): CollectionEntry[] {
+  const byPart = new Map<string, CollectionEntry>()
+  for (const entry of [...a, ...b]) {
+    const key = entryKey(entry)
+    const existing = byPart.get(key)
+    byPart.set(key, existing ? foldEntry(existing, entry) : entry)
+  }
+  return [...byPart.values()]
+}
+
+/**
+ * Drops acquisitions deleted elsewhere, and any row left with none.
+ *
+ * Needed only because the sources above are unioned: without it, removing
+ * "came from CX-13" on one device would have the other device's copy hand it
+ * straight back on the next sync. Same rule as records — a source added after
+ * it was deleted is a re-add and stays.
+ */
+function withoutDeletedSources(entries: CollectionEntry[], tombstones: Record<string, string>): CollectionEntry[] {
+  return entries
+    .map((entry) => {
+      const sources = entry.sources.filter((s) => {
+        const deletedAt = tombstones[s.id]
+        return !deletedAt || s.addedAt > deletedAt
+      })
+      return sources.length === entry.sources.length ? entry : { ...entry, sources }
+    })
+    .filter((entry) => entry.sources.length > 0)
 }
 
 /** Latest deletion time per id, with long-dead entries dropped. */
@@ -213,10 +336,57 @@ function withoutDeleted<T extends { id: string; updatedAt: string }>(
 function merge(a: UserData, b: UserData): UserData {
   const tombstones = mergeTombstones(a.tombstones, b.tombstones)
   return {
-    entries: withoutDeleted(mergeById(a.entries, b.entries), tombstones),
+    entries: withoutDeletedSources(withoutDeleted(mergeEntries(a.entries, b.entries), tombstones), tombstones),
     builds: withoutDeleted(mergeById(a.builds, b.builds), tombstones),
     decks: withoutDeleted(mergeById(a.decks, b.decks), tombstones),
     tombstones,
+  }
+}
+
+const EMPTY_HELD: UserData = { entries: [], builds: [], decks: [], tombstones: {} }
+
+/**
+ * Records the account has that this device is not carrying — declined at
+ * sign-in, or still waiting on an answer. Kept out of `localStorage` and
+ * written back on every push, so this device stays a safe place to edit from
+ * without being a complete copy of the account.
+ */
+let held: UserData = EMPTY_HELD
+
+/** The document to write: everything on this device, plus whatever it's holding for the account. */
+const forCloud = (data: UserData): UserData =>
+  held.entries.length || held.builds.length || held.decks.length ? merge(data, held) : data
+
+/**
+ * Splits an account's copy into what this device carries and what it merely
+ * holds for the account — the records declined at sign-in.
+ *
+ * The held half never reaches `localStorage`, but every push carries it back
+ * up. Without that, one edit on this device would write a document missing
+ * everything it declined, and declining something here would silently delete
+ * it from every other device the account has.
+ */
+function split(local: UserData, cloud: UserData): { carried: UserData; held: UserData } {
+  const declined = readDeclined()
+  if (!declined.size) return { carried: cloud, held: EMPTY_HELD }
+
+  // Declining a part and later adding it here yourself makes it yours: the
+  // account's copy of it is carried like any other, not held back.
+  const localKeys = new Set(local.entries.map(entryKey))
+  const localIds = new Set([...local.builds, ...local.decks].map((r) => r.id))
+  const heldEntries = cloud.entries.filter((e) => declined.has(e.id) && !localKeys.has(entryKey(e)))
+  const heldBuilds = cloud.builds.filter((b) => declined.has(b.id) && !localIds.has(b.id))
+  const heldDecks = cloud.decks.filter((d) => declined.has(d.id) && !localIds.has(d.id))
+  const heldIds = new Set([...heldEntries, ...heldBuilds, ...heldDecks].map((r) => r.id))
+
+  return {
+    carried: {
+      entries: cloud.entries.filter((e) => !heldIds.has(e.id)),
+      builds: cloud.builds.filter((b) => !heldIds.has(b.id)),
+      decks: cloud.decks.filter((d) => !heldIds.has(d.id)),
+      tombstones: cloud.tombstones,
+    },
+    held: { entries: heldEntries, builds: heldBuilds, decks: heldDecks, tombstones: {} },
   }
 }
 
@@ -230,13 +400,20 @@ const fromDoc = (data: Record<string, unknown> | undefined): UserData => ({
 async function push(uid: string, data: UserData): Promise<void> {
   const { db, firestoreMod } = await loadFirebase()
   const ref = firestoreMod.doc(db, 'users', uid)
-  await firestoreMod.setDoc(ref, { ...data, updatedAt: new Date().toISOString() })
+  await firestoreMod.setDoc(ref, { ...forCloud(data), updatedAt: new Date().toISOString() })
 }
 
 /**
- * Merges the local copy with whatever's already in Firestore — a first
- * sign-in migrates local up, a returning one merges both sides — then
- * streams later changes from other devices into the shared snapshot.
+ * Reconciles this device with the account, then streams later changes from
+ * other devices into the shared snapshot.
+ *
+ * The two directions are deliberately not symmetric. **Up is unconditional**:
+ * whatever this device is carrying is merged into the account immediately, so
+ * a collection built before signing in — or on a phone that has never seen
+ * the account — is never lost by signing in. **Down is a choice**: anything
+ * the account has that this device doesn't is offered first (see `Offer`),
+ * because that's the direction that changes what's on the screen in front of
+ * someone.
  */
 export async function startSync(user: User): Promise<void> {
   if (!firebaseEnabled) return
@@ -252,27 +429,51 @@ export async function startSync(user: User): Promise<void> {
   const snap = await getDoc(ref)
   if (currentUid !== user.uid) return
 
-  const before = readLocal()
-  const merged = merge(before, snap.exists() ? fromDoc(snap.data()) : fromDoc(undefined))
-  writeLocal(merged)
-  publish(merged)
+  const local = readLocal()
+  const cloud = snap.exists() ? fromDoc(snap.data()) : fromDoc(undefined)
 
-  // Anything this device was carrying goes up in the same write — a
-  // collection built before signing in is not lost by signing in.
-  await push(user.uid, merged)
+  // Up first, and in full: the account ends up with everything either side
+  // had, whatever gets ticked below. Nothing the user does at the prompt can
+  // cost them data on another device.
+  held = EMPTY_HELD
+  await push(user.uid, merge(local, cloud))
   if (currentUid !== user.uid) return
 
-  // …and anything the account was carrying gets announced, once, rather than
-  // just appearing.
-  const landed = newlyArrived(before, merged)
-  if (!isEmptyArrival(landed)) setArrival(landed)
+  /** Applies the answer — the ticked records come down, the rest are remembered. */
+  const settle = (chosen: Set<string>, offered: Offer) => {
+    if (currentUid !== user.uid) return
+    const declined = readDeclined()
+    for (const id of offerIds(offered)) if (!chosen.has(id)) declined.add(id)
+    writeDeclined(declined)
 
-  unsubscribe = onSnapshot(ref, (s) => {
-    if (currentUid !== user.uid || !s.exists()) return
-    const next = merge(readLocal(), fromDoc(s.data()))
+    const { carried, held: keptBack } = split(local, cloud)
+    held = keptBack
+    const next = merge(local, carried)
     writeLocal(next)
     publish(next)
-  })
+
+    unsubscribe = onSnapshot(ref, (s) => {
+      if (currentUid !== user.uid || !s.exists()) return
+      const here = readLocal()
+      const parts = split(here, fromDoc(s.data()))
+      held = parts.held
+      const merged = merge(here, parts.carried)
+      writeLocal(merged)
+      publish(merged)
+    })
+  }
+
+  const offer = offerFrom(local, cloud, mergeTombstones(local.tombstones, cloud.tombstones))
+  if (isEmptyOffer(offer)) {
+    settle(new Set(), offer)
+    return
+  }
+
+  // Held while the question is on screen, so a push that happens before it is
+  // answered still writes a complete document rather than one missing
+  // everything this device hasn't taken yet.
+  held = { ...offer, tombstones: {} }
+  setPending({ offer, decide: (chosen) => settle(chosen, offer) })
 }
 
 /**
@@ -282,7 +483,7 @@ export async function startSync(user: User): Promise<void> {
  */
 export async function stopSync(): Promise<void> {
   const uid = currentUid
-  const pending = debounceTimer !== null
+  const queued = debounceTimer !== null
 
   currentUid = null
   if (unsubscribe) {
@@ -293,8 +494,11 @@ export async function stopSync(): Promise<void> {
     clearTimeout(debounceTimer)
     debounceTimer = null
   }
+  // An offer belongs to the session that made it; signing out withdraws it
+  // rather than leaving a dialog on screen with nothing behind it.
+  setPending(null)
 
-  if (pending && uid) {
+  if (queued && uid) {
     try {
       await push(uid, readLocal())
     } catch {
@@ -302,6 +506,7 @@ export async function stopSync(): Promise<void> {
       // next sign-in merges it up, so there is nothing to recover here.
     }
   }
+  held = EMPTY_HELD
 }
 
 /** Queues a push, debounced so rapid edits don't spam Firestore. */

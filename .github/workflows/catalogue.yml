@@ -74,7 +74,18 @@ jobs:
           git commit -m "Refresh part catalogue from the Taiwan community sheet"
           git push
 
+      # This job republishes the whole site, not just the data file it just
+      # committed, so it needs every variable deploy.yml passes. Anything
+      # missing here is silently dropped from the live bundle until the next
+      # deploy — which is how a scheduled refresh once took sign-in off the
+      # site. Keep this block in step with deploy.yml.
       - run: npm run build
+        env:
+          VITE_STOCK_REFRESH_URL: ${{ vars.STOCK_REFRESH_URL }}
+          VITE_FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
