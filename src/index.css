@@ -125,6 +125,16 @@ button {
   cursor: pointer;
 }
 
+/* iOS Safari zooms the whole page in when you focus a field whose text is
+   under 16px, and never zooms back out afterwards. So 16px is the floor for
+   anything you can type into — tune a field's size with padding, not type. */
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 16px;
+}
+
 /* ── Glass primitives ──────────────────────────────────────── */
 
 .glass {
@@ -646,9 +656,8 @@ button {
 
 .search {
   width: 100%;
-  padding: 11px 14px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
-  font-size: 14px;
   color: var(--text);
   outline: none;
 }
@@ -1611,7 +1620,13 @@ button {
 
 .sheet-backdrop {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* Sheet.tsx overwrites height/top from visualViewport where it exists; this
+     is the full-screen fallback, and it stays a definite height either way so
+     the panel's own max-height has something to measure against. */
+  height: 100%;
   z-index: 60;
   background: rgba(4, 6, 10, 0.6);
   backdrop-filter: blur(6px);
@@ -1633,7 +1648,10 @@ button {
 
 .sheet {
   width: min(100%, var(--content-max));
-  max-height: 88dvh;
+  /* Relative to the backdrop, which shrinks to the visual viewport while the
+     keyboard is up — so the panel scrolls inside itself instead of running
+     under the keys. */
+  max-height: 88%;
   overflow-y: auto;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: 10px 18px calc(24px + env(safe-area-inset-bottom));
@@ -1979,14 +1997,12 @@ button {
 .collection-field input[type='text'],
 .collection-field textarea {
   width: 100%;
-  padding: 11px 14px;
+  padding: 10px 14px;
   border-radius: var(--radius-sm);
-  font-size: 14px;
   color: var(--text);
   background: var(--glass);
   border: 1px solid var(--hairline);
   outline: none;
-  font-family: inherit;
 }
 
 .collection-field textarea {

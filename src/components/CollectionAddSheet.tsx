@@ -164,7 +164,6 @@ export default function CollectionAddSheet({ parts, index, ownedCounts, onAdd, o
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by name or code"
               aria-label="Search parts"
-              autoFocus
             />
           </div>
 
@@ -297,7 +296,6 @@ export default function CollectionAddSheet({ parts, index, ownedCounts, onAdd, o
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
                 placeholder={`e.g. 3D-printed ${CATEGORY_SINGULAR[customCat].toLowerCase()}`}
-                autoFocus
               />
             </div>
 

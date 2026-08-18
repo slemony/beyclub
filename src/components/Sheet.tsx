@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 
 type Props = {
   /** Names the dialog for screen readers. */
@@ -17,6 +17,8 @@ type Props = {
  * live in one effect with no open/closed branch to keep in sync.
  */
 export default function Sheet({ label, onClose, back, children }: Props) {
+  const backdrop = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     document.addEventListener('keydown', onKey)
@@ -27,8 +29,30 @@ export default function Sheet({ label, onClose, back, children }: Props) {
     }
   }, [onClose])
 
+  // iOS doesn't shrink the layout viewport for the keyboard, so a backdrop
+  // pinned to it keeps its full-screen height and the sheet's bottom half —
+  // the field you just tapped included — ends up behind the keys. Tracking the
+  // *visual* viewport instead keeps the panel sitting on top of the keyboard,
+  // and keeps it still while the keyboard animates in and out.
+  useEffect(() => {
+    const vv = window.visualViewport
+    const el = backdrop.current
+    if (!vv || !el) return
+    const sync = () => {
+      el.style.height = `${vv.height}px`
+      el.style.top = `${vv.offsetTop}px`
+    }
+    sync()
+    vv.addEventListener('resize', sync)
+    vv.addEventListener('scroll', sync)
+    return () => {
+      vv.removeEventListener('resize', sync)
+      vv.removeEventListener('scroll', sync)
+    }
+  }, [])
+
   return (
-    <div className="sheet-backdrop" onClick={onClose} role="presentation">
+    <div className="sheet-backdrop" ref={backdrop} onClick={onClose} role="presentation">
       <div
         className="glass sheet"
         onClick={(e) => e.stopPropagation()}
