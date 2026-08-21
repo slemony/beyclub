@@ -49,10 +49,19 @@ no file to fetch. Open `https://go-shoot.github.io/x/parts/?bit` (then
 `customElements.get('x-part').bit.terms` and `.ratchet.terms`. Weights arrive as
 `"3-"` / `"2="` / `"3+"`, meaning 2.7 / 2.0 / 3.3 g, and heights as dmm.
 
-CX parts are on `?blade=CX`, where `Part.group` splits them into `chip`, `main`,
-`over`, `metal` and `assist`; a blade's `stat` is `[weight, thickness]` and only
-assists carry the second figure. Pair a bey to its pieces from the **Chinese**
-name, not the English: go-shoot's `names.chi` is the authority, and two of our
-English names disagree with it — `黃蜂要塞` is Hornet **Fort** (main) though we
-call it "Hornet Fortress", and `魔犬幽冥` is Cerberus **Dark** though we call it
-"Cerberus Eclipse". The pairing table is `cx.beys` in the file.
+Whole BX/UX blades are on `?blade`; CX parts are on `?blade=CX`, where
+`Part.group` splits them into `chip`, `main`, `over`, `metal` and `assist`. A
+blade's `stat` is `[weight, thickness]` and only assists carry the second figure.
+
+Match a blade on the **Chinese** name, not the English. `names.chi` holds two
+space-separated variants and the second is the one the Taiwan sheet uses; strip
+the `\` and `/` a two-word name carries. The English is wrong often enough to
+matter — `金剛王` is Optimus Primal though we call it "Bumblebee", `黃蜂要塞` is
+Hornet **Fort** (a main blade) though we call it "Hornet Fortress", and `幽冥`
+is **Dark**, not Eclipse, wherever it appears. The CX pairing table is `cx.beys`.
+
+Three blades are deliberately unweighed, and re-adding them needs a person:
+`雷霆天龍` is one row here but two in the source (L-Drago rush 33.3 g / upper
+33.7 g); `惡魔幽冥` is "HellsNether" in `bladeNamesEn.json` and "Hells Eclipse" in
+`bladeNamesZhEn.json`, and the Chinese says neither; and the four BXG dinosaur
+blades (`暴龍`, `翼龍`, `棘龍`, `滄龍`) are not in the source at all.

@@ -22,9 +22,11 @@ export default function PartSpecRow({ spec, cat }: { spec: PartSpec; cat: PartCa
     <div className="spec-row">
       <div className="sheet-chips">
         {/* A CX bey comes apart into a chip and a blade, so it is weighed as
-            two figures rather than one number that is neither. */}
+            two figures rather than one number that is neither. Both are
+            labelled, because "35 g" means a whole BX blade and "32.7 g" means
+            one layer of a CX one, and nothing else on the row says which. */}
         <span className="chip">
-          {spec.cx ? `${spec.cx.kind === 'metal' ? 'Metal' : 'Main'} blade ` : ''}
+          {cat === 'blade' && `${spec.cx ? (spec.cx.kind === 'metal' ? 'Metal blade' : 'Main blade') : 'Blade'} `}
           {g(spec.weightG)}
         </span>
         {spec.cx && <span className="chip chip-dim">Lock chip {g(spec.cx.chipG)}</span>}

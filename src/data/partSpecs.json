@@ -1,5 +1,5 @@
 {
-  "_note": "Measured part data — weight, gear/ring teeth, official Burst rating and height. Facts rather than opinion: nothing here reaches blendRating(), it only describes the part. Weights are grams; the source records them to a third of a gram (\"3-\" = 2.7, \"2=\" = 2.0, \"3+\" = 3.3) and they are decoded here. Heights are dmm, as the source keeps them — 10 dmm = 1 mm — and are converted for display. For a bit `teeth` is the GEAR tooth count and `heightDmm` the exposed height; for a ratchet `teeth` is the RING blade count (the protrusions its code names) and `heightDmm` the base height. `heightAltDmm` is the far end of an adjustable or in-play-changing height. Ratchet-integrated bits (Operate, Turbo) carry no Burst rating and their height is on the base scale, so they are flagged `fused`. Assist blades carry a `thicknessDmm` as well — that is how deep the blade sits, the one dimension the source measures for them. Over blades and CX main/metal blades have a weight and nothing else. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same spec to both casings — the rows themselves stay separate and keep their own grades.",
+  "_note": "Measured part data — weight, gear/ring teeth, official Burst rating and height. Facts rather than opinion: nothing here reaches blendRating(), it only describes the part. Weights are grams; the source records them to a third of a gram (\"3-\" = 2.7, \"2=\" = 2.0, \"3+\" = 3.3) and they are decoded here. Heights are dmm, as the source keeps them — 10 dmm = 1 mm — and are converted for display. For a bit `teeth` is the GEAR tooth count and `heightDmm` the exposed height; for a ratchet `teeth` is the RING blade count (the protrusions its code names) and `heightDmm` the base height. `heightAltDmm` is the far end of an adjustable or in-play-changing height. Ratchet-integrated bits (Operate, Turbo) carry no Burst rating and their height is on the base scale, so they are flagged `fused`. Assist blades carry a `thicknessDmm` as well — that is how deep the blade sits, the one dimension the source measures for them. Over blades, CX main/metal blades and whole BX/UX blades have a weight and nothing else. Mind what a blade weight means: for a BX or UX blade it is the whole blade, while a CX bey's is the main or metal blade alone with its lock chip listed beside it — the same field, two different objects, because a CX bey is not one piece. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same spec to both casings — the rows themselves stay separate and keep their own grades.",
   "updatedAt": "2026-08-21",
   "credit": {
     "author": "V Man (MKK)",
@@ -850,6 +850,10 @@
         "chip": "Wolf",
         "blade": "Hunt"
       },
+      "雄獅獠牙": {
+        "chip": "Leon",
+        "blade": "Fang"
+      },
       "雄鹿鹿角": {
         "chip": "Bucks",
         "blade": "Antlers"
@@ -898,6 +902,281 @@
         "chip": "Drake",
         "blade": "Brave"
       }
+    }
+  },
+  "blades": {
+    "A賞飛龍": {
+      "weightG": 35.0
+    },
+    "三角強襲": {
+      "weightG": 36.3
+    },
+    "丘巴卡": {
+      "weightG": 31.7
+    },
+    "古屍詛咒": {
+      "weightG": 37.3
+    },
+    "地獄鐮刀": {
+      "weightG": 32.7
+    },
+    "堅甲戰龜": {
+      "weightG": 28.3
+    },
+    "大蛇簇擁": {
+      "weightG": 36.3
+    },
+    "天堂之環": {
+      "weightG": 37.3
+    },
+    "天王星": {
+      "weightG": 30.3
+    },
+    "天翼戰神": {
+      "weightG": 33.3
+    },
+    "天蠍長矛": {
+      "weightG": 39.7
+    },
+    "子彈獅鷲": {
+      "weightG": 60.7
+    },
+    "密卡登": {
+      "weightG": 31.7
+    },
+    "巨岩雄獅": {
+      "weightG": 29.7
+    },
+    "巨鯨怒濤": {
+      "weightG": 38.0
+    },
+    "幻獸刺心": {
+      "weightG": 33.3
+    },
+    "幽靈元魂": {
+      "weightG": 26.7
+    },
+    "忍者刺刀": {
+      "weightG": 31.0
+    },
+    "忍者闇影": {
+      "weightG": 28.0
+    },
+    "悍熊猛爪": {
+      "weightG": 30.3
+    },
+    "惡魔紅鐮": {
+      "weightG": 32.7
+    },
+    "惡魔重錘": {
+      "weightG": 33.3
+    },
+    "惡魔鎖鏈": {
+      "weightG": 33.3
+    },
+    "戰犀重角": {
+      "weightG": 33.0
+    },
+    "戰羊阻截": {
+      "weightG": 31.7
+    },
+    "星區長吉迪恩": {
+      "weightG": 31.0
+    },
+    "時鐘幻象": {
+      "weightG": 37.7
+    },
+    "暴風天馬": {
+      "weightG": 31.3
+    },
+    "暴風巨神": {
+      "weightG": 31.0
+    },
+    "暴龍咆哮": {
+      "weightG": 36.0
+    },
+    "暴龍霸擊": {
+      "weightG": 37.0
+    },
+    "曼達洛人": {
+      "weightG": 30.7
+    },
+    "柯博文": {
+      "weightG": 33.0
+    },
+    "榮耀戰神": {
+      "weightG": 43.3
+    },
+    "歐比王肯諾比": {
+      "weightG": 30.7
+    },
+    "武士星劍": {
+      "weightG": 36.3
+    },
+    "武士鋼鐵": {
+      "weightG": 31.7
+    },
+    "武士魂斬": {
+      "weightG": 35.7
+    },
+    "烈焰飛鳳S": {
+      "weightG": 28.0
+    },
+    "猛毒": {
+      "weightG": 34.3
+    },
+    "猛獁獠牙": {
+      "weightG": 32.3
+    },
+    "猛瑪長牙": {
+      "weightG": 32.3
+    },
+    "玄冥戰甲": {
+      "weightG": 32.3
+    },
+    "王蛇鞭尾": {
+      "weightG": 34.7
+    },
+    "皓戰猛虎": {
+      "weightG": 34.7
+    },
+    "神力聖劍": {
+      "weightG": 30.7
+    },
+    "空力天馬": {
+      "weightG": 38.7
+    },
+    "紅浩克": {
+      "weightG": 36.3
+    },
+    "終極蜘蛛人": {
+      "weightG": 31.7
+    },
+    "綠惡魔": {
+      "weightG": 31.7
+    },
+    "美國隊長": {
+      "weightG": 32.3
+    },
+    "翼龍神翼": {
+      "weightG": 34.3
+    },
+    "蒼穹龍神": {
+      "weightG": 37.7
+    },
+    "蒼穹龍騎士": {
+      "weightG": 37.7
+    },
+    "蒼龍利刃": {
+      "weightG": 35.0
+    },
+    "蒼龍爆刃": {
+      "weightG": 36.7
+    },
+    "蒼龍神劍": {
+      "weightG": 35.0
+    },
+    "蒼龍突擊": {
+      "weightG": 41.3
+    },
+    "薩諾斯": {
+      "weightG": 29.3
+    },
+    "蜘蛛人": {
+      "weightG": 33.3
+    },
+    "衝擊龍神": {
+      "weightG": 38.7
+    },
+    "護城龍神": {
+      "weightG": 32.7
+    },
+    "赫燃天鳳": {
+      "weightG": 35.0
+    },
+    "路克天行者": {
+      "weightG": 31.3
+    },
+    "達斯維達": {
+      "weightG": 30.7
+    },
+    "金剛王": {
+      "weightG": 35.7
+    },
+    "銀牙烈虎": {
+      "weightG": 28.7
+    },
+    "鋼鐵人": {
+      "weightG": 33.7
+    },
+    "隕星龍騎士": {
+      "weightG": 39.0
+    },
+    "雄獅巔峰": {
+      "weightG": 35.0
+    },
+    "雄獅獵爪": {
+      "weightG": 31.7
+    },
+    "霜輝銀狼": {
+      "weightG": 37.0
+    },
+    "風暴兵": {
+      "weightG": 33.3
+    },
+    "飛龍懸浮": {
+      "weightG": 35.0
+    },
+    "飛龍旋翼": {
+      "weightG": 31.7
+    },
+    "騎士圓甲": {
+      "weightG": 36.7
+    },
+    "騎士圓甲改造組": {
+      "weightG": 36.7
+    },
+    "騎士重盾": {
+      "weightG": 32.3
+    },
+    "騎士長槍": {
+      "weightG": 33.0
+    },
+    "魔像奇岩": {
+      "weightG": 34.0
+    },
+    "魔導幻箭": {
+      "weightG": 32.0
+    },
+    "魔導神杖": {
+      "weightG": 35.3
+    },
+    "魔獸護甲": {
+      "weightG": 32.7
+    },
+    "鮫鯊撕裂": {
+      "weightG": 30.0
+    },
+    "鮫鯊狂鱗": {
+      "weightG": 37.3
+    },
+    "鮫鯊鋒鰭": {
+      "weightG": 34.7
+    },
+    "鱷魚粉碎": {
+      "weightG": 33.7
+    },
+    "鳳凰尾翼": {
+      "weightG": 34.7
+    },
+    "鳳凰翔羽": {
+      "weightG": 33.3
+    },
+    "鳳凰飛翼": {
+      "weightG": 38.7
+    },
+    "龍騎士S": {
+      "weightG": 25.3
     }
   }
 }

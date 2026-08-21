@@ -119,10 +119,17 @@ const specCode = (p: { cat: PartCategory; id: string; name: string }) =>
   p.cat === 'assist' ? p.name : p.id
 
 /**
- * A CX bey's own weight: the blade it is named for, with its lock chip beside
- * it. See the `cx` block in partSpecs.json for why this is a lookup table
- * rather than something derivable from a blade row.
+ * What a blade weighs, by its base-name key so every colour variant of a mould
+ * shares one figure.
+ *
+ * A BX or UX blade is one piece and has one weight. A CX bey is not: it is a
+ * lock chip on a main or metal blade, so it is looked up in the `cx` table and
+ * carries both figures. See partSpecs.json for why that table has to exist.
  */
+function bladeSpec(key: string): PartSpec | undefined {
+  return cxSpec(key) ?? (partSpecs.blades as Record<string, PartSpec>)[key]
+}
+
 function cxSpec(key: string): PartSpec | undefined {
   const bey = (partSpecs.cx.beys as Record<string, { chip: string; blade: string }>)[key]
   if (!bey) return undefined
@@ -292,7 +299,7 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
   // Measurements, and one creator's read on each bit. Both are hand-curated and
   // keyed on the part's own code, so this is a lookup rather than a match.
   for (const p of out) {
-    const spec = p.cat === 'blade' ? cxSpec(p.key) : forCode(PART_SPECS[p.cat], specCode(p))
+    const spec = p.cat === 'blade' ? bladeSpec(p.key) : forCode(PART_SPECS[p.cat], specCode(p))
     if (spec) p.spec = spec
     if (p.cat === 'bit') {
       const pick = forCode(CREATOR_PICKS, p.id)
