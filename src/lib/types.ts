@@ -185,6 +185,14 @@ export type PartSpec = {
    */
   thicknessDmm?: number
   /**
+   * The blade this one was derived from — a collab or Hasbro release is
+   * usually an existing design re-worked, and so are a fair number of BX
+   * blades. Held as the base blade's name because it is a note to read, not a
+   * join: the two are close but not the same, differing by up to 2.7 g, so
+   * each keeps its own figure and neither borrows the other's.
+   */
+  basedOn?: string
+  /**
    * A CX bey's two named pieces.
    *
    * Nothing in the catalogue is "a CX blade" on its own: a bey is a lock chip

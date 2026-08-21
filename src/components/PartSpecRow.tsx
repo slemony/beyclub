@@ -45,6 +45,7 @@ export default function PartSpecRow({ spec, cat }: { spec: PartSpec; cat: PartCa
       {/* Said plainly, because a reader comparing two beys on weight would
           otherwise have no way to know what the number leaves out. */}
       {spec.cx && <p className="spec-caveat">Over blade and assist not included.</p>}
+      {spec.basedOn && <p className="spec-caveat">Based on {spec.basedOn}.</p>}
       <a
         className="custom-build-credit"
         href={SOURCE.sourceUrl}
