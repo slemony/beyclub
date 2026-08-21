@@ -10,7 +10,18 @@ import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
 import { searchParts } from '../lib/search'
 import { buildStockIndex, loadStock } from '../lib/stock'
-import { CATEGORY_LABELS, comparePartsInTier, tierRank } from '../lib/tiers'
+import {
+  CATEGORY_LABELS,
+  compareBySpec,
+  comparePartsInTier,
+  MEASURED_CATEGORIES,
+  sortsFor,
+  specSortLabel,
+  specValueLabel,
+  tierRank,
+  type SortDir,
+  type SpecSort,
+} from '../lib/tiers'
 import type { Dataset, Part, PartCategory, PartNotes, StockProduct } from '../lib/types'
 
 type Filter = PartCategory | 'all'
@@ -23,6 +34,8 @@ export default function TierPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [category, setCategory] = useState<Filter>('all')
+  const [sort, setSort] = useState<SpecSort>('tier')
+  const [dir, setDir] = useState<SortDir>('desc')
   const [query, setQuery] = useState('')
   const [stack, setStack] = useState<Part[]>([])
   const [showSources, setShowSources] = useState(false)
@@ -88,6 +101,32 @@ export default function TierPage() {
     const inCategory = category === 'all' ? parts : parts.filter((p) => p.cat === category)
     return searchParts(inCategory, query)
   }, [parts, category, query])
+
+  /**
+   * Weight and gears exist only for bits and ratchets, so the chips only
+   * appear for those two. Offering them on a blade list would be offering a
+   * sort that does nothing.
+   */
+  const measured = category !== 'all' && MEASURED_CATEGORIES.includes(category)
+  const bySpec = measured && sort !== 'tier'
+
+  // Leaving the Bit filter with Weight still selected would hand back a list
+  // that cannot honour it.
+  // Leaving a category takes its sorts with it — Burst is a bit's alone, and a
+  // ratchet list ordered by it would rank every row as unmeasured.
+  useEffect(() => {
+    if (!measured || !sortsFor(category as PartCategory).includes(sort)) setSort('tier')
+  }, [measured, category, sort])
+
+  /**
+   * A measurement cuts across the tier bands — the heaviest bit in the game is
+   * not in the top one — so sorting by it drops the bands for a single ranked
+   * list. Each card still carries its grade.
+   */
+  const ranked = useMemo(
+    () => (bySpec ? [...visible].sort(compareBySpec(sort as Exclude<SpecSort, 'tier'>, dir)) : visible),
+    [visible, bySpec, sort, dir],
+  )
 
   const grouped = useMemo(() => {
     const map = new Map<string, Part[]>()
@@ -157,6 +196,32 @@ export default function TierPage() {
         ))}
       </div>
 
+      {measured && (
+        <div className="chip-row" role="tablist" aria-label="Sort by">
+          {sortsFor(category as PartCategory).map((key) => (
+            <button
+              key={key}
+              role="tab"
+              aria-selected={sort === key}
+              className={sort === key ? 'filter-chip active' : 'filter-chip'}
+              // Tapping the sort already in force reverses it. Lightest-first
+              // and heaviest-first are both real questions, and a second row of
+              // chips to answer them would cost more than it explained. Picking
+              // a different measurement starts at "most first" again — carrying
+              // a reversal across would answer a question nobody asked.
+              onClick={() =>
+                sort === key && key !== 'tier'
+                  ? setDir((d) => (d === 'desc' ? 'asc' : 'desc'))
+                  : (setSort(key), setDir('desc'))
+              }
+              title={sort === key && key !== 'tier' ? 'Tap again to reverse' : undefined}
+            >
+              {specSortLabel(key, category as PartCategory, sort === key ? dir : undefined)}
+            </button>
+          ))}
+        </div>
+      )}
+
       {loading && <div className="glass notice">Loading tier data…</div>}
 
       {error && !data && (
@@ -169,11 +234,17 @@ export default function TierPage() {
         <div className="glass notice">Nothing matches “{query}”.</div>
       )}
 
-      {/* Search results get the detailed card; browsing gets the tier table. */}
-      {searching ? (
+      {/* Search results get the detailed card; so does a measurement sort, which
+          has no bands to draw. Browsing by grade gets the tier table. */}
+      {searching || bySpec ? (
         <div className="part-grid">
-          {visible.map((p) => (
-            <PartCard key={`${p.cat}-${p.id}`} part={p} onOpen={openPart} />
+          {ranked.map((p) => (
+            <PartCard
+              key={`${p.cat}-${p.id}`}
+              part={p}
+              onOpen={openPart}
+              measure={bySpec ? specValueLabel(p, sort) : undefined}
+            />
           ))}
         </div>
       ) : (

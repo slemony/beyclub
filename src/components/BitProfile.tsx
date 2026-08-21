@@ -20,14 +20,25 @@ const BARS: [keyof Profile['stats'], string, string][] = [
  * Flat and Ball sit at opposite ends of the same list rather than simply one
  * above the other.
  */
-export default function BitProfile({ profile }: { profile: Profile }) {
+export default function BitProfile({
+  profile,
+  measured,
+}: {
+  profile: Profile
+  /** True when partSpecs.json already gave this part a weight — see below. */
+  measured?: boolean
+}) {
   return (
     <div className="bit-profile">
       <div className="bit-profile-meta">
         <span className="chip">{profile.label}</span>
         {profile.labelZh && <span className="chip chip-dim">{profile.labelZh}</span>}
         {profile.line && <span className="chip chip-dim">{profile.line} line</span>}
-        {profile.weightG !== undefined && (
+        {/* Two weights on one card read as a bug. These came from the bit
+            encyclopedia and look like a tip-only figure — an order out from the
+            whole-part measurements — so the measured one wins wherever it
+            exists, and this is the fallback for the few parts it misses. */}
+        {!measured && profile.weightG !== undefined && (
           <span className="chip chip-dim">≈{profile.weightG}g</span>
         )}
         {profile.debut && <span className="chip chip-dim">{profile.debut}</span>}

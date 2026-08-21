@@ -48,6 +48,17 @@ export type Part = {
    * Attached from customBuilds.json at load time (blades only).
    */
   customBuilds?: CustomBuild[]
+  /**
+   * Measured numbers for this part — weight, teeth, Burst rating, height.
+   * Attached from partSpecs.json at load time (bits and ratchets only).
+   */
+  spec?: PartSpec
+  /**
+   * One creator's published verdict on this bit, shown with a link back to the
+   * point in their video. Attached from creatorPicks.json at load time (bits
+   * only), and never an input to the grade.
+   */
+  creatorPick?: CreatorPick
   /** Product this part comes in. */
   product?: string
   /** How the blended tier was arrived at, and from what. */
@@ -132,6 +143,59 @@ export type CustomBuild = {
   /** Playing notes — how to launch and pilot the setup. */
   notes?: string[]
   /** Who published the build and where. */
+  credit: Credit
+}
+
+/**
+ * What a part measures, as opposed to how good it is.
+ *
+ * A grade tells you whether to use a part; these tell you what it is — why a
+ * 14 g ratchet-integrated bit and a 2 g plastic one are not really the same
+ * kind of object. Authored in partSpecs.json and joined on in loadCatalogue().
+ * Deliberately kept out of `Rating`: a measurement is a fact, and facts do not
+ * vote on a tier.
+ */
+export type PartSpec = {
+  /** Grams. */
+  weightG: number
+  /** Bit: GEAR teeth. Ratchet: RING blades — the protrusions its code names. */
+  teeth?: number
+  /** The official Burst rating: 20, 30 or 80. Bits only, and not the fused ones. */
+  burst?: number
+  /**
+   * Height in dmm — 10 dmm to the millimetre, the unit the source keeps. A
+   * bit's is how far it stands proud; a ratchet's is its base height.
+   */
+  heightDmm?: number
+  /** The far end of a height that changes: adjustable (Trans Kick) or in play (Turbo). */
+  heightAltDmm?: number
+  /**
+   * A bit moulded onto its own ratchet (Operate, Turbo). It has no Burst
+   * rating of its own, and its height is on the ratchet's base scale rather
+   * than the exposed-height one — so the two are never compared directly.
+   */
+  fused?: boolean
+  /** Simple-type ratchet: Burst resistance is fixed at "loose" whatever bit is fitted. */
+  simple?: boolean
+}
+
+/**
+ * A creator's published verdict on one bit — their own tier name, a sentence,
+ * and where in the video they said it. Authored in creatorPicks.json and
+ * joined onto its bit in loadCatalogue().
+ *
+ * Held apart from `PartNotes` on purpose: that block is BeyClub's own writing
+ * and carries an "our own view" badge, while this is someone else's opinion
+ * and carries their name and a link. It never reaches a rating.
+ */
+export type CreatorPick = {
+  /** The creator's own tier name, e.g. "Top Level" — not our grade scale. */
+  tier: string
+  /** One sentence, at most 140 characters. */
+  note: string
+  /** Seconds into the video, for a ?t= deep link. */
+  at?: number
+  /** Who said it and where. */
   credit: Credit
 }
 
@@ -333,5 +397,23 @@ export type Deck = {
    */
   allowDuplicates?: boolean
   createdAt: string
+  updatedAt: string
+}
+
+/**
+ * A starred product on the Stock page, carried with the account like a build
+ * or a deck.
+ *
+ * A bare slug would have been enough for one browser, but a record that syncs
+ * needs an id to tombstone and a time to merge on — see `mergeById` in
+ * userSync.ts. The title rides along so the sign-in offer can name what it is
+ * offering without loading the whole shop.
+ */
+export type WatchedProduct = {
+  /** `watch:<slug>` — namespaced so it can never collide with a build or deck id. */
+  id: string
+  slug: string
+  title?: string
+  addedAt: string
   updatedAt: string
 }

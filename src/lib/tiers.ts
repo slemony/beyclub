@@ -1,4 +1,4 @@
-import type { Part, PartCategory } from './types'
+import type { Part, PartCategory, PartSpec } from './types'
 
 /** Every category is graded on this one scale, so grades compare directly. */
 export const BLADE_TIERS = ['X', 'S+', 'S', 'A+', 'A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'E+', 'E']
@@ -92,6 +92,108 @@ export function comparePartsInTier(a: Part, b: Part): number {
     (b.rating?.score ?? 0) - (a.rating?.score ?? 0) ||
     (a.nameEn ?? a.name).localeCompare(b.nameEn ?? b.name)
   )
+}
+
+/**
+ * How a list of parts is ordered when the grade isn't the question.
+ *
+ * `tier` is the default everywhere — it is what BeyClub is for. The other two
+ * read the measurements in partSpecs.json, which only bits and ratchets carry,
+ * so they are offered only where they mean something.
+ */
+export type SpecSort = 'tier' | 'weight' | 'teeth' | 'height' | 'burst'
+
+/** Which categories carry measurements, and so can be sorted by them. */
+export const MEASURED_CATEGORIES: PartCategory[] = ['bit', 'ratchet']
+
+/**
+ * Which way a measurement runs. Neither end is the obvious default — the
+ * heaviest bit and the lightest are each the answer to a real question — so
+ * the direction is the reader's to set.
+ */
+export type SortDir = 'desc' | 'asc'
+
+/**
+ * Bits have gear teeth, ratchets have ring blades: one measurement, two names.
+ * `dir` is passed only for the sort actually in force, and puts the arrow on
+ * that chip alone.
+ */
+export function specSortLabel(sort: SpecSort, cat: PartCategory, dir?: SortDir): string {
+  const name = SORT_NAMES[sort] ?? (cat === 'ratchet' ? 'Protrusions' : 'Gears')
+  if (sort === 'tier' || !dir) return name
+  return `${name} ${dir === 'desc' ? '↓' : '↑'}`
+}
+
+const SORT_NAMES: Partial<Record<SpecSort, string>> = {
+  tier: 'Tier',
+  weight: 'Weight',
+  height: 'Height',
+  burst: 'Burst',
+}
+
+/** Only bits carry a Burst rating, so only a bit list can be ordered by one. */
+export function sortsFor(cat: PartCategory): SpecSort[] {
+  return cat === 'bit'
+    ? ['tier', 'weight', 'teeth', 'height', 'burst']
+    : ['tier', 'weight', 'teeth', 'height']
+}
+
+/** dmm to millimetres — the source keeps tenths, so 122 reads as 12.2 mm. */
+export const mm = (dmm: number) => (dmm / 10).toFixed(1)
+
+/**
+ * A part's height, as a reader should see it: one figure, or the span for the
+ * ones that change. A fused bit's is measured on the ratchet's base scale, so
+ * saying so stops it being read against every other bit's exposed height.
+ */
+export function formatHeight(spec: PartSpec): string | undefined {
+  if (spec.heightDmm === undefined) return undefined
+  const span =
+    spec.heightAltDmm === undefined
+      ? `${mm(spec.heightDmm)} mm`
+      : `${mm(spec.heightDmm)}–${mm(spec.heightAltDmm)} mm`
+  return spec.fused ? `base ${span}` : span
+}
+
+/**
+ * By one measurement, heaviest or lightest first, with anything unmeasured at
+ * the back either way.
+ *
+ * Unmeasured parts sort last in both directions rather than as zero: a part we
+ * have no figure for is not a light part, and letting it lead an ascending list
+ * would say exactly that. The name breaks ties, of which there are many — a
+ * dozen bits weigh the same 2.3 g.
+ */
+export function compareBySpec(sort: Exclude<SpecSort, 'tier'>, dir: SortDir = 'desc') {
+  const value = (p: Part) => {
+    const spec = p.spec
+    if (!spec) return undefined
+    if (sort === 'weight') return spec.weightG
+    if (sort === 'teeth') return spec.teeth
+    if (sort === 'burst') return spec.burst
+    // A fused bit's height is on the ratchet's base scale — a different ruler,
+    // so it goes to the back with the unmeasured rather than claiming to be the
+    // shortest bit in the game.
+    return spec.fused ? undefined : spec.heightDmm
+  }
+  return (a: Part, b: Part): number => {
+    const [x, y] = [value(a), value(b)]
+    if (x === undefined && y === undefined) return comparePartsInTier(a, b)
+    if (x === undefined) return 1
+    if (y === undefined) return -1
+    return (dir === 'desc' ? y - x : x - y) || (a.nameEn ?? a.name).localeCompare(b.nameEn ?? b.name)
+  }
+}
+
+/** The measured value a spec sort ranked on, for showing on the row that moved. */
+export function specValueLabel(part: Part | undefined, sort: SpecSort): string | undefined {
+  const spec = part?.spec
+  if (sort === 'tier' || !spec || !part) return undefined
+  if (sort === 'weight') return `${spec.weightG.toFixed(1)} g`
+  if (sort === 'height') return formatHeight(spec)
+  if (sort === 'burst') return spec.burst === undefined ? undefined : `Burst ${spec.burst}`
+  if (spec.teeth === undefined) return undefined
+  return `${spec.teeth} ${part.cat === 'ratchet' ? 'protrusions' : 'gears'}`
 }
 
 /** The sheet uses "-" for parts nobody has graded yet. */

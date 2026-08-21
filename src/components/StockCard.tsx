@@ -11,7 +11,7 @@ type Props = {
   contents: Part[]
   onOpen: (part: Part) => void
   watched: boolean
-  onToggleWatch: (slug: string) => void
+  onToggleWatch: (slug: string, title: string) => void
   /**
    * False while KGB's shop is closed to us: the published flags are a snapshot
    * from the last day we could read it, and repeating them as "In stock" — or
@@ -100,7 +100,7 @@ export default function StockCard({
         */}
         <button
           className={watched ? 'watch-star on' : 'watch-star'}
-          onClick={() => onToggleWatch(product.slug)}
+          onClick={() => onToggleWatch(product.slug, product.title)}
           aria-pressed={watched}
           title={watched ? 'Stop watching' : 'Watch this'}
         >

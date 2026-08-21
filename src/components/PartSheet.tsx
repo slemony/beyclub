@@ -1,6 +1,7 @@
 import BitProfile from './BitProfile'
 import PartChip from './PartChip'
 import PartImage from './PartImage'
+import PartSpecRow from './PartSpecRow'
 import RatingBreakdown from './RatingBreakdown'
 import Sheet from './Sheet'
 import sourceNotes from '../data/sourceNotes.json'
@@ -12,6 +13,18 @@ import type { PartIndex } from '../lib/partIndex'
 import type { CustomBuild, Part, PartNotes, StockProduct } from '../lib/types'
 
 const NOTE_TRANSLATIONS = sourceNotes as Record<string, string>
+
+/**
+ * The creator's own five bands, which are not our grade scale and are not
+ * meant to line up with it — hence their own colours rather than TIER_COLORS.
+ */
+const PICK_TIER_COLORS: Record<string, string> = {
+  'Top Level': '#5ce6a8',
+  'Meta Relevant': '#8be8ff',
+  'Niche Picks': '#ffc94d',
+  'Not Worth Using': '#9aa3ad',
+  'What Are You Doing': '#ff7a7a',
+}
 
 type Props = {
   stack: Part[]
@@ -224,6 +237,13 @@ export default function PartSheet({
         {part.product && <span className="chip chip-dim">{part.product}</span>}
       </div>
 
+      {/* Measurements sit with the chips rather than in a block of their own:
+          they are the same kind of glance as the tier and the type, and a
+          ratchet has nothing else on this sheet to read. */}
+      {part.spec && (part.cat === 'bit' || part.cat === 'ratchet') && (
+        <PartSpecRow spec={part.spec} cat={part.cat} />
+      )}
+
       {(part.stockRatchet || part.stockBit || part.stockAssist || part.stockOverblade) && (
         <section className="sheet-block">
           <h3>Comes with</h3>
@@ -361,7 +381,9 @@ export default function PartSheet({
           <h3>
             BeyClub notes <span className="editorial-badge">our own view</span>
           </h3>
-          {editorial.profile && <BitProfile profile={editorial.profile} />}
+          {editorial.profile && (
+            <BitProfile profile={editorial.profile} measured={Boolean(part.spec)} />
+          )}
           {editorial.summary && <p className="sheet-text">{editorial.summary}</p>}
           {editorial.pros?.length > 0 && (
             <ul className="pro-list">
@@ -383,6 +405,36 @@ export default function PartSheet({
               <p className="sheet-text">{editorial.technique}</p>
             </>
           )}
+        </section>
+      )}
+
+      {/* Someone else's opinion, kept out of the block above so our own view and
+          a source's are never read as one voice. One sentence and a link back
+          to the moment they said it — the sheet is long enough already. */}
+      {part.creatorPick && (
+        <section className="sheet-block">
+          <h3>Creator pick</h3>
+          <p className="sheet-text">
+            <span
+              className="creator-tier"
+              style={{ color: PICK_TIER_COLORS[part.creatorPick.tier] ?? '#9aa3ad' }}
+            >
+              {part.creatorPick.tier}
+            </span>
+            {part.creatorPick.note}
+          </p>
+          <a
+            className="custom-build-credit"
+            href={
+              part.creatorPick.at
+                ? `${part.creatorPick.credit.sourceUrl}?t=${part.creatorPick.at}`
+                : part.creatorPick.credit.sourceUrl
+            }
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {part.creatorPick.credit.author} — {part.creatorPick.credit.sourceName} ↗
+          </a>
         </section>
       )}
 

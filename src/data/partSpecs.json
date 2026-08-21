@@ -1,0 +1,520 @@
+{
+  "_note": "Measured part data — weight, gear/ring teeth, official Burst rating and height. Facts rather than opinion: nothing here reaches blendRating(), it only describes the part. Weights are grams; the source records them to a third of a gram (\"3-\" = 2.7, \"2=\" = 2.0, \"3+\" = 3.3) and they are decoded here. Heights are dmm, as the source keeps them — 10 dmm = 1 mm — and are converted for display. For a bit `teeth` is the GEAR tooth count and `heightDmm` the exposed height; for a ratchet `teeth` is the RING blade count (the protrusions its code names) and `heightDmm` the base height. `heightAltDmm` is the far end of an adjustable or in-play-changing height. Ratchet-integrated bits (Operate, Turbo) carry no Burst rating and their height is on the base scale, so they are flagged `fused`. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same spec to both casings — the rows themselves stay separate and keep their own grades.",
+  "updatedAt": "2026-08-21",
+  "credit": {
+    "author": "V Man (MKK)",
+    "sourceName": "go-shoot parts index",
+    "sourceUrl": "https://go-shoot.github.io/x/parts/?bit"
+  },
+  "bits": {
+    "A": {
+      "weightG": 2.7,
+      "teeth": 16,
+      "burst": 80,
+      "heightDmm": 122
+    },
+    "B": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 124
+    },
+    "BS": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 123,
+      "heightAltDmm": 136
+    },
+    "C": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "D": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 123
+    },
+    "DB": {
+      "weightG": 3.3,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 146
+    },
+    "DS": {
+      "weightG": 3.3,
+      "teeth": 12,
+      "burst": 20,
+      "heightDmm": 124
+    },
+    "E": {
+      "weightG": 3.3,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 118
+    },
+    "F": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "FB": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 123
+    },
+    "FF": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 127
+    },
+    "G": {
+      "weightG": 2.7,
+      "teeth": 16,
+      "burst": 30,
+      "heightDmm": 124
+    },
+    "GB": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 123
+    },
+    "GF": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "GN": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 120
+    },
+    "GP": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 124
+    },
+    "GR": {
+      "weightG": 2.0,
+      "teeth": 10,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "GU": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 121
+    },
+    "H": {
+      "weightG": 2.7,
+      "teeth": 16,
+      "burst": 80,
+      "heightDmm": 122
+    },
+    "HN": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 133
+    },
+    "HT": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 133
+    },
+    "I": {
+      "weightG": 2.3,
+      "teeth": 16,
+      "burst": 80,
+      "heightDmm": 100
+    },
+    "J": {
+      "weightG": 2.7,
+      "teeth": 16,
+      "burst": 80,
+      "heightDmm": 122
+    },
+    "K": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 125
+    },
+    "L": {
+      "weightG": 2.7,
+      "teeth": 16,
+      "burst": 80,
+      "heightDmm": 125
+    },
+    "LF": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 113
+    },
+    "LO": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 112
+    },
+    "LR": {
+      "weightG": 2.0,
+      "teeth": 10,
+      "burst": 80,
+      "heightDmm": 113
+    },
+    "M": {
+      "weightG": 3.3,
+      "teeth": 18,
+      "burst": 80,
+      "heightDmm": 154
+    },
+    "MN": {
+      "weightG": 2.7,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 124
+    },
+    "N": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 123
+    },
+    "Nr": {
+      "weightG": 2.0,
+      "teeth": 10,
+      "burst": 30,
+      "heightDmm": 123
+    },
+    "O": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 123
+    },
+    "Op": {
+      "weightG": 14.3,
+      "teeth": 14,
+      "heightDmm": 80,
+      "heightAltDmm": 85,
+      "fused": true
+    },
+    "P": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 124
+    },
+    "Q": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "R": {
+      "weightG": 2.0,
+      "teeth": 10,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "RA": {
+      "weightG": 3.0,
+      "teeth": 16,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "S": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 123
+    },
+    "T": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "TK": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 112,
+      "heightAltDmm": 127
+    },
+    "TP": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 115,
+      "heightAltDmm": 130
+    },
+    "Tr": {
+      "weightG": 12.7,
+      "teeth": 16,
+      "heightDmm": 65,
+      "heightAltDmm": 90,
+      "fused": true
+    },
+    "U": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "UF": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 102
+    },
+    "UN": {
+      "weightG": 2.0,
+      "teeth": 12,
+      "burst": 30,
+      "heightDmm": 102
+    },
+    "V": {
+      "weightG": 2.3,
+      "teeth": 12,
+      "burst": 80,
+      "heightDmm": 123
+    },
+    "W": {
+      "weightG": 2.0,
+      "teeth": 10,
+      "burst": 30,
+      "heightDmm": 127
+    },
+    "WB": {
+      "weightG": 2.3,
+      "teeth": 16,
+      "burst": 30,
+      "heightDmm": 130
+    },
+    "WW": {
+      "weightG": 2.3,
+      "teeth": 16,
+      "burst": 30,
+      "heightDmm": 132
+    },
+    "Y": {
+      "weightG": 4.3,
+      "teeth": 20,
+      "burst": 30,
+      "heightDmm": 150
+    },
+    "Z": {
+      "weightG": 2.7,
+      "teeth": 16,
+      "burst": 80,
+      "heightDmm": 115
+    }
+  },
+  "ratchets": {
+    "0-60": {
+      "weightG": 6.7,
+      "teeth": 0,
+      "heightDmm": 60
+    },
+    "0-70": {
+      "weightG": 7.0,
+      "teeth": 0,
+      "heightDmm": 70
+    },
+    "0-80": {
+      "weightG": 7.7,
+      "teeth": 0,
+      "heightDmm": 80
+    },
+    "1-50": {
+      "weightG": 5.7,
+      "teeth": 1,
+      "heightDmm": 50
+    },
+    "1-60": {
+      "weightG": 6.0,
+      "teeth": 1,
+      "heightDmm": 60
+    },
+    "1-70": {
+      "weightG": 6.0,
+      "teeth": 1,
+      "heightDmm": 70
+    },
+    "1-80": {
+      "weightG": 6.7,
+      "teeth": 1,
+      "heightDmm": 80
+    },
+    "2-60": {
+      "weightG": 6.3,
+      "teeth": 2,
+      "heightDmm": 60
+    },
+    "2-70": {
+      "weightG": 6.3,
+      "teeth": 2,
+      "heightDmm": 70
+    },
+    "2-80": {
+      "weightG": 7.0,
+      "teeth": 2,
+      "heightDmm": 80
+    },
+    "3-60": {
+      "weightG": 6.3,
+      "teeth": 3,
+      "heightDmm": 60
+    },
+    "3-70": {
+      "weightG": 6.3,
+      "teeth": 3,
+      "heightDmm": 70
+    },
+    "3-80": {
+      "weightG": 7.0,
+      "teeth": 3,
+      "heightDmm": 80
+    },
+    "3-85": {
+      "weightG": 4.7,
+      "teeth": 3,
+      "heightDmm": 85,
+      "simple": true
+    },
+    "4-50": {
+      "weightG": 6.0,
+      "teeth": 4,
+      "heightDmm": 50
+    },
+    "4-55": {
+      "weightG": 4.7,
+      "teeth": 4,
+      "heightDmm": 55,
+      "simple": true
+    },
+    "4-60": {
+      "weightG": 6.3,
+      "teeth": 4,
+      "heightDmm": 60
+    },
+    "4-70": {
+      "weightG": 6.3,
+      "teeth": 4,
+      "heightDmm": 70
+    },
+    "4-80": {
+      "weightG": 7.0,
+      "teeth": 4,
+      "heightDmm": 80
+    },
+    "5-50": {
+      "weightG": 6.3,
+      "teeth": 5,
+      "heightDmm": 50
+    },
+    "5-60": {
+      "weightG": 6.7,
+      "teeth": 5,
+      "heightDmm": 60
+    },
+    "5-70": {
+      "weightG": 6.7,
+      "teeth": 5,
+      "heightDmm": 70
+    },
+    "5-80": {
+      "weightG": 7.3,
+      "teeth": 5,
+      "heightDmm": 80
+    },
+    "6-60": {
+      "weightG": 6.3,
+      "teeth": 6,
+      "heightDmm": 60
+    },
+    "6-70": {
+      "weightG": 6.7,
+      "teeth": 6,
+      "heightDmm": 70
+    },
+    "6-80": {
+      "weightG": 7.0,
+      "teeth": 6,
+      "heightDmm": 80
+    },
+    "7-55": {
+      "weightG": 5.3,
+      "teeth": 7,
+      "heightDmm": 55,
+      "simple": true
+    },
+    "7-60": {
+      "weightG": 7.0,
+      "teeth": 7,
+      "heightDmm": 60
+    },
+    "7-70": {
+      "weightG": 7.3,
+      "teeth": 7,
+      "heightDmm": 70
+    },
+    "7-80": {
+      "weightG": 7.7,
+      "teeth": 7,
+      "heightDmm": 80
+    },
+    "8-70": {
+      "weightG": 7.7,
+      "teeth": 8,
+      "heightDmm": 70
+    },
+    "8-80": {
+      "weightG": 8.3,
+      "teeth": 8,
+      "heightDmm": 80
+    },
+    "9-60": {
+      "weightG": 6.3,
+      "teeth": 9,
+      "heightDmm": 60
+    },
+    "9-65": {
+      "weightG": 4.3,
+      "teeth": 9,
+      "heightDmm": 65,
+      "simple": true
+    },
+    "9-70": {
+      "weightG": 6.3,
+      "teeth": 9,
+      "heightDmm": 70
+    },
+    "9-80": {
+      "weightG": 7.0,
+      "teeth": 9,
+      "heightDmm": 80
+    },
+    "M-85": {
+      "weightG": 10.7,
+      "teeth": 5,
+      "heightDmm": 85,
+      "simple": true
+    }
+  }
+}

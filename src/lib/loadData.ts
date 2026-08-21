@@ -1,17 +1,21 @@
 import bladeNamesEn from '../data/bladeNamesEn.json'
 import bladeNamesZhEn from '../data/bladeNamesZhEn.json'
+import creatorPicks from '../data/creatorPicks.json'
 import customBuilds from '../data/customBuilds.json'
 import manualParts from '../data/manualParts.json'
 import partOverrides from '../data/partOverrides.json'
+import partSpecs from '../data/partSpecs.json'
 import { calculateBuyRec } from './buyRec'
 import { blendRating, tournamentScore } from './rating'
 import { baseName, normalize } from './text'
 import type {
+  CreatorPick,
   CustomBuild,
   Dataset,
   Part,
   PartCategory,
   PartNotes,
+  PartSpec,
   PartType,
   RatingSources,
   TournamentFile,
@@ -95,6 +99,40 @@ const MANUAL_PARTS = manualParts.parts as ManualPart[]
 
 /** Hand-curated modding builds, joined onto their blade below — see the file's own note. */
 const CUSTOM_BUILDS = customBuilds.builds as CustomBuild[]
+
+/** Measured weights, teeth, Burst ratings and heights, by code — see the file's own note. */
+const PART_SPECS: Partial<Record<PartCategory, Record<string, PartSpec>>> = {
+  bit: partSpecs.bits,
+  ratchet: partSpecs.ratchets,
+}
+
+/** One creator's verdict per bit, flattened from the file's per-entry code lists. */
+const CREATOR_PICKS: Record<string, CreatorPick> = Object.fromEntries(
+  creatorPicks.picks.flatMap((pick) =>
+    pick.bits.map((code): [string, CreatorPick] => [
+      code,
+      { tier: pick.tier, note: pick.note, at: pick.at, credit: creatorPicks.credit },
+    ]),
+  ),
+)
+
+/**
+ * Reaches the entry for a code, allowing for the sheet's two casings.
+ *
+ * Both files are keyed on one casing of a part's code, but the sheet lists
+ * `NR`/`Nr` and `OP`/`Op` as separate rows on different grades. They are one
+ * physical part, so both rows get the same measurements and the same verdict —
+ * the rows themselves stay separate and keep their own grades. This is the
+ * documented exception to matching exactly, not licence to fold case anywhere
+ * else: it only ever reads curated data, and never merges two catalogue rows.
+ */
+function forCode<T>(table: Record<string, T> | undefined, id: string): T | undefined {
+  if (!table) return undefined
+  if (table[id]) return table[id]
+  const lower = id.toLowerCase()
+  const key = Object.keys(table).find((k) => k.toLowerCase() === lower)
+  return key ? table[key] : undefined
+}
 
 /**
  * The Taiwan catalogue: which parts exist, what they look like and what they
@@ -214,6 +252,17 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
       if (p.id === build.blade || p.key === build.blade) {
         ;(p.customBuilds ??= []).push(build)
       }
+    }
+  }
+
+  // Measurements, and one creator's read on each bit. Both are hand-curated and
+  // keyed on the part's own code, so this is a lookup rather than a match.
+  for (const p of out) {
+    const spec = forCode(PART_SPECS[p.cat], p.id)
+    if (spec) p.spec = spec
+    if (p.cat === 'bit') {
+      const pick = forCode(CREATOR_PICKS, p.id)
+      if (pick) p.creatorPick = pick
     }
   }
 

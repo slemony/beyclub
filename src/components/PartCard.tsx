@@ -3,9 +3,17 @@ import { UNRATED } from '../lib/rating'
 import { BUY_LABELS, TIER_COLORS, TYPE_COLORS, TYPE_LABELS, tierLabel } from '../lib/tiers'
 import type { Part } from '../lib/types'
 
-type Props = { part: Part; onOpen: (part: Part) => void }
+type Props = {
+  part: Part
+  onOpen: (part: Part) => void
+  /**
+   * The measurement this list was ranked on, e.g. "2.7 g". A list ordered by a
+   * number nobody can see reads as no order at all.
+   */
+  measure?: string
+}
 
-export default function PartCard({ part, onOpen }: Props) {
+export default function PartCard({ part, onOpen, measure }: Props) {
   const tierColor = TIER_COLORS[part.tier] ?? '#6b7480'
   const primary = part.nameEn ?? part.name
   // The alt line keeps a blade's original Chinese name in view next to its
@@ -28,6 +36,7 @@ export default function PartCard({ part, onOpen }: Props) {
         {secondary && <span className="part-alt">{secondary}</span>}
 
         <span className="part-meta">
+          {measure && <span className="chip">{measure}</span>}
           {part.type && TYPE_LABELS[part.type] && (
             <span className="chip" style={{ color: TYPE_COLORS[part.type] }}>
               {TYPE_LABELS[part.type]}

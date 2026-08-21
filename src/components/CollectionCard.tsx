@@ -9,9 +9,11 @@ type Props = {
    * or when a code no longer resolves (renamed/removed upstream since it was added). */
   part?: Part
   onOpenDetails: (entry: CollectionEntry) => void
+  /** The measurement this section is currently ordered by, e.g. "2.7 g". */
+  measure?: string
 }
 
-export default function CollectionCard({ entry, part, onOpenDetails }: Props) {
+export default function CollectionCard({ entry, part, onOpenDetails, measure }: Props) {
   const title = part?.nameEn ?? part?.name ?? entry.name ?? entry.code ?? '—'
   const missing = Boolean(entry.code) && !part
   const total = totalQty(entry)
@@ -35,6 +37,7 @@ export default function CollectionCard({ entry, part, onOpenDetails }: Props) {
 
       <span className="collection-tile-name">{title}</span>
       {entry.code && <span className="collection-tile-code">{entry.code}</span>}
+      {measure && <span className="collection-tile-measure">{measure}</span>}
       {missing && <span className="collection-tile-code">not in the catalogue</span>}
       {unofficial > 0 && (
         <span className="collection-tile-flag">{unofficial === total ? 'unofficial' : `${unofficial} unofficial`}</span>

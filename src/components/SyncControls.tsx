@@ -57,8 +57,8 @@ export function SyncNotice() {
 
   return (
     <p className="notice notice-live sync-notice">
-      <strong>Saved in this browser only.</strong> Sign in to keep your parts, builds and decks on every device you use
-      — nothing here needs an account, it just won't follow you.
+      <strong>Saved in this browser only.</strong> Sign in to keep your parts, builds, decks and starred products on
+      every device you use — nothing here needs an account, it just won't follow you.
       <button
         className="sync-notice-dismiss"
         onClick={() => {

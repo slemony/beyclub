@@ -4,6 +4,7 @@ import PageHeader from '../components/PageHeader'
 import PartSheet from '../components/PartSheet'
 import Sheet from '../components/Sheet'
 import StockCard from '../components/StockCard'
+import { SyncButton, SyncNotice } from '../components/SyncControls'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
 import {
@@ -20,7 +21,8 @@ import {
   triggerStockScrape,
 } from '../lib/stock'
 import { tierRank } from '../lib/tiers'
-import { lastLiveCheck, markLiveChecked, readWatchlist, toggleWatch, watchedFirst } from '../lib/watchlist'
+import { applyDelete, applyLocal, useUserData } from '../lib/userSync'
+import { lastLiveCheck, markLiveChecked, toggleWatch, watchedFirst, watchedSlugs } from '../lib/watchlist'
 import type { Dataset, Part, PartNotes, StockFile, StockGroup, StockProduct } from '../lib/types'
 
 type Filter = StockGroup | 'all' | 'watching'
@@ -101,7 +103,10 @@ export default function StockPage() {
   const [showSoldOut, setShowSoldOut] = useState(false)
   const [stack, setStack] = useState<Part[]>([])
   const [showSource, setShowSource] = useState(false)
-  const [watched, setWatched] = useState<Set<string>>(() => readWatchlist())
+  // Held by the shared store rather than this page, so a star made on another
+  // device arrives on screen instead of waiting for a reload.
+  const { watchlist } = useUserData()
+  const watched = useMemo(() => watchedSlugs(watchlist), [watchlist])
   const [canRefresh, setCanRefresh] = useState(() => canRefreshStockNow())
   const [refreshing, setRefreshing] = useState(false)
   // The outcome of the last manual check, shown next to the timestamp so the
@@ -239,9 +244,15 @@ export default function StockPage() {
     [],
   )
 
-  const onToggleWatch = useCallback((slug: string) => {
-    setWatched((prev) => toggleWatch(slug, prev))
-  }, [])
+  const onToggleWatch = useCallback(
+    (slug: string, title: string) => {
+      const { next, removedId } = toggleWatch(slug, title, watchlist)
+      // Un-starring needs the tombstone, or the account's copy hands it back.
+      if (removedId) applyDelete({ watchlist: next }, [removedId])
+      else applyLocal({ watchlist: next })
+    },
+    [watchlist],
+  )
 
   /**
    * Whether anything on this page can honestly speak to what is on the shelf.
@@ -440,16 +451,23 @@ export default function StockPage() {
         title="Stock"
         sub="What's available at Malaysian official prices"
         action={
-          <button
-            className={showSource ? 'info-toggle open' : 'info-toggle'}
-            onClick={() => setShowSource((v) => !v)}
-            aria-haspopup="dialog"
-            aria-expanded={showSource}
-          >
-            <span aria-hidden="true">ⓘ</span> Where this comes from
-          </button>
+          <div className="page-actions">
+            {/* Signing in belongs on this page too — the watchlist lives here,
+                and it is the only thing on it worth carrying between devices. */}
+            <SyncButton />
+            <button
+              className={showSource ? 'info-toggle open' : 'info-toggle'}
+              onClick={() => setShowSource((v) => !v)}
+              aria-haspopup="dialog"
+              aria-expanded={showSource}
+            >
+              <span aria-hidden="true">ⓘ</span> Where this comes from
+            </button>
+          </div>
         }
       />
+
+      <SyncNotice />
 
       {stock?.stale && (
         <p className="notice notice-stale">

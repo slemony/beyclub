@@ -89,6 +89,16 @@ function OfferChoice({ offer }: { offer: Offer }) {
         (d) => d.id,
         (d) => d.name || 'Unnamed deck',
       )}
+      {section(
+        offer.watchlist.length === 1
+          ? '1 starred product'
+          : `${offer.watchlist.length} starred products`,
+        offer.watchlist,
+        (w) => w.id,
+        // A star made before titles were kept has only its slug to go by, which
+        // is still the product's name with hyphens in it.
+        (w) => w.title ?? w.slug,
+      )}
 
       <div className="modal-actions">
         <button className="modal-btn primary" onClick={() => resolveOffer([...chosen])}>

@@ -2,18 +2,20 @@ import { useSyncExternalStore } from 'react'
 import { readBuilds, writeBuilds, type BuildsFile } from './builds'
 import { entryKey, readCollection, writeCollection } from './collection'
 import { firebaseEnabled, loadFirebase } from './firebase'
-import type { CollectionEntry, CollectionSource, Deck, SavedBuild } from './types'
+import { readWatchlist, writeWatchlist } from './watchlist'
+import type { CollectionEntry, CollectionSource, Deck, SavedBuild, WatchedProduct } from './types'
 import type { User } from 'firebase/auth'
 
 /**
- * Everything a signed-in user carries between devices — collection, builds
- * and decks together — in one Firestore document per user (`users/{uid}`).
+ * Everything a signed-in user carries between devices — collection, builds,
+ * decks and watchlist together — in one Firestore document per user
+ * (`users/{uid}`).
  * One doc rather than a collection of them: these are small text records with
  * no images, so a whole account is one read and one write instead of a
  * listener per row.
  *
- * Local-first throughout. collection.ts and builds.ts own the `localStorage`
- * writes and this module never makes the UI wait on a network: a change is
+ * Local-first throughout. collection.ts, builds.ts and watchlist.ts own the
+ * `localStorage` writes and this module never makes the UI wait on a network: a change is
  * saved and on screen immediately, then pushed. It only merges the two copies
  * on sign-in and keeps them in step after.
  *
@@ -27,6 +29,8 @@ export type UserData = {
   entries: CollectionEntry[]
   builds: SavedBuild[]
   decks: Deck[]
+  /** Starred products from the Stock page — see watchlist.ts. */
+  watchlist: WatchedProduct[]
   /**
    * When each deleted record was deleted, by id.
    *
@@ -95,12 +99,19 @@ function writeDeclined(ids: Set<string>): void {
 
 const readLocal = (): UserData => {
   const { builds, decks } = readBuilds()
-  return { entries: readCollection(), builds, decks, tombstones: readTombstones() }
+  return {
+    entries: readCollection(),
+    builds,
+    decks,
+    watchlist: readWatchlist(),
+    tombstones: readTombstones(),
+  }
 }
 
 const writeLocal = (data: UserData): void => {
   writeCollection(data.entries)
   writeBuilds({ builds: data.builds, decks: data.decks })
+  writeWatchlist(data.watchlist)
   writeTombstones(data.tombstones)
 }
 
@@ -120,9 +131,9 @@ function subscribe(callback: () => void): () => void {
 }
 
 /**
- * The current collection, builds and decks. Shared rather than per-page so a
- * change made on one tab — or arriving from another device — is on screen
- * everywhere without a reload.
+ * The current collection, builds, decks and watchlist. Shared rather than
+ * per-page so a change made on one tab — or arriving from another device — is
+ * on screen everywhere without a reload.
  */
 export function useUserData(): UserData {
   return useSyncExternalStore(subscribe, () => snapshot)
@@ -168,7 +179,12 @@ export const deletedIds = (): string[] => Object.keys(snapshot.tombstones)
  * ticked, this device's own records have already gone up, and everything
  * left unticked stays in the account for the devices that do want it.
  */
-export type Offer = { entries: CollectionEntry[]; builds: SavedBuild[]; decks: Deck[] }
+export type Offer = {
+  entries: CollectionEntry[]
+  builds: SavedBuild[]
+  decks: Deck[]
+  watchlist: WatchedProduct[]
+}
 
 type Pending = { offer: Offer; decide: (chosen: Set<string>) => void }
 
@@ -199,9 +215,11 @@ export function resolveOffer(chosenIds: string[]): void {
   waiting.decide(new Set(chosenIds))
 }
 
-export const offerIds = (offer: Offer): string[] => [...offer.entries, ...offer.builds, ...offer.decks].map((r) => r.id)
+export const offerIds = (offer: Offer): string[] =>
+  [...offer.entries, ...offer.builds, ...offer.decks, ...offer.watchlist].map((r) => r.id)
 
-const isEmptyOffer = (o: Offer) => !o.entries.length && !o.builds.length && !o.decks.length
+const isEmptyOffer = (o: Offer) =>
+  !o.entries.length && !o.builds.length && !o.decks.length && !o.watchlist.length
 
 /**
  * What the account is carrying that this device is not — the entries by part
@@ -212,6 +230,9 @@ function offerFrom(local: UserData, cloud: UserData, tombstones: Record<string, 
   const declined = readDeclined()
   const localKeys = new Set(local.entries.map(entryKey))
   const localIds = new Set([...local.builds, ...local.decks].map((r) => r.id))
+  // Stars are matched by slug, not row id, for the same reason entries are
+  // matched by part: the same product starred on two devices is one star.
+  const localSlugs = new Set(local.watchlist.map((w) => w.slug))
   const wanted = <T extends { id: string; updatedAt: string }>(record: T) => {
     if (declined.has(record.id)) return false
     const deletedAt = tombstones[record.id]
@@ -221,6 +242,7 @@ function offerFrom(local: UserData, cloud: UserData, tombstones: Record<string, 
     entries: cloud.entries.filter((e) => !localKeys.has(entryKey(e)) && wanted(e)),
     builds: cloud.builds.filter((b) => !localIds.has(b.id) && wanted(b)),
     decks: cloud.decks.filter((d) => !localIds.has(d.id) && wanted(d)),
+    watchlist: cloud.watchlist.filter((w) => !localSlugs.has(w.slug) && wanted(w)),
   }
 }
 
@@ -339,11 +361,12 @@ function merge(a: UserData, b: UserData): UserData {
     entries: withoutDeletedSources(withoutDeleted(mergeEntries(a.entries, b.entries), tombstones), tombstones),
     builds: withoutDeleted(mergeById(a.builds, b.builds), tombstones),
     decks: withoutDeleted(mergeById(a.decks, b.decks), tombstones),
+    watchlist: withoutDeleted(mergeById(a.watchlist, b.watchlist), tombstones),
     tombstones,
   }
 }
 
-const EMPTY_HELD: UserData = { entries: [], builds: [], decks: [], tombstones: {} }
+const EMPTY_HELD: UserData = { entries: [], builds: [], decks: [], watchlist: [], tombstones: {} }
 
 /**
  * Records the account has that this device is not carrying — declined at
@@ -355,7 +378,9 @@ let held: UserData = EMPTY_HELD
 
 /** The document to write: everything on this device, plus whatever it's holding for the account. */
 const forCloud = (data: UserData): UserData =>
-  held.entries.length || held.builds.length || held.decks.length ? merge(data, held) : data
+  held.entries.length || held.builds.length || held.decks.length || held.watchlist.length
+    ? merge(data, held)
+    : data
 
 /**
  * Splits an account's copy into what this device carries and what it merely
@@ -374,19 +399,30 @@ function split(local: UserData, cloud: UserData): { carried: UserData; held: Use
   // account's copy of it is carried like any other, not held back.
   const localKeys = new Set(local.entries.map(entryKey))
   const localIds = new Set([...local.builds, ...local.decks].map((r) => r.id))
+  const localSlugs = new Set(local.watchlist.map((w) => w.slug))
   const heldEntries = cloud.entries.filter((e) => declined.has(e.id) && !localKeys.has(entryKey(e)))
   const heldBuilds = cloud.builds.filter((b) => declined.has(b.id) && !localIds.has(b.id))
   const heldDecks = cloud.decks.filter((d) => declined.has(d.id) && !localIds.has(d.id))
-  const heldIds = new Set([...heldEntries, ...heldBuilds, ...heldDecks].map((r) => r.id))
+  const heldWatched = cloud.watchlist.filter((w) => declined.has(w.id) && !localSlugs.has(w.slug))
+  const heldIds = new Set(
+    [...heldEntries, ...heldBuilds, ...heldDecks, ...heldWatched].map((r) => r.id),
+  )
 
   return {
     carried: {
       entries: cloud.entries.filter((e) => !heldIds.has(e.id)),
       builds: cloud.builds.filter((b) => !heldIds.has(b.id)),
       decks: cloud.decks.filter((d) => !heldIds.has(d.id)),
+      watchlist: cloud.watchlist.filter((w) => !heldIds.has(w.id)),
       tombstones: cloud.tombstones,
     },
-    held: { entries: heldEntries, builds: heldBuilds, decks: heldDecks, tombstones: {} },
+    held: {
+      entries: heldEntries,
+      builds: heldBuilds,
+      decks: heldDecks,
+      watchlist: heldWatched,
+      tombstones: {},
+    },
   }
 }
 
@@ -394,6 +430,7 @@ const fromDoc = (data: Record<string, unknown> | undefined): UserData => ({
   entries: (data?.entries as CollectionEntry[] | undefined) ?? [],
   builds: (data?.builds as SavedBuild[] | undefined) ?? [],
   decks: (data?.decks as Deck[] | undefined) ?? [],
+  watchlist: (data?.watchlist as WatchedProduct[] | undefined) ?? [],
   tombstones: (data?.tombstones as Record<string, string> | undefined) ?? {},
 })
 

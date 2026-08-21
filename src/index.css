@@ -1414,6 +1414,23 @@ select {
   color: var(--text-3);
 }
 
+/* One creator's own band name, inline ahead of their sentence. Coloured from
+   PartSheet's own map rather than the tier palette — it is not our scale. The
+   fill and the border are mixed from the inline colour, so one value dresses
+   the whole pill. */
+.creator-tier {
+  margin-right: 7px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 34%, transparent);
+}
+
 .editorial-badge {
   margin-left: 7px;
   padding: 2px 7px;
@@ -1716,6 +1733,17 @@ select {
   margin-bottom: 6px;
 }
 
+/* Measurements ride just under the tier and type chips, so the whole head of
+   the sheet reads as one glance rather than two. */
+.spec-row {
+  margin-bottom: 6px;
+}
+
+.spec-row .custom-build-credit {
+  margin-top: 4px;
+  color: var(--text-3);
+}
+
 .sheet-block {
   padding: 15px 0 0;
   border-top: 1px solid var(--hairline);
@@ -1865,12 +1893,19 @@ select {
 }
 
 .collection-tile-code,
-.collection-tile-flag {
+.collection-tile-flag,
+.collection-tile-measure {
   font-size: 10px;
   color: var(--text-3);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* The number the list is currently ordered by — lit, so the eye can follow the
+   order down the column. */
+.collection-tile-measure {
+  color: var(--accent-2);
 }
 
 .collection-tile-flag {

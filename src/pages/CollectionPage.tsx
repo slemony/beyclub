@@ -9,7 +9,16 @@ import { addParts, entryKey, removeEntry, removeSource, setSourceQty, totalQty }
 import { applyDelete, applyLocal, useUserData } from '../lib/userSync'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
-import { CATEGORY_LABELS } from '../lib/tiers'
+import {
+  CATEGORY_LABELS,
+  compareBySpec,
+  MEASURED_CATEGORIES,
+  sortsFor,
+  specSortLabel,
+  specValueLabel,
+  type SortDir,
+  type SpecSort,
+} from '../lib/tiers'
 import type { CollectionEntry, Dataset, Part, PartCategory, PartNotes } from '../lib/types'
 
 type Filter = PartCategory | 'all'
@@ -22,6 +31,8 @@ export default function CollectionPage() {
   const [notes, setNotes] = useState<Record<string, PartNotes>>({})
   const { entries } = useUserData()
   const [filter, setFilter] = useState<Filter>('all')
+  const [sort, setSort] = useState<SpecSort>('tier')
+  const [dir, setDir] = useState<SortDir>('desc')
   const [showAdd, setShowAdd] = useState(false)
   const [detail, setDetail] = useState<CollectionEntry | null>(null)
   const [stack, setStack] = useState<Part[]>([])
@@ -49,11 +60,42 @@ export default function CollectionPage() {
     [index],
   )
 
-  /** Sections in catalogue order, so a collection reads blade-first like every other list here. */
+  /**
+   * Only bits and ratchets are measured, so the sort is offered only when the
+   * list is showing one of them.
+   */
+  const measured = filter !== 'all' && MEASURED_CATEGORIES.includes(filter)
+  const bySpec = measured && sort !== 'tier'
+
+  // Leaving a category takes its sorts with it — Burst is a bit's alone, and a
+  // ratchet list ordered by it would rank every row as unmeasured.
+  useEffect(() => {
+    if (!measured || !sortsFor(filter as PartCategory).includes(sort)) setSort('tier')
+  }, [measured, filter, sort])
+
+  /**
+   * Sections in catalogue order, so a collection reads blade-first like every
+   * other list here. A measurement only ever reorders within a section —
+   * comparing a bit's 2.7 g against a blade's is not a comparison.
+   */
   const groups = useMemo(() => {
     const shown = filter === 'all' ? entries : entries.filter((e) => e.cat === filter)
-    return CATS.map((cat) => ({ cat, items: shown.filter((e) => e.cat === cat) })).filter((g) => g.items.length > 0)
-  }, [entries, filter])
+    const rank = bySpec ? compareBySpec(sort as Exclude<SpecSort, 'tier'>, dir) : null
+    return CATS.map((cat) => {
+      const items = shown.filter((e) => e.cat === cat)
+      if (!rank) return { cat, items }
+      // An entry with no catalogue part behind it has no measurement either;
+      // `compareBySpec` already sorts the unmeasured to the back.
+      const ordered = [...items].sort((a, b) => {
+        const [pa, pb] = [partFor(a), partFor(b)]
+        if (!pa && !pb) return 0
+        if (!pa) return 1
+        if (!pb) return -1
+        return rank(pa, pb)
+      })
+      return { cat, items: ordered }
+    }).filter((g) => g.items.length > 0)
+  }, [entries, filter, bySpec, sort, dir, partFor])
 
   const owned = useMemo(() => entries.reduce((n, e) => n + totalQty(e), 0), [entries])
 
@@ -138,6 +180,28 @@ export default function CollectionPage() {
         </div>
       )}
 
+      {measured && (
+        <div className="chip-row" role="tablist" aria-label="Sort by">
+          {sortsFor(filter as PartCategory).map((key) => (
+            <button
+              key={key}
+              role="tab"
+              aria-selected={sort === key}
+              className={sort === key ? 'filter-chip active' : 'filter-chip'}
+              /* Tapping the sort already in force reverses it — see TierPage. */
+              onClick={() =>
+                sort === key && key !== 'tier'
+                  ? setDir((d) => (d === 'desc' ? 'asc' : 'desc'))
+                  : (setSort(key), setDir('desc'))
+              }
+              title={sort === key && key !== 'tier' ? 'Tap again to reverse' : undefined}
+            >
+              {specSortLabel(key, filter as PartCategory, sort === key ? dir : undefined)}
+            </button>
+          ))}
+        </div>
+      )}
+
       {entries.length === 0 && (
         <div className="glass notice">Nothing in your collection yet — tap "+ Add" to add a part.</div>
       )}
@@ -154,7 +218,13 @@ export default function CollectionPage() {
           </div>
           <div className="collection-grid">
             {items.map((entry) => (
-              <CollectionCard key={entry.id} entry={entry} part={partFor(entry)} onOpenDetails={setDetail} />
+              <CollectionCard
+                key={entry.id}
+                entry={entry}
+                part={partFor(entry)}
+                onOpenDetails={setDetail}
+                measure={bySpec ? specValueLabel(partFor(entry), sort) : undefined}
+              />
             ))}
           </div>
         </section>
