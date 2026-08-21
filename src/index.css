@@ -1633,6 +1633,58 @@ select {
   background: rgba(255, 184, 48, 0.1);
 }
 
+/* ── Back to top ───────────────────────────────────────────── */
+
+.scroll-top {
+  position: fixed;
+  /* Clear of the tab bar, which is centred and sized to its tab count — level
+     with it, this would collide on a narrow screen. */
+  bottom: calc(env(safe-area-inset-bottom) + var(--nav-h) + 30px);
+  /* Hugs the content column rather than the window, so on a wide screen it
+     stays beside what it scrolls instead of drifting to the far edge. */
+  right: max(16px, calc(50% - var(--content-max) / 2 + 16px));
+  z-index: 29;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--text-1);
+  background: rgba(18, 22, 31, 0.62);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  animation: scroll-top-in 160ms ease-out;
+}
+
+.scroll-top:active {
+  transform: scale(0.94);
+}
+
+.scroll-top svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@keyframes scroll-top-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top {
+    animation: none;
+  }
+}
+
 /* ── Detail sheet ──────────────────────────────────────────── */
 
 .sheet-backdrop {

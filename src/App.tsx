@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import BottomNav from './components/BottomNav'
+import ScrollTopButton from './components/ScrollTopButton'
 import SyncOfferDialog from './components/SyncOfferDialog'
 import TopBar from './components/TopBar'
 import { useAuthUser } from './lib/auth'
@@ -50,6 +51,7 @@ export default function App() {
         </Routes>
       </main>
       <BottomNav />
+      <ScrollTopButton />
       <SyncOfferDialog />
     </div>
   )

@@ -132,6 +132,7 @@ async function loadCatalogue() {
 
   const enById = JSON.parse(readFileSync(join(ROOT, 'src/data/bladeNamesEn.json'), 'utf8'))
   const enByZh = JSON.parse(readFileSync(join(ROOT, 'src/data/bladeNamesZhEn.json'), 'utf8'))
+  const aliases = JSON.parse(readFileSync(join(ROOT, 'src/data/bladeAliasesEn.json'), 'utf8'))
 
   // slug(English name) -> canonical blade key, for matching BBXHub's names.
   const bladeByEn = new Map()
@@ -144,6 +145,12 @@ async function loadCatalogue() {
     const key = baseName(zh)
     const en = enById[id] ?? enByZh[key]
     if (en && !bladeByEn.has(slug(en))) bladeByEn.set(slug(en), key)
+  }
+
+  // Names the feed still uses for a blade we have since renamed. Added after
+  // the real names so a live name always wins the slug it owns.
+  for (const [en, key] of Object.entries(aliases.aliases)) {
+    if (!bladeByEn.has(slug(en))) bladeByEn.set(slug(en), key)
   }
 
   const ids = { ratchet: new Map(), bit: new Map(), assist: new Map() }

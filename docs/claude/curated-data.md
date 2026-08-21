@@ -13,6 +13,7 @@ the map.
 | [`src/data/partOverrides.json`](../../src/data/partOverrides.json) | Per-row fixes for sheet quirks — real id behind a placeholder code, an English name, the blade a row really is, a backfilled assist/over-blade | Sheet product id |
 | [`src/data/sourceNotes.json`](../../src/data/sourceNotes.json) | English translations of the sheet's Chinese combo comments | The exact source string |
 | [`src/data/bladeNamesEn.json`](../../src/data/bladeNamesEn.json), [`bladeNamesZhEn.json`](../../src/data/bladeNamesZhEn.json) | English blade names — also drive tournament name-matching, so an untranslated blade is one whose results can't be counted | Product id / base Chinese name |
+| [`src/data/bladeAliasesEn.json`](../../src/data/bladeAliasesEn.json) | English spellings the tournament feed still uses for a blade we have since renamed, so a correction doesn't strand its placements | Alias → base Chinese name |
 | [`public/data/part-notes.json`](../../public/data/part-notes.json) | BeyClub's own bit profiles, pros and cons — shown under an "our own view" badge; never affects a ranking | `category:id` |
 | [`public/data/tiers-jp.json`](../../public/data/tiers-jp.json) | Hand-curated Japanese tier grades, each with its own author + article link | Product code / English name |
 | [`src/data/partSpecs.json`](../../src/data/partSpecs.json) | Measured weight, gear/ring teeth, Burst rating, height and thickness — bits, ratchets, assists, over blades, and CX beys via their lock chip + main/metal blade. Shown as a chip row on the detail sheet and the only thing the measurement sorts read; never affects a ranking | Part code; assists by their bare letter (`A`, not `輔助A`), CX beys by blade `key` |
@@ -69,10 +70,17 @@ Blades still unweighed, and re-adding them needs a person: `雷霆天龍` is one
 here but two in the source (L-Drago rush 33.3 g / upper 33.7 g), and the four BXG
 dinosaur blades (`暴龍`, `翼龍`, `棘龍`, `滄龍`) are not in the source at all.
 
+When you correct a blade's English name, check whether the tournament feed uses
+the old spelling — `scripts/fetch-tournament.mjs` matches on `slug(English name)`
+and its typo pass only forgives two edits, nowhere near enough to bridge two
+different words. Add the old spelling to `bladeAliasesEn.json` in the same
+change. Records key on the Chinese name, so nothing already in
+`tournament.json` moves; it is the *next* refresh that would drop them.
+
 Note `幽冥`, which the two sources do not agree on. go-shoot reads it as **Dark**
 (`names.chi` for the Dark main blade is `幽暗 幽冥`), but the Taiwan sheet uses it
 for **Nether** — `惡魔幽冥` is UX-21-01, Hells Nether, confirmed by the site's
 owner. Our own files are inconsistent about it too: `bladeNamesZhEn.json` calls
-`惡魔幽冥` "Hells Eclipse" and `魔犬幽冥` "Cerberus Eclipse", while `英仙幽冥` is
-"Perseus Dark". Do not tidy those names on a hunch — `CerberusEclipse` carries a
-real tournament record under its current spelling, so a rename moves results.
+`惡魔幽冥` "Hells Eclipse", while `英仙幽冥` is "Perseus Dark". `魔犬幽冥` was
+"Cerberus Eclipse" until KGB's own CX-08 listing settled it as **Cerberus Dark**;
+its feed spelling is aliased. Check a product listing before tidying the rest.
