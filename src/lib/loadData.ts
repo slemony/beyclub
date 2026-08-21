@@ -5,6 +5,7 @@ import customBuilds from '../data/customBuilds.json'
 import manualParts from '../data/manualParts.json'
 import partOverrides from '../data/partOverrides.json'
 import partSpecs from '../data/partSpecs.json'
+import setContents from '../data/setContents.json'
 import { calculateBuyRec } from './buyRec'
 import { blendRating, tournamentScore } from './rating'
 import { baseName, normalize } from './text'
@@ -26,7 +27,20 @@ const EN_NAMES = bladeNamesEn as Record<string, string>
 const ZH_EN_NAMES = bladeNamesZhEn as Record<string, string>
 
 /** Per-row corrections for sheet quirks — see the note in the file itself. */
-type Override = { id?: string; nameEn?: string; blade?: string; assist?: string; overblade?: string }
+type SetContents = { ratchets?: string[]; bits?: string[] }
+
+/** What each customize set holds, by the sheet's product string — see the file's note. */
+const SET_CONTENTS = setContents.sets as Record<string, SetContents>
+
+type Override = {
+  id?: string
+  nameEn?: string
+  blade?: string
+  assist?: string
+  overblade?: string
+  /** Drops a row that describes no blade — see the file's note. */
+  skip?: boolean
+}
 const OVERRIDES = partOverrides as Record<string, Override | string>
 const overrideFor = (id: string): Override =>
   typeof OVERRIDES[id] === 'object' ? (OVERRIDES[id] as Override) : {}
@@ -237,6 +251,9 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
 
     const name = cell(row, 1) || id
     const fix = overrideFor(id)
+    // Not a blade at all: a set's loose part, filed under a blade row named
+    // after the box. setContents.json describes those properly.
+    if (fix.skip) continue
 
     out.push({
       id: fix.id ?? id,
@@ -256,6 +273,8 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
       stockAssist: cell(row, 10) || fix.assist || undefined,
       stockOverblade: fix.overblade || undefined,
       product: cell(row, 11) || undefined,
+      setRatchets: SET_CONTENTS[cell(row, 11)]?.ratchets,
+      setBits: SET_CONTENTS[cell(row, 11)]?.bits,
       img: cell(row, 12) || undefined,
       combo: [cell(row, 13), cell(row, 14)].filter(Boolean).join('\n') || undefined,
       communityCombo: cell(row, 15) || undefined,

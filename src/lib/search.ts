@@ -53,7 +53,13 @@ export function matchScore(part: Part, term: string): number {
   if (id.startsWith(term) || nameEn.startsWith(term)) return 90
   if (tokens(part).some((t) => t.startsWith(term))) return 80
 
-  for (const field of [id, nameEn, name, product]) {
+  // Matching a blade on its product code is how "cx08" finds everything in that
+  // booster. An over blade names the box it came in too — that is how you find
+  // out where to get one — but it is the *same box* as the bey it ships inside,
+  // so searching that code returned the bey and then its own over blade beside
+  // it. The blade's sheet already lists what comes with it.
+  const fields = part.cat === 'overblade' ? [id, nameEn, name] : [id, nameEn, name, product]
+  for (const field of fields) {
     if (field && field.includes(term)) return 70
   }
 

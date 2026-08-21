@@ -1,0 +1,12 @@
+{
+  "_note": "What a customize set actually contains, keyed by the sheet's own product string.\n\nA set is one box holding several blades and a pile of loose ratchets and bits, but the sheet has only per-blade columns — so it spreads the loose parts across the blade rows, gives whichever blade is left over nothing, and parks the remainder on rows that are not blades at all. UX-10 is the worked example: three of its four blades carry one ratchet and one bit each, Hells Hammer carries nothing, bits R and P sit on two phantom 騎士圓甲改造組 rows (dropped via `skip` in partOverrides.json), and Metal Needle is missing entirely.\n\nSo the box is described here once and attached to every blade sharing that product string. `ratchets` and `bits` are the full contents; the detail sheet shows a blade's own assembled parts first and the rest under \"Also in the box\", so nothing here claims a blade ships built with all of them.\n\nSourced from the retailer's own assortment listing, which spells the contents out where the sheet does not.",
+  "updatedAt": "2026-08-21",
+  "sets": {
+    "UX-10 騎士圓甲改造組": {
+      "label": "UX-10 Customize Set U",
+      "source": "https://kelabgasingbeyblade.my/products/ux-10-customize-set-u",
+      "ratchets": ["3-85", "1-60", "7-70"],
+      "bits": ["BS", "B", "MN", "P", "RA", "R"]
+    }
+  }
+}

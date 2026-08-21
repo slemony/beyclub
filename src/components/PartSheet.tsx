@@ -191,6 +191,19 @@ export default function PartSheet({
   const shipsWith = index ? index.bladesShipping(part).slice(0, 12) : []
   const usedInBuild = index ? index.bladesUsingInBuild(part).slice(0, 12) : []
   const editorial = lookupNotes(notes, part)
+  const shipsAssembled = Boolean(
+    part.stockRatchet || part.stockBit || part.stockAssist || part.stockOverblade,
+  )
+  // The rest of a customize set: everything in the box this blade does not
+  // already come assembled with.
+  const alsoInBox: { code: string; cat: 'ratchet' | 'bit' }[] = [
+    ...(part.setRatchets ?? [])
+      .filter((code) => code !== part.stockRatchet)
+      .map((code) => ({ code, cat: 'ratchet' as const })),
+    ...(part.setBits ?? [])
+      .filter((code) => code !== part.stockBit)
+      .map((code) => ({ code, cat: 'bit' as const })),
+  ]
   const sourceComments = [...recommended.notes, ...community.notes]
   const previous = stack.length > 1 ? stack[stack.length - 2] : null
   const forSale = listings?.(part) ?? []
@@ -242,39 +255,63 @@ export default function PartSheet({
           ratchet has nothing else on this sheet to read. */}
       {part.spec && <PartSpecRow spec={part.spec} cat={part.cat} />}
 
-      {(part.stockRatchet || part.stockBit || part.stockAssist || part.stockOverblade) && (
+      {(shipsAssembled || alsoInBox.length > 0) && (
         <section className="sheet-block">
           <h3>Comes with</h3>
-          <div className="build-chips">
-            {part.stockRatchet && (
-              <PartChip
-                code={part.stockRatchet}
-                part={index?.resolve(part.stockRatchet, 'ratchet')}
-                onOpen={onOpen}
-              />
-            )}
-            {part.stockBit && (
-              <PartChip
-                code={part.stockBit}
-                part={index?.resolve(part.stockBit, 'bit')}
-                onOpen={onOpen}
-              />
-            )}
-            {part.stockAssist && (
-              <PartChip
-                code={part.stockAssist}
-                part={index?.resolve(part.stockAssist, 'assist')}
-                onOpen={onOpen}
-              />
-            )}
-            {part.stockOverblade && (
-              <PartChip
-                code={part.stockOverblade}
-                part={index?.resolve(part.stockOverblade, 'overblade')}
-                onOpen={onOpen}
-              />
-            )}
-          </div>
+          {shipsAssembled && (
+            <div className="build-chips">
+              {part.stockRatchet && (
+                <PartChip
+                  code={part.stockRatchet}
+                  part={index?.resolve(part.stockRatchet, 'ratchet')}
+                  onOpen={onOpen}
+                />
+              )}
+              {part.stockBit && (
+                <PartChip
+                  code={part.stockBit}
+                  part={index?.resolve(part.stockBit, 'bit')}
+                  onOpen={onOpen}
+                />
+              )}
+              {part.stockAssist && (
+                <PartChip
+                  code={part.stockAssist}
+                  part={index?.resolve(part.stockAssist, 'assist')}
+                  onOpen={onOpen}
+                />
+              )}
+              {part.stockOverblade && (
+                <PartChip
+                  code={part.stockOverblade}
+                  part={index?.resolve(part.stockOverblade, 'overblade')}
+                  onOpen={onOpen}
+                />
+              )}
+            </div>
+          )}
+
+          {/* A customize set is one box holding several blades and a pile of
+              loose parts. They are in the box with this blade but it does not
+              come built with them, so they are named as what they are rather
+              than folded into the line above. */}
+          {alsoInBox.length > 0 && (
+            <>
+              {/* Only "also" when there is something to be also to — a blade
+                  the sheet gives no assembled parts is simply the box. */}
+              {shipsAssembled && <h4 className="sub-head">Also in the box</h4>}
+              <div className="build-chips">
+                {alsoInBox.map(({ code, cat }) => (
+                  <PartChip
+                    key={`${cat}-${code}`}
+                    code={code}
+                    part={index?.resolve(code, cat)}
+                    onOpen={onOpen}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </section>
       )}
 

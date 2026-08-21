@@ -34,6 +34,17 @@ export type Part = {
   stockAssist?: string
   /** CX Expand Blade over blade in the box (blades only). */
   stockOverblade?: string
+  /**
+   * Everything else in the box, for a blade sold inside a customize set.
+   *
+   * A set holds several blades and a pile of loose ratchets and bits, which
+   * the sheet can only record one-per-blade — so the rest is described once in
+   * setContents.json and attached to every blade sharing the product. Kept
+   * apart from `stockRatchet`/`stockBit` because those are what this blade
+   * comes assembled with, and these are merely in the same box.
+   */
+  setRatchets?: string[]
+  setBits?: string[]
   /** Blended grades of those stock parts, on the same scale as `tier`. */
   ratchetTier?: string
   bitTier?: string
