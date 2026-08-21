@@ -101,10 +101,10 @@ export function comparePartsInTier(a: Part, b: Part): number {
  * read the measurements in partSpecs.json, which only bits and ratchets carry,
  * so they are offered only where they mean something.
  */
-export type SpecSort = 'tier' | 'weight' | 'teeth' | 'height' | 'burst'
+export type SpecSort = 'tier' | 'weight' | 'teeth' | 'height' | 'burst' | 'thickness'
 
 /** Which categories carry measurements, and so can be sorted by them. */
-export const MEASURED_CATEGORIES: PartCategory[] = ['bit', 'ratchet']
+export const MEASURED_CATEGORIES: PartCategory[] = ['bit', 'ratchet', 'blade', 'assist', 'overblade']
 
 /**
  * Which way a measurement runs. Neither end is the obvious default — the
@@ -129,13 +129,23 @@ const SORT_NAMES: Partial<Record<SpecSort, string>> = {
   weight: 'Weight',
   height: 'Height',
   burst: 'Burst',
+  thickness: 'Thickness',
 }
 
-/** Only bits carry a Burst rating, so only a bit list can be ordered by one. */
+/**
+ * The sorts a category can actually honour.
+ *
+ * Only what the source measured: a Burst rating is a bit's alone, teeth and
+ * height belong to the parts that spin on the floor, and a blade or an over
+ * blade has nothing but its weight. Offering a sort a category cannot answer
+ * would rank every row as unmeasured, which reads as a broken list rather than
+ * an empty question.
+ */
 export function sortsFor(cat: PartCategory): SpecSort[] {
-  return cat === 'bit'
-    ? ['tier', 'weight', 'teeth', 'height', 'burst']
-    : ['tier', 'weight', 'teeth', 'height']
+  if (cat === 'bit') return ['tier', 'weight', 'teeth', 'height', 'burst']
+  if (cat === 'ratchet') return ['tier', 'weight', 'teeth', 'height']
+  if (cat === 'assist') return ['tier', 'weight', 'thickness']
+  return ['tier', 'weight']
 }
 
 /** dmm to millimetres — the source keeps tenths, so 122 reads as 12.2 mm. */
@@ -171,6 +181,7 @@ export function compareBySpec(sort: Exclude<SpecSort, 'tier'>, dir: SortDir = 'd
     if (sort === 'weight') return spec.weightG
     if (sort === 'teeth') return spec.teeth
     if (sort === 'burst') return spec.burst
+    if (sort === 'thickness') return spec.thicknessDmm
     // A fused bit's height is on the ratchet's base scale — a different ruler,
     // so it goes to the back with the unmeasured rather than claiming to be the
     // shortest bit in the game.
@@ -192,6 +203,8 @@ export function specValueLabel(part: Part | undefined, sort: SpecSort): string |
   if (sort === 'weight') return `${spec.weightG.toFixed(1)} g`
   if (sort === 'height') return formatHeight(spec)
   if (sort === 'burst') return spec.burst === undefined ? undefined : `Burst ${spec.burst}`
+  if (sort === 'thickness')
+    return spec.thicknessDmm === undefined ? undefined : `${mm(spec.thicknessDmm)} mm thick`
   if (spec.teeth === undefined) return undefined
   return `${spec.teeth} ${part.cat === 'ratchet' ? 'protrusions' : 'gears'}`
 }

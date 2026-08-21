@@ -1739,6 +1739,13 @@ select {
   margin-bottom: 6px;
 }
 
+/* The one thing a weight on this page cannot say for itself. */
+.spec-caveat {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  color: var(--text-3);
+}
+
 .spec-row .custom-build-credit {
   margin-top: 4px;
   color: var(--text-3);

@@ -177,6 +177,31 @@ export type PartSpec = {
   fused?: boolean
   /** Simple-type ratchet: Burst resistance is fixed at "loose" whatever bit is fitted. */
   simple?: boolean
+  /**
+   * How deep an assist blade sits, in dmm — the one dimension the source
+   * measures for them. Kept apart from `heightDmm` because it is a different
+   * thing measured on a different axis, and folding the two together would
+   * invite a sort that compares them.
+   */
+  thicknessDmm?: number
+  /**
+   * A CX bey's two named pieces.
+   *
+   * Nothing in the catalogue is "a CX blade" on its own: a bey is a lock chip
+   * on a main or metal blade, and its name is those two words. `weightG` above
+   * is the blade alone, and the chip is carried here to be shown beside it
+   * rather than folded in — the two come apart in the hand, so they come apart
+   * on the page. The over blade and the assist blade are parts in their own
+   * right with their own weights, and are no part of either figure.
+   */
+  cx?: {
+    /** "Pegasus" — the lock chip the bey is named for. */
+    chip: string
+    chipG: number
+    /** "Blast" — the blade `weightG` measures. */
+    blade: string
+    kind: 'main' | 'metal'
+  }
 }
 
 /**

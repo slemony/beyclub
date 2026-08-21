@@ -104,6 +104,40 @@ const CUSTOM_BUILDS = customBuilds.builds as CustomBuild[]
 const PART_SPECS: Partial<Record<PartCategory, Record<string, PartSpec>>> = {
   bit: partSpecs.bits,
   ratchet: partSpecs.ratchets,
+  assist: partSpecs.assists,
+  overblade: partSpecs.overblades,
+}
+
+/**
+ * The code a spec is filed under.
+ *
+ * Everything is its own id except an assist, which the sheet lists as 輔助A and
+ * the app has always carried as `A` — the code is the useful half, and it is
+ * what `name` already holds.
+ */
+const specCode = (p: { cat: PartCategory; id: string; name: string }) =>
+  p.cat === 'assist' ? p.name : p.id
+
+/**
+ * A CX bey's own weight: the blade it is named for, with its lock chip beside
+ * it. See the `cx` block in partSpecs.json for why this is a lookup table
+ * rather than something derivable from a blade row.
+ */
+function cxSpec(key: string): PartSpec | undefined {
+  const bey = (partSpecs.cx.beys as Record<string, { chip: string; blade: string }>)[key]
+  if (!bey) return undefined
+  const blade = (partSpecs.cx.blades as Record<string, { kind: string; weightG: number }>)[bey.blade]
+  if (!blade) return undefined
+  const metal = (partSpecs.cx.metalChips as Record<string, number>)[bey.chip]
+  return {
+    weightG: blade.weightG,
+    cx: {
+      chip: bey.chip,
+      chipG: metal ?? partSpecs.cx.plasticChipG,
+      blade: bey.blade,
+      kind: blade.kind as 'main' | 'metal',
+    },
+  }
 }
 
 /** One creator's verdict per bit, flattened from the file's per-entry code lists. */
@@ -258,7 +292,7 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
   // Measurements, and one creator's read on each bit. Both are hand-curated and
   // keyed on the part's own code, so this is a lookup rather than a match.
   for (const p of out) {
-    const spec = forCode(PART_SPECS[p.cat], p.id)
+    const spec = p.cat === 'blade' ? cxSpec(p.key) : forCode(PART_SPECS[p.cat], specCode(p))
     if (spec) p.spec = spec
     if (p.cat === 'bit') {
       const pick = forCode(CREATOR_PICKS, p.id)

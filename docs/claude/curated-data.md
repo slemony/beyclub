@@ -15,7 +15,7 @@ the map.
 | [`src/data/bladeNamesEn.json`](../../src/data/bladeNamesEn.json), [`bladeNamesZhEn.json`](../../src/data/bladeNamesZhEn.json) | English blade names — also drive tournament name-matching, so an untranslated blade is one whose results can't be counted | Product id / base Chinese name |
 | [`public/data/part-notes.json`](../../public/data/part-notes.json) | BeyClub's own bit profiles, pros and cons — shown under an "our own view" badge; never affects a ranking | `category:id` |
 | [`public/data/tiers-jp.json`](../../public/data/tiers-jp.json) | Hand-curated Japanese tier grades, each with its own author + article link | Product code / English name |
-| [`src/data/partSpecs.json`](../../src/data/partSpecs.json) | Measured weight, gear/ring teeth, Burst rating and height for every bit and ratchet — shown as a chip row on the detail sheet and the only thing the weight/gears sorts read; never affects a ranking | Bit or ratchet code |
+| [`src/data/partSpecs.json`](../../src/data/partSpecs.json) | Measured weight, gear/ring teeth, Burst rating, height and thickness — bits, ratchets, assists, over blades, and CX beys via their lock chip + main/metal blade. Shown as a chip row on the detail sheet and the only thing the measurement sorts read; never affects a ranking | Part code; assists by their bare letter (`A`, not `輔助A`), CX beys by blade `key` |
 | [`src/data/creatorPicks.json`](../../src/data/creatorPicks.json) | One creator's public bit tier list — one sentence and a timestamped link under a "Creator pick" heading; never affects a ranking | Bit code |
 
 ## Rules that apply to all of them
@@ -48,3 +48,11 @@ no file to fetch. Open `https://go-shoot.github.io/x/parts/?bit` (then
 `[weight, RING blades, BASE height]` for a ratchet — the labels come from
 `customElements.get('x-part').bit.terms` and `.ratchet.terms`. Weights arrive as
 `"3-"` / `"2="` / `"3+"`, meaning 2.7 / 2.0 / 3.3 g, and heights as dmm.
+
+CX parts are on `?blade=CX`, where `Part.group` splits them into `chip`, `main`,
+`over`, `metal` and `assist`; a blade's `stat` is `[weight, thickness]` and only
+assists carry the second figure. Pair a bey to its pieces from the **Chinese**
+name, not the English: go-shoot's `names.chi` is the authority, and two of our
+English names disagree with it — `黃蜂要塞` is Hornet **Fort** (main) though we
+call it "Hornet Fortress", and `魔犬幽冥` is Cerberus **Dark** though we call it
+"Cerberus Eclipse". The pairing table is `cx.beys` in the file.

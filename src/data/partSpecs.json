@@ -1,5 +1,5 @@
 {
-  "_note": "Measured part data — weight, gear/ring teeth, official Burst rating and height. Facts rather than opinion: nothing here reaches blendRating(), it only describes the part. Weights are grams; the source records them to a third of a gram (\"3-\" = 2.7, \"2=\" = 2.0, \"3+\" = 3.3) and they are decoded here. Heights are dmm, as the source keeps them — 10 dmm = 1 mm — and are converted for display. For a bit `teeth` is the GEAR tooth count and `heightDmm` the exposed height; for a ratchet `teeth` is the RING blade count (the protrusions its code names) and `heightDmm` the base height. `heightAltDmm` is the far end of an adjustable or in-play-changing height. Ratchet-integrated bits (Operate, Turbo) carry no Burst rating and their height is on the base scale, so they are flagged `fused`. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same spec to both casings — the rows themselves stay separate and keep their own grades.",
+  "_note": "Measured part data — weight, gear/ring teeth, official Burst rating and height. Facts rather than opinion: nothing here reaches blendRating(), it only describes the part. Weights are grams; the source records them to a third of a gram (\"3-\" = 2.7, \"2=\" = 2.0, \"3+\" = 3.3) and they are decoded here. Heights are dmm, as the source keeps them — 10 dmm = 1 mm — and are converted for display. For a bit `teeth` is the GEAR tooth count and `heightDmm` the exposed height; for a ratchet `teeth` is the RING blade count (the protrusions its code names) and `heightDmm` the base height. `heightAltDmm` is the far end of an adjustable or in-play-changing height. Ratchet-integrated bits (Operate, Turbo) carry no Burst rating and their height is on the base scale, so they are flagged `fused`. Assist blades carry a `thicknessDmm` as well — that is how deep the blade sits, the one dimension the source measures for them. Over blades and CX main/metal blades have a weight and nothing else. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same spec to both casings — the rows themselves stay separate and keep their own grades.",
   "updatedAt": "2026-08-21",
   "credit": {
     "author": "V Man (MKK)",
@@ -515,6 +515,389 @@
       "teeth": 5,
       "heightDmm": 85,
       "simple": true
+    }
+  },
+  "assists": {
+    "A": {
+      "label": "Assault",
+      "weightG": 5.0,
+      "thicknessDmm": 110
+    },
+    "B": {
+      "label": "Bumper",
+      "weightG": 5.3,
+      "thicknessDmm": 110
+    },
+    "C": {
+      "label": "Charge",
+      "weightG": 5.0,
+      "thicknessDmm": 110
+    },
+    "D": {
+      "label": "Dual",
+      "weightG": 6.0,
+      "thicknessDmm": 110
+    },
+    "E": {
+      "label": "Erase",
+      "weightG": 6.0,
+      "thicknessDmm": 120
+    },
+    "F": {
+      "label": "Free",
+      "weightG": 5.7,
+      "thicknessDmm": 110
+    },
+    "G": {
+      "label": "Gravity",
+      "weightG": 11.7,
+      "thicknessDmm": 140
+    },
+    "H": {
+      "label": "Heavy",
+      "weightG": 8.0,
+      "thicknessDmm": 100
+    },
+    "J": {
+      "label": "Jaggy",
+      "weightG": 4.7,
+      "thicknessDmm": 100
+    },
+    "K": {
+      "label": "Knuckle",
+      "weightG": 5.0,
+      "thicknessDmm": 100
+    },
+    "M": {
+      "label": "Massive",
+      "weightG": 5.3,
+      "thicknessDmm": 110
+    },
+    "O": {
+      "label": "Odd",
+      "weightG": 4.3,
+      "thicknessDmm": 100
+    },
+    "Q": {
+      "label": "Quell",
+      "weightG": 4.3
+    },
+    "R": {
+      "label": "Round",
+      "weightG": 4.7,
+      "thicknessDmm": 110
+    },
+    "S": {
+      "label": "Slash",
+      "weightG": 4.7,
+      "thicknessDmm": 100
+    },
+    "T": {
+      "label": "Turn",
+      "weightG": 5.7,
+      "thicknessDmm": 110
+    },
+    "V": {
+      "label": "Vertical",
+      "weightG": 5.3,
+      "thicknessDmm": 110
+    },
+    "W": {
+      "label": "Wheel",
+      "weightG": 7.0,
+      "thicknessDmm": 130
+    },
+    "Z": {
+      "label": "Zillion",
+      "weightG": 6.7,
+      "thicknessDmm": 130
+    }
+  },
+  "overblades": {
+    "B": {
+      "label": "Break",
+      "weightG": 3.7
+    },
+    "F": {
+      "label": "Flow",
+      "weightG": 3.7
+    },
+    "G": {
+      "label": "Guard",
+      "weightG": 3.3
+    },
+    "O": {
+      "label": "Outer",
+      "weightG": 3.7
+    },
+    "P": {
+      "label": "Peak",
+      "weightG": 3.3
+    },
+    "T": {
+      "label": "Tough",
+      "weightG": 4.3
+    }
+  },
+  "cx": {
+    "_note": "CX beys are assembled, so no single row of the catalogue is 'the blade'. A bey's name is its lock chip plus the one blade it is built around — 天馬爆擊 / Pegasus Blast is the Pegasus chip on the Blast main blade — so `beys` names those two pieces per blade key and the sheet shows their weights side by side rather than summed. The over blade and the assist blade are separate parts with their own weights above, and are deliberately not counted here; the sheet says so. Keys are the catalogue's blade `key` (the base Chinese name), so every colour variant and metal coating of one mould inherits it. The pairing is read off the Chinese name rather than the English, which is wrong for two rows — see the README note below.",
+    "plasticChipG": 1.7,
+    "_chipNote": "Every plastic lock chip weighs the same, so only the two metal ones are listed. A chip absent from `metalChips` is plastic and takes `plasticChipG`.",
+    "metalChips": {
+      "Emperor": 4.7,
+      "Valkyrie": 5.7
+    },
+    "blades": {
+      "Antlers": {
+        "kind": "main",
+        "weightG": 29.0
+      },
+      "Arc": {
+        "kind": "main",
+        "weightG": 29.3
+      },
+      "Blast": {
+        "kind": "main",
+        "weightG": 32.7
+      },
+      "Brave": {
+        "kind": "main",
+        "weightG": 31.3
+      },
+      "Brush": {
+        "kind": "main",
+        "weightG": 30.3
+      },
+      "Dark": {
+        "kind": "main",
+        "weightG": 30.3
+      },
+      "Eclipse": {
+        "kind": "main",
+        "weightG": 32.3
+      },
+      "Fang": {
+        "kind": "main",
+        "weightG": 30.3
+      },
+      "Flame": {
+        "kind": "main",
+        "weightG": 29.0
+      },
+      "Flare": {
+        "kind": "main",
+        "weightG": 31.0
+      },
+      "Fort": {
+        "kind": "main",
+        "weightG": 29.0
+      },
+      "Hunt": {
+        "kind": "main",
+        "weightG": 31.7
+      },
+      "Might": {
+        "kind": "main",
+        "weightG": 33.3
+      },
+      "Reaper": {
+        "kind": "main",
+        "weightG": 29.0
+      },
+      "Volt": {
+        "kind": "main",
+        "weightG": 31.3
+      },
+      "Wriggle": {
+        "kind": "main",
+        "weightG": 29.3
+      },
+      "Blitz": {
+        "kind": "metal",
+        "weightG": 29.7
+      },
+      "Delta": {
+        "kind": "metal",
+        "weightG": 28.0
+      },
+      "Fortress": {
+        "kind": "metal",
+        "weightG": 27.7
+      },
+      "Rage": {
+        "kind": "metal",
+        "weightG": 27.3
+      },
+      "Tread": {
+        "kind": "metal",
+        "weightG": 28.0
+      },
+      "Whip": {
+        "kind": "metal",
+        "weightG": 27.7
+      }
+    },
+    "beys": {
+      "天馬九尾": {
+        "chip": "Pegasus",
+        "blade": "Brush"
+      },
+      "天馬爆擊": {
+        "chip": "Pegasus",
+        "blade": "Blast"
+      },
+      "巨鯨烈焰": {
+        "chip": "Whale",
+        "blade": "Flame"
+      },
+      "帝王威能": {
+        "chip": "Emperor",
+        "blade": "Might"
+      },
+      "惡魔勇氣": {
+        "chip": "Hells",
+        "blade": "Brave"
+      },
+      "惡魔獵魂": {
+        "chip": "Hells",
+        "blade": "Reaper"
+      },
+      "惡魔至尊": {
+        "chip": "Hells",
+        "blade": "Arc"
+      },
+      "戰犀獵魂": {
+        "chip": "Rhino",
+        "blade": "Reaper"
+      },
+      "戰神伏特": {
+        "chip": "Valkyrie",
+        "blade": "Volt"
+      },
+      "極狐九尾": {
+        "chip": "Fox",
+        "blade": "Brush"
+      },
+      "海妖扭動": {
+        "chip": "Kraken",
+        "blade": "Wriggle"
+      },
+      "焰神勇氣": {
+        "chip": "Sol",
+        "blade": "Brave"
+      },
+      "焰神滅世": {
+        "chip": "Sol",
+        "blade": "Eclipse"
+      },
+      "獨角極變": {
+        "chip": "Unicorn",
+        "blade": "Delta"
+      },
+      "福音戰士九尾": {
+        "chip": "Eva",
+        "blade": "Brush"
+      },
+      "福音戰士勇氣": {
+        "chip": "Eva",
+        "blade": "Brave"
+      },
+      "福音戰士至尊": {
+        "chip": "Eva",
+        "blade": "Arc"
+      },
+      "腕龍鞭擊": {
+        "chip": "Brachio",
+        "blade": "Whip"
+      },
+      "英仙幽冥": {
+        "chip": "Perseus",
+        "blade": "Dark"
+      },
+      "英仙幽冥B": {
+        "chip": "Perseus",
+        "blade": "Dark"
+      },
+      "蒼龍勇氣": {
+        "chip": "Dran",
+        "blade": "Brave"
+      },
+      "蒼龍勇氣S": {
+        "chip": "Dran",
+        "blade": "Brave"
+      },
+      "蒼龍至尊S": {
+        "chip": "Dran",
+        "blade": "Arc"
+      },
+      "迪卡狂怒": {
+        "chip": "Tiga",
+        "blade": "Rage"
+      },
+      "邪神狂怒": {
+        "chip": "Ragna",
+        "blade": "Rage"
+      },
+      "邪神狂怒FE": {
+        "chip": "Ragna",
+        "blade": "Rage"
+      },
+      "銀狼烈焰": {
+        "chip": "Wolf",
+        "blade": "Flame"
+      },
+      "銀狼狩獵": {
+        "chip": "Wolf",
+        "blade": "Hunt"
+      },
+      "雄鹿鹿角": {
+        "chip": "Bucks",
+        "blade": "Antlers"
+      },
+      "騎士堡壘": {
+        "chip": "Knight",
+        "blade": "Fortress"
+      },
+      "魔導至尊": {
+        "chip": "Wizard",
+        "blade": "Arc"
+      },
+      "魔導至尊R": {
+        "chip": "Wizard",
+        "blade": "Arc"
+      },
+      "魔犬幽冥": {
+        "chip": "Cerberus",
+        "blade": "Dark"
+      },
+      "魔犬烈焰": {
+        "chip": "Cerberus",
+        "blade": "Flame"
+      },
+      "魔犬獵魂": {
+        "chip": "Cerberus",
+        "blade": "Reaper"
+      },
+      "鳳凰閃焰": {
+        "chip": "Phoenix",
+        "blade": "Flare"
+      },
+      "黃蜂要塞": {
+        "chip": "Hornet",
+        "blade": "Fort"
+      },
+      "龍王閃擊": {
+        "chip": "Bahamut",
+        "blade": "Blitz"
+      },
+      "龍王閃擊BK": {
+        "chip": "Bahamut",
+        "blade": "Blitz"
+      },
+      "龍神勇氣": {
+        "chip": "Drake",
+        "blade": "Brave"
+      }
     }
   }
 }

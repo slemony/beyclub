@@ -240,9 +240,7 @@ export default function PartSheet({
       {/* Measurements sit with the chips rather than in a block of their own:
           they are the same kind of glance as the tier and the type, and a
           ratchet has nothing else on this sheet to read. */}
-      {part.spec && (part.cat === 'bit' || part.cat === 'ratchet') && (
-        <PartSpecRow spec={part.spec} cat={part.cat} />
-      )}
+      {part.spec && <PartSpecRow spec={part.spec} cat={part.cat} />}
 
       {(part.stockRatchet || part.stockBit || part.stockAssist || part.stockOverblade) && (
         <section className="sheet-block">
