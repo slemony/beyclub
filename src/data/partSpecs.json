@@ -1,5 +1,5 @@
 {
-  "_note": "Measured part data — weight, gear/ring teeth, official Burst rating and height. Facts rather than opinion: nothing here reaches blendRating(), it only describes the part. Weights are grams; the source records them to a third of a gram (\"3-\" = 2.7, \"2=\" = 2.0, \"3+\" = 3.3) and they are decoded here. Heights are dmm, as the source keeps them — 10 dmm = 1 mm — and are converted for display. For a bit `teeth` is the GEAR tooth count and `heightDmm` the exposed height; for a ratchet `teeth` is the RING blade count (the protrusions its code names) and `heightDmm` the base height. `heightAltDmm` is the far end of an adjustable or in-play-changing height. Ratchet-integrated bits (Operate, Turbo) carry no Burst rating and their height is on the base scale, so they are flagged `fused`. Assist blades carry a `thicknessDmm` as well — that is how deep the blade sits, the one dimension the source measures for them. Over blades, CX main/metal blades and whole BX/UX blades have a weight and nothing else. Mind what a blade weight means: for a BX or UX blade it is the whole blade, while a CX bey's is the main or metal blade alone with its lock chip listed beside it — the same field, two different objects, because a CX bey is not one piece. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same spec to both casings — the rows themselves stay separate and keep their own grades.",
+  "_note": "Measured part data — weight, gear/ring teeth, official Burst rating and height. Facts rather than opinion: nothing here reaches blendRating(), it only describes the part. Weights are grams; the source records them to a third of a gram (\"3-\" = 2.7, \"2=\" = 2.0, \"3+\" = 3.3) and they are decoded here. Heights are dmm, as the source keeps them — 10 dmm = 1 mm — and are converted for display. For a bit `teeth` is the GEAR tooth count and `heightDmm` the exposed height; for a ratchet `teeth` is the RING blade count (the protrusions its code names) and `heightDmm` the base height. `heightAltDmm` is the far end of an adjustable or in-play-changing height. Ratchet-integrated bits (Operate, Turbo) carry no Burst rating and their height is on the base scale, so they are flagged `fused`. Assist blades carry a `thicknessDmm` as well — that is how deep the blade sits, the one dimension the source measures for them. Over blades, CX main/metal blades and whole BX/UX blades have a weight and nothing else. `惡魔幽冥` is Hells Nether — the sheet renders \"nether\" as 幽冥 where go-shoot uses 冥界, and `bladeNamesZhEn.json` still calls it \"Hells Eclipse\", which it is not. Mind what a blade weight means: for a BX or UX blade it is the whole blade, while a CX bey's is the main or metal blade alone with its lock chip listed beside it — the same field, two different objects, because a CX bey is not one piece. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same spec to both casings — the rows themselves stay separate and keep their own grades.",
   "updatedAt": "2026-08-21",
   "credit": {
     "author": "V Man (MKK)",
@@ -964,6 +964,9 @@
     },
     "悍熊猛爪": {
       "weightG": 30.3
+    },
+    "惡魔幽冥": {
+      "weightG": 42.3
     },
     "惡魔紅鐮": {
       "weightG": 32.7

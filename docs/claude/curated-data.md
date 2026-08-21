@@ -65,8 +65,14 @@ product id in `bladesById`, which is checked before the base-name key. The sheet
 writes Dran Sword V2 as `蒼龍神劍 版本2.0` and `baseName` stops at the space, so
 without the pin it would inherit the original's 35.0 g instead of its own 37.7 g.
 
-Three blades are deliberately unweighed, and re-adding them needs a person:
-`雷霆天龍` is one row here but two in the source (L-Drago rush 33.3 g / upper
-33.7 g); `惡魔幽冥` is "HellsNether" in `bladeNamesEn.json` and "Hells Eclipse" in
-`bladeNamesZhEn.json`, and the Chinese says neither; and the four BXG dinosaur
-blades (`暴龍`, `翼龍`, `棘龍`, `滄龍`) are not in the source at all.
+Blades still unweighed, and re-adding them needs a person: `雷霆天龍` is one row
+here but two in the source (L-Drago rush 33.3 g / upper 33.7 g), and the four BXG
+dinosaur blades (`暴龍`, `翼龍`, `棘龍`, `滄龍`) are not in the source at all.
+
+Note `幽冥`, which the two sources do not agree on. go-shoot reads it as **Dark**
+(`names.chi` for the Dark main blade is `幽暗 幽冥`), but the Taiwan sheet uses it
+for **Nether** — `惡魔幽冥` is UX-21-01, Hells Nether, confirmed by the site's
+owner. Our own files are inconsistent about it too: `bladeNamesZhEn.json` calls
+`惡魔幽冥` "Hells Eclipse" and `魔犬幽冥` "Cerberus Eclipse", while `英仙幽冥` is
+"Perseus Dark". Do not tidy those names on a hunch — `CerberusEclipse` carries a
+real tournament record under its current spelling, so a rename moves results.
