@@ -15,6 +15,7 @@ import {
   compareBySpec,
   comparePartsInTier,
   MEASURED_CATEGORIES,
+  mergeVariants,
   sortsFor,
   specSortLabel,
   specValueLabel,
@@ -36,6 +37,10 @@ export default function TierPage() {
   const [category, setCategory] = useState<Filter>('all')
   const [sort, setSort] = useState<SpecSort>('tier')
   const [dir, setDir] = useState<SortDir>('desc')
+  // Folded by default: the sheet lists every box a mould was sold in, and
+  // twelve tiles of Dran Sword is a worse answer to "what should I use" than
+  // one tile that says twelve.
+  const [merged, setMerged] = useState(true)
   const [query, setQuery] = useState('')
   const [stack, setStack] = useState<Part[]>([])
   const [showSources, setShowSources] = useState(false)
@@ -103,6 +108,14 @@ export default function TierPage() {
   }, [parts, category, query])
 
   /**
+   * Folded after the search, not before: someone typing a box code is looking
+   * for that box, and folding first would hide the row they asked for behind
+   * whichever release of the mould graded best.
+   */
+  const folded = useMemo(() => (merged ? mergeVariants(visible) : null), [merged, visible])
+  const shown = folded?.parts ?? visible
+
+  /**
    * Weight and gears exist only for bits and ratchets, so the chips only
    * appear for those two. Offering them on a blade list would be offering a
    * sort that does nothing.
@@ -124,20 +137,20 @@ export default function TierPage() {
    * list. Each card still carries its grade.
    */
   const ranked = useMemo(
-    () => (bySpec ? [...visible].sort(compareBySpec(sort as Exclude<SpecSort, 'tier'>, dir)) : visible),
-    [visible, bySpec, sort, dir],
+    () => (bySpec ? [...shown].sort(compareBySpec(sort as Exclude<SpecSort, 'tier'>, dir)) : shown),
+    [shown, bySpec, sort, dir],
   )
 
   const grouped = useMemo(() => {
     const map = new Map<string, Part[]>()
-    for (const p of visible) {
+    for (const p of shown) {
       const list = map.get(p.tier)
       if (list) list.push(p)
       else map.set(p.tier, [p])
     }
     for (const list of map.values()) list.sort(comparePartsInTier)
     return [...map.entries()].sort((a, b) => tierRank(a[0]) - tierRank(b[0]))
-  }, [visible])
+  }, [shown])
 
   const openPart = useCallback((part: Part) => {
     setStack((prev) => {
@@ -180,6 +193,18 @@ export default function TierPage() {
           placeholder="Search — try “aero, cx13”"
           aria-label="Search parts"
         />
+        <button
+          className={merged ? 'merge-toggle on' : 'merge-toggle'}
+          onClick={() => setMerged((v) => !v)}
+          aria-pressed={merged}
+          title={
+            merged
+              ? 'Showing one tile per blade — tap to list every box'
+              : 'Showing every box — tap to fold releases of the same blade together'
+          }
+        >
+          {merged ? 'Folded' : 'All boxes'}
+        </button>
       </div>
 
       <div className="chip-row" role="tablist" aria-label="Category">
@@ -230,7 +255,7 @@ export default function TierPage() {
         </div>
       )}
 
-      {!loading && data && visible.length === 0 && (
+      {!loading && data && shown.length === 0 && (
         <div className="glass notice">Nothing matches “{query}”.</div>
       )}
 
@@ -244,11 +269,12 @@ export default function TierPage() {
               part={p}
               onOpen={openPart}
               measure={bySpec ? specValueLabel(p, sort) : undefined}
+              variants={folded?.counts.get(`${p.cat}-${p.id}`)}
             />
           ))}
         </div>
       ) : (
-        <TierTable groups={grouped} onOpen={openPart} />
+        <TierTable groups={grouped} onOpen={openPart} counts={folded?.counts} />
       )}
 
       <PartSheet

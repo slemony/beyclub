@@ -11,9 +11,11 @@ type Props = {
    * number nobody can see reads as no order at all.
    */
   measure?: string
+  /** How many catalogue rows this card stands for while variants are folded. */
+  variants?: number
 }
 
-export default function PartCard({ part, onOpen, measure }: Props) {
+export default function PartCard({ part, onOpen, measure, variants }: Props) {
   const tierColor = TIER_COLORS[part.tier] ?? '#6b7480'
   const primary = part.nameEn ?? part.name
   // The alt line keeps a blade's original Chinese name in view next to its
@@ -37,6 +39,9 @@ export default function PartCard({ part, onOpen, measure }: Props) {
 
         <span className="part-meta">
           {measure && <span className="chip">{measure}</span>}
+          {variants !== undefined && variants > 1 && (
+            <span className="chip chip-dim">{variants} releases</span>
+          )}
           {part.type && TYPE_LABELS[part.type] && (
             <span className="chip" style={{ color: TYPE_COLORS[part.type] }}>
               {TYPE_LABELS[part.type]}

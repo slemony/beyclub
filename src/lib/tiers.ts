@@ -196,6 +196,68 @@ export function compareBySpec(sort: Exclude<SpecSort, 'tier'>, dir: SortDir = 'd
   }
 }
 
+/**
+ * One tile per blade, not per box.
+ *
+ * The sheet lists every SKU a mould was ever sold in — twelve rows of 蒼龍神劍
+ * across a starter, four metal coatings, a repackage and a sticker edition —
+ * and each one draws its own tile. The list that results is mostly the same
+ * blade over and over, which is a poor way to answer "what should I use".
+ *
+ * Folded on name *and* weight, which is what tells a re-release from a
+ * re-tool: every Dran Sword collapses to one, but Dran Sword V2 is 2.7 g
+ * heavier and stays its own entry.
+ *
+ * The survivor is the one a reader is most likely to be able to buy — a plain
+ * BX / UX / CX release ahead of the BXG, BXC, BXH and BXA lines, which are
+ * gacha, collab and event exclusives. Opening a fold on a prize-only box would
+ * answer "where do I get this" with the one place you mostly cannot. Grade
+ * breaks the remaining tie, since the sheet grades each box separately and the
+ * mould is worth what its best showing says.
+ *
+ * Returns the counts alongside, so a folded tile can say how many boxes are
+ * behind it rather than quietly hiding eleven of them.
+ */
+/**
+ * 0 for a release anyone can walk in and buy, 1 for the rest.
+ *
+ * The sheet's product ids carry the line: `BX`, `UX` and `CX` are the numbered
+ * retail releases, while `BXG` (gacha), `BXC` (collab), `BXH` and `BXA` are
+ * prize, exclusive or event boxes. Read off the letters before the first dash,
+ * so an unfamiliar prefix is treated as exclusive rather than silently
+ * promoted over a retail box.
+ */
+const RETAIL_LINES = new Set(['BX', 'UX', 'CX'])
+const standardRelease = (id: string): number =>
+  RETAIL_LINES.has(id.split('-')[0].toUpperCase()) ? 0 : 1
+
+export function mergeVariants(parts: Part[]): { parts: Part[]; counts: Map<string, number> } {
+  const groups = new Map<string, Part[]>()
+  for (const part of parts) {
+    // Weight is part of the identity here, so two rows that differ only by a
+    // figure we have never measured still fold together.
+    const key = `${part.cat}|${part.nameEn ?? part.name}|${part.spec?.weightG ?? ''}`
+    const group = groups.get(key)
+    if (group) group.push(part)
+    else groups.set(key, [part])
+  }
+
+  const out: Part[] = []
+  const counts = new Map<string, number>()
+  for (const group of groups.values()) {
+    const best = group.reduce((a, b) => {
+      const byLine = standardRelease(a.id) - standardRelease(b.id)
+      if (byLine !== 0) return byLine < 0 ? a : b
+      const byTier = tierRank(a.tier) - tierRank(b.tier)
+      if (byTier !== 0) return byTier < 0 ? a : b
+      return comparePartsInTier(a, b) <= 0 ? a : b
+    })
+    out.push(best)
+    counts.set(`${best.cat}-${best.id}`, group.length)
+  }
+  return { parts: out, counts }
+}
+
 /** The measured value a spec sort ranked on, for showing on the row that moved. */
 export function specValueLabel(part: Part | undefined, sort: SpecSort): string | undefined {
   const spec = part?.spec

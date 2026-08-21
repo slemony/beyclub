@@ -652,6 +652,9 @@ select {
 
 .filter-row {
   margin-bottom: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
 }
 
 .search {
@@ -660,6 +663,25 @@ select {
   border-radius: var(--radius-sm);
   color: var(--text);
   outline: none;
+}
+
+/* Folding releases together is a way of reading the list, not a filter on it,
+   so it sits with the search rather than in the category chips. */
+.merge-toggle {
+  flex: none;
+  padding: 0 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-3);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.merge-toggle.on {
+  color: var(--accent-2);
+  border-color: rgba(139, 232, 255, 0.35);
+  background: rgba(139, 232, 255, 0.1);
 }
 
 .search::placeholder {
@@ -965,6 +987,22 @@ select {
 
 .buy-dot.bad {
   background: #8b95a3;
+}
+
+/* How many boxes a folded tile stands for. Top-left, because the buy dot owns
+   the opposite corner. */
+.tile-count {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  padding: 1px 4px;
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-2);
+  background: rgba(18, 22, 31, 0.92);
+  border: 1px solid var(--hairline);
 }
 
 .tile-label {

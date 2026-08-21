@@ -5,10 +5,12 @@ import type { Part } from '../lib/types'
 type Props = {
   groups: [string, Part[]][]
   onOpen: (part: Part) => void
+  /** Rows folded per tile, when variants are merged. Absent means unfolded. */
+  counts?: Map<string, number>
 }
 
 /** Classic tier-list table: the tier on the left, everything in it on the right. */
-export default function TierTable({ groups, onOpen }: Props) {
+export default function TierTable({ groups, onOpen, counts }: Props) {
   return (
     <div className="tier-table">
       {groups.map(([tier, parts]) => {
@@ -27,7 +29,12 @@ export default function TierTable({ groups, onOpen }: Props) {
             </div>
             <div className="tier-items">
               {parts.map((part) => (
-                <PartTile key={`${part.cat}-${part.id}`} part={part} onOpen={onOpen} />
+                <PartTile
+                  key={`${part.cat}-${part.id}`}
+                  part={part}
+                  onOpen={onOpen}
+                  variants={counts?.get(`${part.cat}-${part.id}`)}
+                />
               ))}
             </div>
           </div>
