@@ -12,8 +12,12 @@ import type { WatchedProduct } from './types'
  * Note what syncing does not buy. The grab-stock overlay runs on KGB's own
  * origin, which cannot read this — same-origin policy, and no way around it
  * that is worth having. So the watchlist does its work on the BeyClub side:
- * star things here, and they are pinned to the top of every list, including
- * the live view handed over from the shop.
+ * star things here, and they are pinned to the top of every list.
+ *
+ * With one deliberate exception. A live view handed over from the shop is a
+ * reading of the shelf at one moment, so it pins only the stars that reading
+ * actually found; the rest stay one tap away under ★ Watching rather than
+ * standing in front of what is on the shelf. See `inGroup` in StockPage.
  *
  * It also cannot notify you. Alerts need something watching the shop while you
  * are not, and the shop is closed to anonymous readers — see the note in

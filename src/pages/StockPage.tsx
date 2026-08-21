@@ -175,8 +175,8 @@ export default function StockPage() {
   }, [params])
 
   const view = useMemo(() => {
-    if (!stock) return { products: [] as StockProduct[] }
-    if (!live) return { products: stock.products }
+    if (!stock) return { products: [] as StockProduct[], pulled: 0 }
+    if (!live) return { products: stock.products, pulled: 0 }
 
     const bySlug = new Map(stock.products.map((p) => [p.slug, p]))
 
@@ -204,10 +204,10 @@ export default function StockPage() {
 
     // A live pull only ever shows what the grab happened to scrape, which is
     // rarely everything — so a starred product left out of it would otherwise
-    // vanish from this view entirely, breaking the promise (see watchlist.ts)
-    // that watched things are pinned on every list, including this one. Carry
-    // over anything still watched that this pull didn't see, without claiming
-    // it's in stock — that's not something this pull confirmed either way.
+    // vanish from the ★ Watching chip for as long as the pull is on screen,
+    // which is not something the pull knows anything about. Carry those over,
+    // flagged, without claiming they're in stock: `inGroup` keeps them off the
+    // shelf itself, and they surface only under ★ Watching.
     const seen = new Set(products.map((p) => p.slug))
     for (const slug of watched) {
       if (seen.has(slug)) continue
@@ -216,7 +216,7 @@ export default function StockPage() {
       products.push({ ...known, notOnThisPull: true })
     }
 
-    return { products }
+    return { products, pulled: live.length }
   }, [stock, live, watched])
 
   const parts = data?.parts ?? []
@@ -277,17 +277,36 @@ export default function StockPage() {
     setSort('tier')
   }, [live])
 
+  /**
+   * Which chip a product belongs to — and, for a star this pull never saw, the
+   * only chip it belongs to at all.
+   *
+   * A live pull answers one question: what is on the shelf right now. A star
+   * the grab did not see is not an answer to it, and pinning it above the
+   * things the grab did find leaves the shelf starting halfway down the page.
+   * So it is kept out of every list but ★ Watching, which is asking the other
+   * question — what am I waiting for — and where it still belongs.
+   */
+  const inGroup = useCallback(
+    (p: StockProduct) => {
+      if (group === 'watching') return watched.has(p.slug)
+      if (p.notOnThisPull) return false
+      return group === 'all' || p.group === group
+    },
+    [group, watched],
+  )
+
   const visible = useMemo(() => {
     const products = view.products.filter(
       (p) =>
-        (group === 'watching' ? watched.has(p.slug) : group === 'all' || p.group === group) &&
+        inGroup(p) &&
         // While the shop is closed to us the published flags are a week-old
         // snapshot, so filtering on them would hide products on the strength of
-        // a guess. Only a live view has standing to sort by availability. A
-        // watched item this pull didn't see is a different case again — its
-        // `inStock: false` isn't a sold-out claim, just an unconfirmed guess,
-        // so hiding it behind "Show sold out" would defeat the point of
-        // carrying it into this view at all.
+        // a guess. Only a live view has standing to sort by availability. The
+        // `notOnThisPull` escape is reachable only under ★ Watching now: there,
+        // an `inStock: false` carried over from the frozen catalogue is not a
+        // sold-out claim but an unconfirmed guess, and hiding a star behind
+        // "Show sold out" on the strength of one would defeat the point.
         (!knowsAvailability || showSoldOut || p.inStock || p.notOnThisPull),
     )
 
@@ -315,15 +334,10 @@ export default function StockPage() {
       return products.sort((a, b) => byWatch(a, b) || a.priceMYR - b.priceMYR || featuredOrder(a, b))
     }
     return products.sort((a, b) => byWatch(a, b) || featuredOrder(a, b))
-  }, [view, group, showSoldOut, sort, bestBySlug, featuredOrder, watched])
+  }, [view, inGroup, showSoldOut, sort, bestBySlug, featuredOrder, watched])
 
-  const available = useMemo(
-    () =>
-      view.products.filter((p) =>
-        group === 'watching' ? watched.has(p.slug) : group === 'all' || p.group === group,
-      ).length,
-    [view, group, watched],
-  )
+  /** The denominator of "N of M shown" — the same rows `visible` may draw from. */
+  const available = useMemo(() => view.products.filter(inGroup).length, [view, inGroup])
 
   const openPart = useCallback((part: Part) => {
     setStack((prev) => {
@@ -483,7 +497,10 @@ export default function StockPage() {
       */}
       {live && (
         <p className="notice notice-live">
-          <strong>Your live view from KGB.</strong> {view.products.length} in stock, ranked by the
+          {/* What the grab saw, not what the page is holding: the watched
+              products carried over for the ★ Watching chip are not on this
+              shelf and must not be counted as though they were. */}
+          <strong>Your live view from KGB.</strong> {view.pulled} in stock, ranked by the
           same tiers and verdicts as the rest of the app. This came from your own signed-in session
           a moment ago — it is not published, and nobody else sees it.{' '}
           <a href="#/stock">Back to the published list</a>

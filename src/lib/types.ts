@@ -271,6 +271,9 @@ export type StockProduct = {
    * True when this row was added to a live view because it's watched, not
    * because the grab actually saw it on the shelf this pull — so `inStock`
    * here is a guess carried over from the frozen catalogue, not a live read.
+   *
+   * It decides visibility as well as wording: a row carrying this is drawn
+   * only under the ★ Watching chip, never on the shelf the pull just read.
    */
   notOnThisPull?: boolean
 }
