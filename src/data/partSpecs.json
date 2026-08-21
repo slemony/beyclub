@@ -1178,5 +1178,11 @@
     "龍騎士S": {
       "weightG": 25.3
     }
+  },
+  "_bladesByIdNote": "One SKU, pinned. Blades are keyed by their base name so every colour variant of a mould shares one weight, but a name can hide a genuinely different mould: the sheet calls Dran Sword V2 蒼龍神劍 版本2.0, and `baseName` stops at the space, so it would otherwise inherit the original's 35.0 g. Matched on the sheet's product id, which pins exactly one row — use this only for a re-tooled mould, never for a recolour.",
+  "bladesById": {
+    "BXG-49": {
+      "weightG": 37.7
+    }
   }
 }

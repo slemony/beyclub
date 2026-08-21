@@ -126,8 +126,14 @@ const specCode = (p: { cat: PartCategory; id: string; name: string }) =>
  * lock chip on a main or metal blade, so it is looked up in the `cx` table and
  * carries both figures. See partSpecs.json for why that table has to exist.
  */
-function bladeSpec(key: string): PartSpec | undefined {
-  return cxSpec(key) ?? (partSpecs.blades as Record<string, PartSpec>)[key]
+function bladeSpec(id: string, key: string): PartSpec | undefined {
+  // The id first: it pins one SKU, and a re-tooled mould the sheet names like a
+  // colour variant would otherwise take the original's weight.
+  return (
+    (partSpecs.bladesById as Record<string, PartSpec>)[id] ??
+    cxSpec(key) ??
+    (partSpecs.blades as Record<string, PartSpec>)[key]
+  )
 }
 
 function cxSpec(key: string): PartSpec | undefined {
@@ -299,7 +305,7 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
   // Measurements, and one creator's read on each bit. Both are hand-curated and
   // keyed on the part's own code, so this is a lookup rather than a match.
   for (const p of out) {
-    const spec = p.cat === 'blade' ? bladeSpec(p.key) : forCode(PART_SPECS[p.cat], specCode(p))
+    const spec = p.cat === 'blade' ? bladeSpec(p.id, p.key) : forCode(PART_SPECS[p.cat], specCode(p))
     if (spec) p.spec = spec
     if (p.cat === 'bit') {
       const pick = forCode(CREATOR_PICKS, p.id)

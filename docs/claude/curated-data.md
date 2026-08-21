@@ -60,6 +60,11 @@ matter — `金剛王` is Optimus Primal though we call it "Bumblebee", `黃蜂�
 Hornet **Fort** (a main blade) though we call it "Hornet Fortress", and `幽冥`
 is **Dark**, not Eclipse, wherever it appears. The CX pairing table is `cx.beys`.
 
+A blade whose name hides a **different mould** — not a recolour — is pinned by
+product id in `bladesById`, which is checked before the base-name key. The sheet
+writes Dran Sword V2 as `蒼龍神劍 版本2.0` and `baseName` stops at the space, so
+without the pin it would inherit the original's 35.0 g instead of its own 37.7 g.
+
 Three blades are deliberately unweighed, and re-adding them needs a person:
 `雷霆天龍` is one row here but two in the source (L-Drago rush 33.3 g / upper
 33.7 g); `惡魔幽冥` is "HellsNether" in `bladeNamesEn.json` and "Hells Eclipse" in
