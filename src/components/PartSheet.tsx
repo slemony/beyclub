@@ -18,12 +18,19 @@ const NOTE_TRANSLATIONS = sourceNotes as Record<string, string>
  * The creator's own five bands, which are not our grade scale and are not
  * meant to line up with it — hence their own colours rather than TIER_COLORS.
  */
+// The creator names their own tiers, and names them differently per video — the
+// bit list and the ratchet list share only "Top Level" and "Niche Picks". Both
+// sets are listed here rather than mapped onto one scale, so a sheet shows the
+// label the creator actually used; equivalent rungs are given the same colour.
 const PICK_TIER_COLORS: Record<string, string> = {
   'Top Level': '#5ce6a8',
   'Meta Relevant': '#8be8ff',
+  'Situational Choices': '#8be8ff',
   'Niche Picks': '#ffc94d',
   'Not Worth Using': '#9aa3ad',
+  'Do You Want To Lose?': '#9aa3ad',
   'What Are You Doing': '#ff7a7a',
+  'Plastic Waste': '#ff7a7a',
 }
 
 type Props = {

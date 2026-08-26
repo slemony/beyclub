@@ -1,392 +1,701 @@
 {
-  "_note": "One creator's public tier list for bits, shown on a bit's detail sheet under a credit link. Not BeyClub's writing and not one of the three ranking sources — display only, it never reaches blendRating(). `bits` holds the catalogue codes the entry covers; it is a list because the video rates all six gear bits together. `at` is the point in the video, in seconds, and becomes a ?t= deep link. `note` is one trimmed sentence, at most 140 characters — the detail sheet is already long and this section is meant to stay three lines. The sheet lists NR/Nr and OP/Op as separate rows on different grades; they are one physical part, so loadCatalogue() hands the same pick to both casings.",
-  "updatedAt": "2026-08-21",
-  "credit": {
-    "author": "ToxicShark",
-    "sourceName": "Ranking EVERY Bit In Beyblade X",
-    "sourceUrl": "https://youtu.be/9ps1WiGXKB4"
-  },
-  "picks": [
-    {
-      "bits": [
-        "E"
-      ],
-      "tier": "Top Level",
-      "at": 258,
-      "note": "Single-handedly elevates left-spin blades through spin equalization, and finishes well on spin."
+  "_note": "One creator's public tier lists, shown on a part's detail sheet under a credit link. Not BeyClub's writing and not one of the three ranking sources — display only, they never reach blendRating(). `sources` is keyed by the catalogue's part category, so each category carries its own video, its own credit and its own tier names: the bit video grades Top Level / Meta Relevant / Niche Picks / Not Worth Using / What Are You Doing, the ratchet video Top Level / Situational Choices / Niche Picks / Do You Want To Lose? / Plastic Waste. Those are the creator's labels, not our grade scale, so do not normalise them into one set — a colour for each lives in PICK_TIER_COLORS in PartSheet.tsx. `parts` holds the catalogue codes an entry covers; it is a list because a video may rate several parts together, as the bit one does with the six gear bits. `at` is the point in that source's video, in seconds, and becomes a ?t= deep link. `note` is one trimmed sentence, at most 140 characters — the detail sheet is already long and this section is meant to stay three lines. The sheet lists NR/Nr and OP/Op as two rows each — one physical bit listed twice, not two parts — and the duplicate lowercase row is dropped in partOverrides.json, so forCode() case-folds to reach a pick keyed on either casing.",
+  "updatedAt": "2026-08-27",
+  "sources": {
+    "bit": {
+      "credit": {
+        "author": "ToxicShark",
+        "sourceName": "Ranking EVERY Bit In Beyblade X",
+        "sourceUrl": "https://youtu.be/9ps1WiGXKB4"
+      },
+      "picks": [
+        {
+          "parts": [
+            "E"
+          ],
+          "tier": "Top Level",
+          "at": 258,
+          "note": "Single-handedly elevates left-spin blades through spin equalization, and finishes well on spin."
+        },
+        {
+          "parts": [
+            "FB"
+          ],
+          "tier": "Top Level",
+          "at": 368,
+          "note": "Top-tier stamina — keeps more spin on the rails than Ball, and is safer to hard-launch in Rod mirrors."
+        },
+        {
+          "parts": [
+            "H"
+          ],
+          "tier": "Top Level",
+          "at": 625,
+          "note": "The best stamina bit among the high burst-resistance options; it tanks hits and stabilizes well."
+        },
+        {
+          "parts": [
+            "K"
+          ],
+          "tier": "Top Level",
+          "at": 860,
+          "note": "The longest spin time of any aggressive balance bit, and a versatile anti-attack pick under top-heavy CX combos."
+        },
+        {
+          "parts": [
+            "L"
+          ],
+          "tier": "Top Level",
+          "at": 957,
+          "note": "Arguably the best bit in the game once mastered — exceptional endgame stamina and KO power, high skill ceiling."
+        },
+        {
+          "parts": [
+            "R"
+          ],
+          "tier": "Top Level",
+          "at": 1717,
+          "note": "Extremely consistent and highly controlled attack, with low gears and solid endgame stamina."
+        },
+        {
+          "parts": [
+            "B"
+          ],
+          "tier": "Meta Relevant",
+          "at": 95,
+          "note": "The former number one and still a top stamina pick, though Free Ball is safer on the rails."
+        },
+        {
+          "parts": [
+            "J"
+          ],
+          "tier": "Meta Relevant",
+          "at": 798,
+          "note": "Aggressive with enough LAD to outspin attack types, but it bleeds stamina on the rail if misplayed."
+        },
+        {
+          "parts": [
+            "LO"
+          ],
+          "tier": "Meta Relevant",
+          "at": 1050,
+          "note": "Stationary stamina and defense — a lower centre of gravity and smaller contact patch grip the stadium well."
+        },
+        {
+          "parts": [
+            "LR"
+          ],
+          "tier": "Meta Relevant",
+          "at": 1117,
+          "note": "A more aggressive Rush, but the launch tech is harder and the result more volatile."
+        },
+        {
+          "parts": [
+            "FF"
+          ],
+          "tier": "Niche Picks",
+          "at": 433,
+          "note": "A smaller face than Flat preserves more energy on the rails, but the top attack bits outclass it."
+        },
+        {
+          "parts": [
+            "Nr"
+          ],
+          "tier": "Niche Picks",
+          "at": 1270,
+          "note": "Low rail stamina loss and high ratchet burst resistance, though it spun shorter than Free Ball in testing."
+        },
+        {
+          "parts": [
+            "P"
+          ],
+          "tier": "Niche Picks",
+          "at": 1506,
+          "note": "The classic balance bit that once won tournaments, now outclassed by Kick, Level and Jolt."
+        },
+        {
+          "parts": [
+            "RA"
+          ],
+          "tier": "Niche Picks",
+          "at": 1620,
+          "note": "Terrible brand new, but a strong counter-attacker with good grip and stamina once worn down."
+        },
+        {
+          "parts": [
+            "T"
+          ],
+          "tier": "Niche Picks",
+          "at": 1793,
+          "note": "Solid endgame stamina for a balance-attack bit, but the newer balance bits have passed it."
+        },
+        {
+          "parts": [
+            "UF"
+          ],
+          "tier": "Niche Picks",
+          "at": 1964,
+          "note": "The lowest attack bit there is — useful for specific ratchet-sniper builds."
+        },
+        {
+          "parts": [
+            "UN"
+          ],
+          "tier": "Niche Picks",
+          "at": 2000,
+          "note": "A stationary landmine bit that moves smoothly; good against inexperienced players, limited against pros."
+        },
+        {
+          "parts": [
+            "W"
+          ],
+          "tier": "Niche Picks",
+          "at": 2198,
+          "note": "A low gear count gives controlled rail movement, but it leans over and destabilizes."
+        },
+        {
+          "parts": [
+            "Z"
+          ],
+          "tier": "Niche Picks",
+          "at": 2258,
+          "note": "A wider Point — it can outspin Cobalt Dragoon on Elevate with the right blade, but Point and Level are better."
+        },
+        {
+          "parts": [
+            "BS"
+          ],
+          "tier": "Not Worth Using",
+          "at": 121,
+          "note": "Inconsistent and topples over easily; its wins are anomalies you cannot repeat."
+        },
+        {
+          "parts": [
+            "C"
+          ],
+          "tier": "Not Worth Using",
+          "at": 150,
+          "note": "A budget Rush replacement, but too fast with too many gears to control."
+        },
+        {
+          "parts": [
+            "D"
+          ],
+          "tier": "Not Worth Using",
+          "at": 223,
+          "note": "The extra bottom friction never turns into real defense and drains stamina quickly."
+        },
+        {
+          "parts": [
+            "F"
+          ],
+          "tier": "Not Worth Using",
+          "at": 325,
+          "note": "The early-game attack standard, now completely outclassed on stamina by modern attack bits."
+        },
+        {
+          "parts": [
+            "G"
+          ],
+          "tier": "Not Worth Using",
+          "at": 580,
+          "note": "Used briefly on Cobalt Dragoon for minor LAD before Elevate arrived, but its stamina is weak."
+        },
+        {
+          "parts": [
+            "HT"
+          ],
+          "tier": "Not Worth Using",
+          "at": 751,
+          "note": "Noticeably worse than a standard Taper because of the raised centre of gravity."
+        },
+        {
+          "parts": [
+            "LF"
+          ],
+          "tier": "Not Worth Using",
+          "at": 1023,
+          "note": "A niche ratchet-sniper bit from an earlier meta with no competitive stamina left."
+        },
+        {
+          "parts": [
+            "Op"
+          ],
+          "tier": "Not Worth Using",
+          "at": 1397,
+          "note": "Gimmicky, prone to bursting, and outclassed on every metric."
+        },
+        {
+          "parts": [
+            "O"
+          ],
+          "tier": "Not Worth Using",
+          "at": 1441,
+          "note": "Not bad in itself, just redundant next to Free Ball, Ball and Low Orb."
+        },
+        {
+          "parts": [
+            "TK"
+          ],
+          "tier": "Not Worth Using",
+          "at": 1825,
+          "note": "A height-adjustable Kick — raising the centre of gravity only makes it worse than standard Kick."
+        },
+        {
+          "parts": [
+            "U"
+          ],
+          "tier": "Not Worth Using",
+          "at": 2055,
+          "note": "Its theoretical balance utility never shows up in results; Point and Kick outclass it."
+        },
+        {
+          "parts": [
+            "V"
+          ],
+          "tier": "Not Worth Using",
+          "at": 2082,
+          "note": "A budget Rush alternative that lacks control and is heavily outclassed by Rush and Low Rush."
+        },
+        {
+          "parts": [
+            "WB"
+          ],
+          "tier": "Not Worth Using",
+          "at": 2124,
+          "note": "The wall ring adds no defense while adding burst risk and rail stamina drain."
+        },
+        {
+          "parts": [
+            "A"
+          ],
+          "tier": "What Are You Doing",
+          "at": 70,
+          "note": "Excessive gears kill stamina on the rail — strictly worse than Flat."
+        },
+        {
+          "parts": [
+            "DB"
+          ],
+          "tier": "What Are You Doing",
+          "at": 180,
+          "note": "Drastically raises height and burst risk; the recent tournament wins are anomalies."
+        },
+        {
+          "parts": [
+            "DS"
+          ],
+          "tier": "What Are You Doing",
+          "at": 215,
+          "note": "Extremely high burst risk and poor performance."
+        },
+        {
+          "parts": [
+            "GB",
+            "GF",
+            "GN",
+            "GP",
+            "GR",
+            "GU"
+          ],
+          "tier": "What Are You Doing",
+          "at": 465,
+          "note": "Hyper-volatile and prone to self-extremes — only worth it as a high-variance panic option for beginners."
+        },
+        {
+          "parts": [
+            "HN"
+          ],
+          "tier": "What Are You Doing",
+          "at": 713,
+          "note": "The high centre of gravity destabilizes the bey and leaves the ratchet easy to snipe."
+        },
+        {
+          "parts": [
+            "I"
+          ],
+          "tier": "What Are You Doing",
+          "at": 771,
+          "note": "Uncontrollable movement and abysmal stamina."
+        },
+        {
+          "parts": [
+            "M"
+          ],
+          "tier": "What Are You Doing",
+          "at": 1200,
+          "note": "Gimmicky and ineffective across almost every competitive build."
+        },
+        {
+          "parts": [
+            "MN"
+          ],
+          "tier": "What Are You Doing",
+          "at": 1251,
+          "note": "Banned from official tournament play because it damages stadium surfaces."
+        },
+        {
+          "parts": [
+            "N"
+          ],
+          "tier": "What Are You Doing",
+          "at": 1355,
+          "note": "Stationary centre-docking with low burst resistance — an easy target for attack types."
+        },
+        {
+          "parts": [
+            "Q"
+          ],
+          "tier": "What Are You Doing",
+          "at": 1570,
+          "note": "The worst bit in the game; the jumping gimmick ruins both balance and stamina."
+        },
+        {
+          "parts": [
+            "S"
+          ],
+          "tier": "What Are You Doing",
+          "at": 1769,
+          "note": "Stationary, with low burst resistance and poor stamina."
+        },
+        {
+          "parts": [
+            "TP"
+          ],
+          "tier": "What Are You Doing",
+          "at": 1878,
+          "note": "Inferior face geometry and needless height options make it worse than standard Point."
+        },
+        {
+          "parts": [
+            "Tr"
+          ],
+          "tier": "What Are You Doing",
+          "at": 1908,
+          "note": "Horrible burst resistance, and the gimmick fires late when there is no energy left to KO with."
+        },
+        {
+          "parts": [
+            "WW"
+          ],
+          "tier": "What Are You Doing",
+          "at": 2168,
+          "note": "Low stability, high burst risk and terrible stamina."
+        },
+        {
+          "parts": [
+            "Y"
+          ],
+          "tier": "What Are You Doing",
+          "at": 2223,
+          "note": "Unbelievably loose in the ratchet — extremely burst-prone and unusable."
+        }
+      ]
     },
-    {
-      "bits": [
-        "FB"
-      ],
-      "tier": "Top Level",
-      "at": 368,
-      "note": "Top-tier stamina — keeps more spin on the rails than Ball, and is safer to hard-launch in Rod mirrors."
-    },
-    {
-      "bits": [
-        "H"
-      ],
-      "tier": "Top Level",
-      "at": 625,
-      "note": "The best stamina bit among the high burst-resistance options; it tanks hits and stabilizes well."
-    },
-    {
-      "bits": [
-        "K"
-      ],
-      "tier": "Top Level",
-      "at": 860,
-      "note": "The longest spin time of any aggressive balance bit, and a versatile anti-attack pick under top-heavy CX combos."
-    },
-    {
-      "bits": [
-        "L"
-      ],
-      "tier": "Top Level",
-      "at": 957,
-      "note": "Arguably the best bit in the game once mastered — exceptional endgame stamina and KO power, high skill ceiling."
-    },
-    {
-      "bits": [
-        "R"
-      ],
-      "tier": "Top Level",
-      "at": 1717,
-      "note": "Extremely consistent and highly controlled attack, with low gears and solid endgame stamina."
-    },
-    {
-      "bits": [
-        "B"
-      ],
-      "tier": "Meta Relevant",
-      "at": 95,
-      "note": "The former number one and still a top stamina pick, though Free Ball is safer on the rails."
-    },
-    {
-      "bits": [
-        "J"
-      ],
-      "tier": "Meta Relevant",
-      "at": 798,
-      "note": "Aggressive with enough LAD to outspin attack types, but it bleeds stamina on the rail if misplayed."
-    },
-    {
-      "bits": [
-        "LO"
-      ],
-      "tier": "Meta Relevant",
-      "at": 1050,
-      "note": "Stationary stamina and defense — a lower centre of gravity and smaller contact patch grip the stadium well."
-    },
-    {
-      "bits": [
-        "LR"
-      ],
-      "tier": "Meta Relevant",
-      "at": 1117,
-      "note": "A more aggressive Rush, but the launch tech is harder and the result more volatile."
-    },
-    {
-      "bits": [
-        "FF"
-      ],
-      "tier": "Niche Picks",
-      "at": 433,
-      "note": "A smaller face than Flat preserves more energy on the rails, but the top attack bits outclass it."
-    },
-    {
-      "bits": [
-        "Nr"
-      ],
-      "tier": "Niche Picks",
-      "at": 1270,
-      "note": "Low rail stamina loss and high ratchet burst resistance, though it spun shorter than Free Ball in testing."
-    },
-    {
-      "bits": [
-        "P"
-      ],
-      "tier": "Niche Picks",
-      "at": 1506,
-      "note": "The classic balance bit that once won tournaments, now outclassed by Kick, Level and Jolt."
-    },
-    {
-      "bits": [
-        "RA"
-      ],
-      "tier": "Niche Picks",
-      "at": 1620,
-      "note": "Terrible brand new, but a strong counter-attacker with good grip and stamina once worn down."
-    },
-    {
-      "bits": [
-        "T"
-      ],
-      "tier": "Niche Picks",
-      "at": 1793,
-      "note": "Solid endgame stamina for a balance-attack bit, but the newer balance bits have passed it."
-    },
-    {
-      "bits": [
-        "UF"
-      ],
-      "tier": "Niche Picks",
-      "at": 1964,
-      "note": "The lowest attack bit there is — useful for specific ratchet-sniper builds."
-    },
-    {
-      "bits": [
-        "UN"
-      ],
-      "tier": "Niche Picks",
-      "at": 2000,
-      "note": "A stationary landmine bit that moves smoothly; good against inexperienced players, limited against pros."
-    },
-    {
-      "bits": [
-        "W"
-      ],
-      "tier": "Niche Picks",
-      "at": 2198,
-      "note": "A low gear count gives controlled rail movement, but it leans over and destabilizes."
-    },
-    {
-      "bits": [
-        "Z"
-      ],
-      "tier": "Niche Picks",
-      "at": 2258,
-      "note": "A wider Point — it can outspin Cobalt Dragoon on Elevate with the right blade, but Point and Level are better."
-    },
-    {
-      "bits": [
-        "BS"
-      ],
-      "tier": "Not Worth Using",
-      "at": 121,
-      "note": "Inconsistent and topples over easily; its wins are anomalies you cannot repeat."
-    },
-    {
-      "bits": [
-        "C"
-      ],
-      "tier": "Not Worth Using",
-      "at": 150,
-      "note": "A budget Rush replacement, but too fast with too many gears to control."
-    },
-    {
-      "bits": [
-        "D"
-      ],
-      "tier": "Not Worth Using",
-      "at": 223,
-      "note": "The extra bottom friction never turns into real defense and drains stamina quickly."
-    },
-    {
-      "bits": [
-        "F"
-      ],
-      "tier": "Not Worth Using",
-      "at": 325,
-      "note": "The early-game attack standard, now completely outclassed on stamina by modern attack bits."
-    },
-    {
-      "bits": [
-        "G"
-      ],
-      "tier": "Not Worth Using",
-      "at": 580,
-      "note": "Used briefly on Cobalt Dragoon for minor LAD before Elevate arrived, but its stamina is weak."
-    },
-    {
-      "bits": [
-        "HT"
-      ],
-      "tier": "Not Worth Using",
-      "at": 751,
-      "note": "Noticeably worse than a standard Taper because of the raised centre of gravity."
-    },
-    {
-      "bits": [
-        "LF"
-      ],
-      "tier": "Not Worth Using",
-      "at": 1023,
-      "note": "A niche ratchet-sniper bit from an earlier meta with no competitive stamina left."
-    },
-    {
-      "bits": [
-        "Op"
-      ],
-      "tier": "Not Worth Using",
-      "at": 1397,
-      "note": "Gimmicky, prone to bursting, and outclassed on every metric."
-    },
-    {
-      "bits": [
-        "O"
-      ],
-      "tier": "Not Worth Using",
-      "at": 1441,
-      "note": "Not bad in itself, just redundant next to Free Ball, Ball and Low Orb."
-    },
-    {
-      "bits": [
-        "TK"
-      ],
-      "tier": "Not Worth Using",
-      "at": 1825,
-      "note": "A height-adjustable Kick — raising the centre of gravity only makes it worse than standard Kick."
-    },
-    {
-      "bits": [
-        "U"
-      ],
-      "tier": "Not Worth Using",
-      "at": 2055,
-      "note": "Its theoretical balance utility never shows up in results; Point and Kick outclass it."
-    },
-    {
-      "bits": [
-        "V"
-      ],
-      "tier": "Not Worth Using",
-      "at": 2082,
-      "note": "A budget Rush alternative that lacks control and is heavily outclassed by Rush and Low Rush."
-    },
-    {
-      "bits": [
-        "WB"
-      ],
-      "tier": "Not Worth Using",
-      "at": 2124,
-      "note": "The wall ring adds no defense while adding burst risk and rail stamina drain."
-    },
-    {
-      "bits": [
-        "A"
-      ],
-      "tier": "What Are You Doing",
-      "at": 70,
-      "note": "Excessive gears kill stamina on the rail — strictly worse than Flat."
-    },
-    {
-      "bits": [
-        "DB"
-      ],
-      "tier": "What Are You Doing",
-      "at": 180,
-      "note": "Drastically raises height and burst risk; the recent tournament wins are anomalies."
-    },
-    {
-      "bits": [
-        "DS"
-      ],
-      "tier": "What Are You Doing",
-      "at": 215,
-      "note": "Extremely high burst risk and poor performance."
-    },
-    {
-      "bits": [
-        "GB",
-        "GF",
-        "GN",
-        "GP",
-        "GR",
-        "GU"
-      ],
-      "tier": "What Are You Doing",
-      "at": 465,
-      "note": "Hyper-volatile and prone to self-extremes — only worth it as a high-variance panic option for beginners."
-    },
-    {
-      "bits": [
-        "HN"
-      ],
-      "tier": "What Are You Doing",
-      "at": 713,
-      "note": "The high centre of gravity destabilizes the bey and leaves the ratchet easy to snipe."
-    },
-    {
-      "bits": [
-        "I"
-      ],
-      "tier": "What Are You Doing",
-      "at": 771,
-      "note": "Uncontrollable movement and abysmal stamina."
-    },
-    {
-      "bits": [
-        "M"
-      ],
-      "tier": "What Are You Doing",
-      "at": 1200,
-      "note": "Gimmicky and ineffective across almost every competitive build."
-    },
-    {
-      "bits": [
-        "MN"
-      ],
-      "tier": "What Are You Doing",
-      "at": 1251,
-      "note": "Banned from official tournament play because it damages stadium surfaces."
-    },
-    {
-      "bits": [
-        "N"
-      ],
-      "tier": "What Are You Doing",
-      "at": 1355,
-      "note": "Stationary centre-docking with low burst resistance — an easy target for attack types."
-    },
-    {
-      "bits": [
-        "Q"
-      ],
-      "tier": "What Are You Doing",
-      "at": 1570,
-      "note": "The worst bit in the game; the jumping gimmick ruins both balance and stamina."
-    },
-    {
-      "bits": [
-        "S"
-      ],
-      "tier": "What Are You Doing",
-      "at": 1769,
-      "note": "Stationary, with low burst resistance and poor stamina."
-    },
-    {
-      "bits": [
-        "TP"
-      ],
-      "tier": "What Are You Doing",
-      "at": 1878,
-      "note": "Inferior face geometry and needless height options make it worse than standard Point."
-    },
-    {
-      "bits": [
-        "Tr"
-      ],
-      "tier": "What Are You Doing",
-      "at": 1908,
-      "note": "Horrible burst resistance, and the gimmick fires late when there is no energy left to KO with."
-    },
-    {
-      "bits": [
-        "WW"
-      ],
-      "tier": "What Are You Doing",
-      "at": 2168,
-      "note": "Low stability, high burst risk and terrible stamina."
-    },
-    {
-      "bits": [
-        "Y"
-      ],
-      "tier": "What Are You Doing",
-      "at": 2223,
-      "note": "Unbelievably loose in the ratchet — extremely burst-prone and unusable."
+    "ratchet": {
+      "credit": {
+        "author": "ToxicShark",
+        "sourceName": "Ranking EVERY Ratchet In Beyblade X",
+        "sourceUrl": "https://youtu.be/_EP1SXfVStk"
+      },
+      "picks": [
+        {
+          "parts": [
+            "1-60"
+          ],
+          "tier": "Top Level",
+          "at": 337,
+          "note": "One of the best ratchets in the game — pocket-jumping and one-sided weight bias at the optimal height, and good on anything."
+        },
+        {
+          "parts": [
+            "3-60"
+          ],
+          "tier": "Top Level",
+          "at": 520,
+          "note": "A heavy, well-balanced jack of all trades that is rarely the wrong call on attack or stamina; almost always worth a deck slot."
+        },
+        {
+          "parts": [
+            "9-60"
+          ],
+          "tier": "Top Level",
+          "at": 1294,
+          "note": "The best ratchet in Beyblade X — the least burst-prone in the game, well balanced, and the pick if you could run only one."
+        },
+        {
+          "parts": [
+            "1-50"
+          ],
+          "tier": "Situational Choices",
+          "at": 212,
+          "note": "All the one-sided perks, but the 50-height clip rattles, so keep it to aggressive builds on high burst-resistance bits."
+        },
+        {
+          "parts": [
+            "1-70"
+          ],
+          "tier": "Situational Choices",
+          "at": 375,
+          "note": "A good ratchet, used mainly to match a 1-60's height on a second blade; little reason to pick it over the 1-60 itself."
+        },
+        {
+          "parts": [
+            "5-50"
+          ],
+          "tier": "Situational Choices",
+          "at": 846,
+          "note": "Untested at the time of the video — the low height should offset the five-sided burst risk, but its place in the meta is unclear."
+        },
+        {
+          "parts": [
+            "5-60"
+          ],
+          "tier": "Situational Choices",
+          "at": 950,
+          "note": "Heavy, balanced and good on stamina but more burst-prone than its rivals; Phoenix on 5-60 Point once led the balance meta."
+        },
+        {
+          "parts": [
+            "7-60"
+          ],
+          "tier": "Situational Choices",
+          "at": 1136,
+          "note": "Seven-sided is the heaviest family, so it limits self-recoil on smash builds, and its thicker side can offset an imbalanced blade."
+        },
+        {
+          "parts": [
+            "9-70"
+          ],
+          "tier": "Situational Choices",
+          "at": 1362,
+          "note": "A tight one is still usable — the nine-sided round profile resists bursting enough to carry the extra height."
+        },
+        {
+          "parts": [
+            "1-80"
+          ],
+          "tier": "Niche Picks",
+          "at": 435,
+          "note": "Tall builds are usually a mistake, but Aero Pegasus on Rush with it won a lot more than it lost at a high level."
+        },
+        {
+          "parts": [
+            "3-70"
+          ],
+          "tier": "Niche Picks",
+          "at": 560,
+          "note": "Hard to find a reason for, beyond raising a Low Rush build slightly when you don't want to spend the 1-70."
+        },
+        {
+          "parts": [
+            "4-50"
+          ],
+          "tier": "Niche Picks",
+          "at": 706,
+          "note": "Was a fine low-profile pick before the 1-50 existed, and still is if you lack one, but it rattles and four-sided bursts."
+        },
+        {
+          "parts": [
+            "6-60"
+          ],
+          "tier": "Niche Picks",
+          "at": 986,
+          "note": "Well balanced but loose and unusually light, so it adds neither weight nor burst resistance; heavier options do more."
+        },
+        {
+          "parts": [
+            "7-55"
+          ],
+          "tier": "Niche Picks",
+          "at": 1070,
+          "note": "The only simple ratchet worth a look — by far Clock Mirage's best, and it bursts far less than the 4-55 does."
+        },
+        {
+          "parts": [
+            "7-70"
+          ],
+          "tier": "Niche Picks",
+          "at": 1212,
+          "note": "One of the better 70-heights — it saw Tyranno Beat play once, and it still beats everything below it."
+        },
+        {
+          "parts": [
+            "8-70"
+          ],
+          "tier": "Niche Picks",
+          "at": 1258,
+          "note": "Heavy, but 70-height and largely untested — it sits at the very bottom of the tier on secondhand reports."
+        },
+        {
+          "parts": [
+            "9-80"
+          ],
+          "tier": "Niche Picks",
+          "at": 1406,
+          "note": "A last resort — the same idea as the 9-70 but worse, saved only by being a nine-sided ratchet."
+        },
+        {
+          "parts": [
+            "0-60"
+          ],
+          "tier": "Do You Want To Lose?",
+          "at": 111,
+          "note": "Bottom-mounted protrusions catch the rail, so it self-bursts and kills its own stamina; the low height makes it the worst of the two."
+        },
+        {
+          "parts": [
+            "0-70"
+          ],
+          "tier": "Do You Want To Lose?",
+          "at": 157,
+          "note": "Still not good, but the extra height keeps the protrusions off the rail, so it edges out the 0-60."
+        },
+        {
+          "parts": [
+            "4-55"
+          ],
+          "tier": "Do You Want To Lose?",
+          "at": 765,
+          "note": "A simple ratchet, so incredibly burst-prone; only the low 55-height keeps it out of plastic waste on Clock Mirage."
+        },
+        {
+          "parts": [
+            "4-60"
+          ],
+          "tier": "Do You Want To Lose?",
+          "at": 806,
+          "note": "Four-sided protrusions stick out awkwardly and get hit, so it stays burst-prone even at the best height."
+        },
+        {
+          "parts": [
+            "6-70"
+          ],
+          "tier": "Do You Want To Lose?",
+          "at": 1046,
+          "note": "Simply a worse 6-60, though not as bad as the plastic waste below it."
+        },
+        {
+          "parts": [
+            "0-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 173,
+          "note": "80-height raises the centre of gravity, so it destabilises easily and is a sitting duck for any attack type to snipe."
+        },
+        {
+          "parts": [
+            "2-60"
+          ],
+          "tier": "Plastic Waste",
+          "at": 500,
+          "note": "The best of the two-sided heights, which only means the least awful — the huge protrusions are burst on far too easily."
+        },
+        {
+          "parts": [
+            "2-70"
+          ],
+          "tier": "Plastic Waste",
+          "at": 500,
+          "note": "Two-sided protrusions are enormous and burst on contact, and the extra height only makes it worse than the 2-60."
+        },
+        {
+          "parts": [
+            "2-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 508,
+          "note": "Possibly the second worst ratchet in the game — two-sided burst risk stacked on an 80-height's instability."
+        },
+        {
+          "parts": [
+            "3-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 595,
+          "note": "The 3-60's late-game lean becomes a collapse at 80-height; it destabilises and bursts far too easily."
+        },
+        {
+          "parts": [
+            "3-85"
+          ],
+          "tier": "Plastic Waste",
+          "at": 636,
+          "note": "The worst ratchet in the game — a simple ratchet's lock means no bit can make it burst-resistant, at maximum height."
+        },
+        {
+          "parts": [
+            "4-70"
+          ],
+          "tier": "Plastic Waste",
+          "at": 827,
+          "note": "Four-sided burst risk at 70-height — roughly on par with the 3-80, and nowhere near usable."
+        },
+        {
+          "parts": [
+            "4-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 845,
+          "note": "Worse than the 4-70, and arguably worse than the 2-60 — burst-prone and top-heavy at the same time."
+        },
+        {
+          "parts": [
+            "5-70"
+          ],
+          "tier": "Plastic Waste",
+          "at": 975,
+          "note": "If the 5-60 is already burst-prone, the 5-70 is worse, and the extra height buys nothing back."
+        },
+        {
+          "parts": [
+            "5-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 979,
+          "note": "A bad ratchet — five-sided burst risk at the worst possible height."
+        },
+        {
+          "parts": [
+            "6-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 1061,
+          "note": "An 80-height six-sided ratchet: loose, light and burst-prone all at once."
+        },
+        {
+          "parts": [
+            "7-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 1240,
+          "note": "Heavy, but far too tall, so things simply tip over — and it is incredibly burst-prone because of it."
+        },
+        {
+          "parts": [
+            "8-80"
+          ],
+          "tier": "Plastic Waste",
+          "at": 1288,
+          "note": "Goes the way of the other 80-heights — too tall to be anything but a liability."
+        },
+        {
+          "parts": [
+            "9-65"
+          ],
+          "tier": "Plastic Waste",
+          "at": 1344,
+          "note": "A simple ratchet, and worse than the 55-height ones, so it bursts very easily — the best of a bad tier."
+        },
+        {
+          "parts": [
+            "M-85"
+          ],
+          "tier": "Plastic Waste",
+          "at": 1442,
+          "note": "As heavy as it looks, but it bursts if you breathe on it — among the very worst ratchets in the game."
+        }
+      ]
     }
-  ]
+  }
 }

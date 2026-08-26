@@ -197,7 +197,47 @@ export function compareBySpec(sort: Exclude<SpecSort, 'tier'>, dir: SortDir = 'd
 }
 
 /**
- * One tile per blade, not per box.
+ * 0 for a release anyone can walk in and buy, 1 for the rest.
+ *
+ * The sheet's product ids carry the line: `BX`, `UX` and `CX` are the numbered
+ * retail releases, while `BXG` (gacha), `BXC` (collab), `BXH` and `BXA` are
+ * prize, exclusive or event boxes. Read off the letters before the first dash,
+ * so an unfamiliar prefix is treated as exclusive rather than silently
+ * promoted over a retail box.
+ *
+ * The numbers are the order the lines appeared in, which `releaseOrder` reads.
+ */
+const RETAIL_LINES: Record<string, number> = { BX: 0, UX: 1, CX: 2 }
+const standardRelease = (id: string): number =>
+  id.split('-')[0].toUpperCase() in RETAIL_LINES ? 0 : 1
+
+/**
+ * 0 for a box of its own, 1 for one blade out of a box holding several.
+ *
+ * A third segment is a sub-code: `CX-17-03` is the third blade in the CX-17
+ * blind box, where `UX-09` is a box you buy by name. Both open with a retail
+ * line, so the prefix alone cannot separate them — the segment count can. A
+ * reader asking where to get a blade wants the box they can walk out with,
+ * not the one that might be inside the box they gambled on.
+ */
+const standaloneBox = (id: string): number => (id.split('-').length <= 2 ? 0 : 1)
+
+/**
+ * Release order, oldest first: line, then product number, then sub-code.
+ *
+ * BX came before UX before CX, and inside a line the numbers climb with the
+ * release date, so the smallest tuple is the original release — the box the
+ * mould first appeared in, rather than whichever later repackage happens to
+ * sort first. An unfamiliar line sorts last rather than being called the
+ * original.
+ */
+const releaseOrder = (id: string): [number, number, number] => {
+  const [prefix, box, pick] = id.split('-')
+  return [RETAIL_LINES[prefix.toUpperCase()] ?? 9, Number(box) || 999, Number(pick) || 0]
+}
+
+/**
+ * One tile per blade and grade, not per box.
  *
  * The sheet lists every SKU a mould was ever sold in — twelve rows of 蒼龍神劍
  * across a starter, four metal coatings, a repackage and a sticker edition —
@@ -208,35 +248,28 @@ export function compareBySpec(sort: Exclude<SpecSort, 'tier'>, dir: SortDir = 'd
  * re-tool: every Dran Sword collapses to one, but Dran Sword V2 is 2.7 g
  * heavier and stays its own entry.
  *
- * The survivor is the one a reader is most likely to be able to buy — a plain
- * BX / UX / CX release ahead of the BXG, BXC, BXH and BXA lines, which are
- * gacha, collab and event exclusives. Opening a fold on a prize-only box would
- * answer "where do I get this" with the one place you mostly cannot. Grade
- * breaks the remaining tie, since the sheet grades each box separately and the
- * mould is worth what its best showing says.
+ * Grade folds too, because the sheet grades each box on the combo it ships
+ * with: 武士星劍 is an A as CX-17-03 and a B+ as UX-09. Merging those would
+ * hand one box a grade it never earned and bury the other, so they stay two
+ * tiles — one in each row — and the reader sees both prices of admission.
+ *
+ * The survivor of a fold is the box a reader is most likely to be able to
+ * buy. A plain BX / UX / CX release comes ahead of the BXG, BXC, BXH and BXA
+ * lines, which are gacha, collab and event exclusives; a box of its own comes
+ * ahead of one pick out of a blind box or a set; and the original release
+ * comes ahead of every later repackage. Opening a fold on a prize-only box
+ * would answer "where do I get this" with the one place you mostly cannot.
  *
  * Returns the counts alongside, so a folded tile can say how many boxes are
  * behind it rather than quietly hiding eleven of them.
  */
-/**
- * 0 for a release anyone can walk in and buy, 1 for the rest.
- *
- * The sheet's product ids carry the line: `BX`, `UX` and `CX` are the numbered
- * retail releases, while `BXG` (gacha), `BXC` (collab), `BXH` and `BXA` are
- * prize, exclusive or event boxes. Read off the letters before the first dash,
- * so an unfamiliar prefix is treated as exclusive rather than silently
- * promoted over a retail box.
- */
-const RETAIL_LINES = new Set(['BX', 'UX', 'CX'])
-const standardRelease = (id: string): number =>
-  RETAIL_LINES.has(id.split('-')[0].toUpperCase()) ? 0 : 1
-
 export function mergeVariants(parts: Part[]): { parts: Part[]; counts: Map<string, number> } {
   const groups = new Map<string, Part[]>()
   for (const part of parts) {
     // Weight is part of the identity here, so two rows that differ only by a
-    // figure we have never measured still fold together.
-    const key = `${part.cat}|${part.nameEn ?? part.name}|${part.spec?.weightG ?? ''}`
+    // figure we have never measured still fold together. Grade is part of it
+    // too — see above, a box keeps the grade it earned.
+    const key = `${part.cat}|${part.nameEn ?? part.name}|${part.spec?.weightG ?? ''}|${part.tier}`
     const group = groups.get(key)
     if (group) group.push(part)
     else groups.set(key, [part])
@@ -248,8 +281,13 @@ export function mergeVariants(parts: Part[]): { parts: Part[]; counts: Map<strin
     const best = group.reduce((a, b) => {
       const byLine = standardRelease(a.id) - standardRelease(b.id)
       if (byLine !== 0) return byLine < 0 ? a : b
-      const byTier = tierRank(a.tier) - tierRank(b.tier)
-      if (byTier !== 0) return byTier < 0 ? a : b
+      const byBox = standaloneBox(a.id) - standaloneBox(b.id)
+      if (byBox !== 0) return byBox < 0 ? a : b
+      const [ra, rb] = [releaseOrder(a.id), releaseOrder(b.id)]
+      const byRelease = ra[0] - rb[0] || ra[1] - rb[1] || ra[2] - rb[2]
+      if (byRelease !== 0) return byRelease < 0 ? a : b
+      // Every member shares a grade by now, so this is the name breaking a
+      // tie between two boxes sold in the same week.
       return comparePartsInTier(a, b) <= 0 ? a : b
     })
     out.push(best)

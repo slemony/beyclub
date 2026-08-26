@@ -65,9 +65,9 @@ export type Part = {
    */
   spec?: PartSpec
   /**
-   * One creator's published verdict on this bit, shown with a link back to the
-   * point in their video. Attached from creatorPicks.json at load time (bits
-   * only), and never an input to the grade.
+   * One creator's published verdict on this part, shown with a link back to the
+   * point in their video. Attached from creatorPicks.json at load time (bits and
+   * ratchets, each from its own video), and never an input to the grade.
    */
   creatorPick?: CreatorPick
   /** Product this part comes in. */
@@ -224,9 +224,9 @@ export type PartSpec = {
 }
 
 /**
- * A creator's published verdict on one bit — their own tier name, a sentence,
+ * A creator's published verdict on one part — their own tier name, a sentence,
  * and where in the video they said it. Authored in creatorPicks.json and
- * joined onto its bit in loadCatalogue().
+ * joined onto its part in loadCatalogue().
  *
  * Held apart from `PartNotes` on purpose: that block is BeyClub's own writing
  * and carries an "our own view" badge, while this is someone else's opinion
