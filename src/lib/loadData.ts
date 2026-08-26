@@ -40,6 +40,11 @@ type Override = {
   overblade?: string
   /** Drops a row that describes no blade — see the file's note. */
   skip?: boolean
+  /**
+   * Drops a row that is a second listing of a part already in the sheet under
+   * another casing, naming the row it merges into — see the file's note.
+   */
+  duplicateOf?: string
 }
 const OVERRIDES = partOverrides as Record<string, Override | string>
 const overrideFor = (id: string): Override =>
@@ -180,12 +185,15 @@ const CREATOR_PICKS: Record<string, CreatorPick> = Object.fromEntries(
 /**
  * Reaches the entry for a code, allowing for the sheet's two casings.
  *
- * Both files are keyed on one casing of a part's code, but the sheet lists
- * `NR`/`Nr` and `OP`/`Op` as separate rows on different grades. They are one
- * physical part, so both rows get the same measurements and the same verdict —
- * the rows themselves stay separate and keep their own grades. This is the
- * documented exception to matching exactly, not licence to fold case anywhere
- * else: it only ever reads curated data, and never merges two catalogue rows.
+ * The curated files key these two bits on the lowercase casing go-shoot uses
+ * (`Nr`, `Op`) while the surviving catalogue row carries the uppercase one the
+ * tournament feed writes (`NR`, `OP`) — the sheet's duplicate lowercase rows
+ * are dropped in partOverrides.json. One physical part, two spellings across
+ * three sources, so the lookup bridges them here.
+ *
+ * This is the documented exception to matching exactly, not licence to fold
+ * case anywhere else: it only ever reads curated data, and never merges two
+ * catalogue rows.
  */
 function forCode<T>(table: Record<string, T> | undefined, id: string): T | undefined {
   if (!table) return undefined
@@ -220,6 +228,11 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
     const cat = toCategory(cell(row, 1))
     const tier = cell(row, 3)
     if (!id || !cat || !tier) continue
+
+    // A second listing of a part the sheet already carries under another
+    // casing. The two rows blend separately and disagree — see the override
+    // file's note — so the duplicate is dropped rather than graded twice.
+    if (overrideFor(id).duplicateOf) continue
 
     const key = `${id}|${cat}`
     if (seen.has(key)) continue
@@ -283,12 +296,16 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
 
   // Officially announced parts the Taiwan sheet hasn't caught up with yet.
   //
-  // Matched exactly, and only exactly: the sheet lists `NR` and `Nr` as two
-  // different bits on different grades, so folding case or zero-padding
-  // together to catch near-misses would merge genuinely separate parts. An
-  // entry written before the real data exists will often not match at all —
-  // UX-21 was added as UX-21-1 against the sheet's UX-21-01 and every blade
-  // showed twice — so these have to be deleted by hand, as the file says.
+  // Matched exactly, and only exactly. Zero-padding is the trap: UX-21 was
+  // added here as UX-21-1 against the sheet's UX-21-01, and folding the two
+  // together to catch the near-miss would merge parts that only look alike,
+  // while leaving them apart showed every blade twice. An entry written before
+  // the real data exists often will not match at all, so these have to be
+  // deleted by hand, as the file says.
+  //
+  // Casing is not an instance of that: where the sheet lists one part twice on
+  // two casings, `NR`/`Nr` and `OP`/`Op`, they really are one bit, and the
+  // duplicate is dropped by name in partOverrides.json rather than by a rule.
   for (const part of MANUAL_PARTS) {
     const key = `${part.id}|${part.cat}`
     if (seen.has(key)) continue
