@@ -172,15 +172,29 @@ function cxSpec(key: string): PartSpec | undefined {
   }
 }
 
-/** One creator's verdict per bit, flattened from the file's per-entry code lists. */
-const CREATOR_PICKS: Record<string, CreatorPick> = Object.fromEntries(
-  creatorPicks.picks.flatMap((pick) =>
-    pick.bits.map((code): [string, CreatorPick] => [
-      code,
-      { tier: pick.tier, note: pick.note, at: pick.at, credit: creatorPicks.credit },
+/**
+ * One creator's verdict per part, by category then code, flattened from the
+ * file's per-entry code lists.
+ *
+ * Each category carries its own video and its own credit — the bit list and the
+ * ratchet list are separate publications with separate tier names — so this is
+ * a table per category rather than one flat map. A category with no entry in
+ * the file simply has no picks, and `forCode` returns undefined for it.
+ */
+const CREATOR_PICKS: Partial<Record<PartCategory, Record<string, CreatorPick>>> =
+  Object.fromEntries(
+    Object.entries(creatorPicks.sources).map(([cat, source]) => [
+      cat,
+      Object.fromEntries(
+        source.picks.flatMap((pick) =>
+          pick.parts.map((code): [string, CreatorPick] => [
+            code,
+            { tier: pick.tier, note: pick.note, at: pick.at, credit: source.credit },
+          ]),
+        ),
+      ),
     ]),
-  ),
-)
+  )
 
 /**
  * Reaches the entry for a code, allowing for the sheet's two casings.
@@ -338,15 +352,14 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
     }
   }
 
-  // Measurements, and one creator's read on each bit. Both are hand-curated and
-  // keyed on the part's own code, so this is a lookup rather than a match.
+  // Measurements, and one creator's read on the part. Both are hand-curated and
+  // keyed on the part's own code, so this is a lookup rather than a match. A
+  // category the picks file doesn't cover falls out of the lookup on its own.
   for (const p of out) {
     const spec = p.cat === 'blade' ? bladeSpec(p.id, p.key) : forCode(PART_SPECS[p.cat], specCode(p))
     if (spec) p.spec = spec
-    if (p.cat === 'bit') {
-      const pick = forCode(CREATOR_PICKS, p.id)
-      if (pick) p.creatorPick = pick
-    }
+    const pick = forCode(CREATOR_PICKS[p.cat], p.id)
+    if (pick) p.creatorPick = pick
   }
 
   return out

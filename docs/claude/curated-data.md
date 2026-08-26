@@ -18,16 +18,23 @@ the map.
 | [`public/data/part-notes.json`](../../public/data/part-notes.json) | BeyClub's own bit profiles, pros and cons — shown under an "our own view" badge; never affects a ranking | `category:id` |
 | [`public/data/tiers-jp.json`](../../public/data/tiers-jp.json) | Hand-curated Japanese tier grades, each with its own author + article link | Product code / English name |
 | [`src/data/partSpecs.json`](../../src/data/partSpecs.json) | Measured weight, gear/ring teeth, Burst rating, height and thickness — bits, ratchets, assists, over blades, and CX beys via their lock chip + main/metal blade. Shown as a chip row on the detail sheet and the only thing the measurement sorts read; never affects a ranking | Part code; assists by their bare letter (`A`, not `輔助A`), CX beys by blade `key` |
-| [`src/data/creatorPicks.json`](../../src/data/creatorPicks.json) | One creator's public bit tier list — one sentence and a timestamped link under a "Creator pick" heading; never affects a ranking | Bit code |
+| [`src/data/creatorPicks.json`](../../src/data/creatorPicks.json) | One creator's public tier lists — one sentence and a timestamped link under a "Creator pick" heading; never affects a ranking. `sources` is keyed by part category, one video and one credit each: `bit` and `ratchet` today. The two videos use **different tier names**, so each label needs a colour in `PICK_TIER_COLORS` (`PartSheet.tsx`) — don't fold them into one scale | Part category, then part code |
 
 ## Rules that apply to all of them
 
 - Don't hand-edit the **generated** files (`catalogue.json`, `tournament.json`,
   `stock.json`) — see [data-architecture.md](data-architecture.md).
-- Match exactly. The sheet lists `NR` and `Nr` as two different bits on
-  different grades, so folding case or zero-padding together to catch
-  near-misses merges genuinely separate parts. `manualParts.json` says this at
-  length — heed it.
+- Match exactly. Folding zero-padding together to catch a near-miss merges
+  product ids that only look alike — `UX-21-1` against the sheet's `UX-21-01`.
+  `manualParts.json` says this at length — heed it.
+- Casing is the one exception, and it is handled by name rather than by a rule.
+  The sheet lists `NR`/`Nr` and `OP`/`Op` as two rows each, but each pair is one
+  physical bit listed twice, from two authoring passes that never agreed on a
+  grade. `partOverrides.json` drops the lowercase duplicate with `duplicateOf`;
+  `forCode()` in `loadData.ts` bridges the surviving uppercase catalogue row to
+  the lowercase key `partSpecs.json` and `creatorPicks.json` use. Left as two
+  rows they blend separately and disagree — that is where `Nr` at A+ against
+  `NR` at A came from.
 - If a file grows a new field, update its consuming type in
   [`src/lib/types.ts`](../../src/lib/types.ts) too.
 - After editing, `npm run build` must pass.
