@@ -14,7 +14,6 @@ drive the tournament match, so a wrong one costs that blade its results.
 | 子彈獅鷲 | Griffon Bullet |
 | 巨鯨烈焰 | Whale Flame |
 | 惡魔勇氣 | Hells Brave |
-| 惡魔幽冥 | Hells Eclipse |
 | 暴風巨神 | Storm Titan |
 | 暴龍 | Tyrannosaurus |
 | 棘龍 | Spinosaurus |

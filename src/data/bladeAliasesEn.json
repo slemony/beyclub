@@ -1,6 +1,7 @@
 {
   "_note": "English spellings the tournament feed uses that are not the blade's name here, mapped to its catalogue key. scripts/fetch-tournament.mjs registers these alongside bladeNamesEn/bladeNamesZhEn so a placement still finds its blade.\n\nThis exists because the two can legitimately disagree. Takara Tomy's own name for CX-08 03 is Cerberus Dark, and that is what the sheet shows; BBXHub's reporters typed CerberusEclipse for a season and their results should not vanish because we corrected a name. Add an entry when a rename would otherwise strand a record — the typo pass only forgives two edits, which is nowhere near enough to bridge two different words.",
   "aliases": {
-    "CerberusEclipse": "魔犬幽冥"
+    "CerberusEclipse": "魔犬幽冥",
+    "HellsEclipse": "惡魔幽冥"
   }
 }
