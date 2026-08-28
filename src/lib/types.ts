@@ -35,13 +35,14 @@ export type Part = {
   /** CX Expand Blade over blade in the box (blades only). */
   stockOverblade?: string
   /**
-   * Everything else in the box, for a blade sold inside a customize set.
+   * Everything else in the box, for a blade sold inside a multi-bey set.
    *
-   * A set holds several blades and a pile of loose ratchets and bits, which
-   * the sheet can only record one-per-blade — so the rest is described once in
-   * setContents.json and attached to every blade sharing the product. Kept
-   * apart from `stockRatchet`/`stockBit` because those are what this blade
-   * comes assembled with, and these are merely in the same box.
+   * A deck set, battle entry set or customize set holds several beys, and the
+   * sheet's per-blade columns can only say what this one blade comes built
+   * with — so the box is described once in setContents.json and attached to
+   * every blade in it. Kept apart from `stockRatchet`/`stockBit` because those
+   * are what this blade comes assembled with, and these are merely in the same
+   * box.
    */
   setRatchets?: string[]
   setBits?: string[]

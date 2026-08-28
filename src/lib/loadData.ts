@@ -27,10 +27,29 @@ const EN_NAMES = bladeNamesEn as Record<string, string>
 const ZH_EN_NAMES = bladeNamesZhEn as Record<string, string>
 
 /** Per-row corrections for sheet quirks — see the note in the file itself. */
-type SetContents = { ratchets?: string[]; bits?: string[] }
+type SetContents = {
+  products?: string[]
+  ids?: string[]
+  ratchets?: string[]
+  bits?: string[]
+}
 
-/** What each customize set holds, by the sheet's product string — see the file's note. */
-const SET_CONTENTS = setContents.sets as Record<string, SetContents>
+/**
+ * What each multi-bey box holds — see the file's note.
+ *
+ * Keyed there by product code, so both ways of reaching a blade are built here
+ * instead. `products` is the ordinary one, the sheet's own product string, and
+ * takes more than one because the sheet spells CX-11 two different ways. `ids`
+ * covers a box whose rows carry no usable product string at all: BX-08 leaves
+ * the column blank, the Evangelion set repeats each row's own id.
+ */
+const SET_CONTENTS = Object.values(setContents.sets as Record<string, SetContents>)
+const SET_BY_PRODUCT = new Map<string, SetContents>()
+const SET_BY_ID = new Map<string, SetContents>()
+for (const set of SET_CONTENTS) {
+  for (const product of set.products ?? []) SET_BY_PRODUCT.set(product, set)
+  for (const id of set.ids ?? []) SET_BY_ID.set(id, set)
+}
 
 type Override = {
   id?: string
@@ -278,6 +297,11 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
 
     const name = cell(row, 1) || id
     const fix = overrideFor(id)
+    // The box this blade was sold in, if it shared one with other beys. The
+    // product string is the ordinary route; the id catches the rows that
+    // leave it blank, and must not fall through to a lookup on "" — that
+    // blank is shared by every single-bey row in the sheet.
+    const box = SET_BY_PRODUCT.get(cell(row, 11)) ?? SET_BY_ID.get(id)
     // Not a blade at all: a set's loose part, filed under a blade row named
     // after the box. setContents.json describes those properly.
     if (fix.skip) continue
@@ -300,8 +324,8 @@ export function parseCatalogue({ blades, parts }: CatalogueFile): Raw[] {
       stockAssist: cell(row, 10) || fix.assist || undefined,
       stockOverblade: fix.overblade || undefined,
       product: cell(row, 11) || undefined,
-      setRatchets: SET_CONTENTS[cell(row, 11)]?.ratchets,
-      setBits: SET_CONTENTS[cell(row, 11)]?.bits,
+      setRatchets: box?.ratchets,
+      setBits: box?.bits,
       img: cell(row, 12) || undefined,
       combo: [cell(row, 13), cell(row, 14)].filter(Boolean).join('\n') || undefined,
       communityCombo: cell(row, 15) || undefined,

@@ -11,7 +11,7 @@ the map.
 |---|---|---|
 | [`src/data/manualParts.json`](../../src/data/manualParts.json) | Officially announced parts the Taiwan sheet hasn't listed yet, so a new set isn't missing on launch week | `id` + `cat`, matched exactly |
 | [`src/data/partOverrides.json`](../../src/data/partOverrides.json) | Per-row fixes for sheet quirks — real id behind a placeholder code, an English name, the blade a row really is, a backfilled assist/over-blade | Sheet product id |
-| [`src/data/setContents.json`](../../src/data/setContents.json) | What a customize set actually holds — the sheet can only record parts one-per-blade, so the box is described once here and attached to every blade sharing the product string | The sheet's product string |
+| [`src/data/setContents.json`](../../src/data/setContents.json) | What a multi-bey box actually holds — the sheet's per-blade columns only say what one blade comes built with, so the box is described once here and attached to every blade in it | Retail product code, matched to blades by `products` (sheet product strings) or `ids` (sheet product ids) |
 | [`src/data/sourceNotes.json`](../../src/data/sourceNotes.json) | English translations of the sheet's Chinese combo comments | The exact source string |
 | [`src/data/bladeNamesEn.json`](../../src/data/bladeNamesEn.json), [`bladeNamesZhEn.json`](../../src/data/bladeNamesZhEn.json) | English blade names — also drive tournament name-matching, so an untranslated blade is one whose results can't be counted | Product id / base Chinese name |
 | [`src/data/bladeAliasesEn.json`](../../src/data/bladeAliasesEn.json) | English spellings the tournament feed still uses for a blade we have since renamed, so a correction doesn't strand its placements | Alias → base Chinese name |
@@ -88,7 +88,8 @@ change. Records key on the Chinese name, so nothing already in
 Note `幽冥`, which the two sources do not agree on. go-shoot reads it as **Dark**
 (`names.chi` for the Dark main blade is `幽暗 幽冥`), but the Taiwan sheet uses it
 for **Nether** — `惡魔幽冥` is UX-21-01, Hells Nether, confirmed by the site's
-owner. Our own files are inconsistent about it too: `bladeNamesZhEn.json` calls
-`惡魔幽冥` "Hells Eclipse", while `英仙幽冥` is "Perseus Dark". `魔犬幽冥` was
+owner. Both name files now say so; `bladeNamesZhEn.json` called it "Hells
+Eclipse" until Aug 2026, and that spelling is aliased because the feed used it.
+`英仙幽冥` stays "Perseus Dark", on the same reading of the sheet. `魔犬幽冥` was
 "Cerberus Eclipse" until KGB's own CX-08 listing settled it as **Cerberus Dark**;
 its feed spelling is aliased. Check a product listing before tidying the rest.
