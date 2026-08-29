@@ -199,6 +199,15 @@ export type StockIndex = {
   contents: (product: StockProduct) => Part[]
   /** Where this part can be bought, in stock first. */
   listingsFor: (part: Part) => StockProduct[]
+  /**
+   * What KGB sells under one retail product code, in stock first.
+   *
+   * `listingsFor` above answers "where do I buy this part", which only works
+   * for a part KGB lists in its own right — never a ratchet or a bit. A route
+   * to a bit is a *box*, and by the time acquire.ts has one it holds the box's
+   * code and nothing else, so it needs the join from that end.
+   */
+  listingsForCode: (code: string) => StockProduct[]
 }
 
 export function buildStockIndex(products: StockProduct[], parts: Part[]): StockIndex {
@@ -216,11 +225,18 @@ export function buildStockIndex(products: StockProduct[], parts: Part[]): StockI
   // Keyed on the blade rather than the variant, so the sheet listing 魔導神杖 and
   // 魔導神杖(綠) separately does not hide one of the two products selling them.
   const listings = new Map<string, StockProduct[]>()
+  /** By retail code, and built over every listing — a box KGB sells that the
+      catalogue has no row for is still a box you can buy. */
+  const byProductCode = new Map<string, StockProduct[]>()
 
   for (const product of products) {
     if (!product.code) continue
 
     const code = normalize(product.code)
+    const sameCode = byProductCode.get(code)
+    if (sameCode) sameCode.push(product)
+    else byProductCode.set(code, [product])
+
     const exact = byCode.get(code)
     const found =
       exact ?? codes.filter((c) => c.startsWith(code)).flatMap((c) => byCode.get(c) ?? [])
@@ -239,13 +255,15 @@ export function buildStockIndex(products: StockProduct[], parts: Part[]): StockI
   }
 
   // Something buyable today outranks a cheaper thing that is sold out.
-  for (const list of listings.values()) {
-    list.sort((a, b) => Number(b.inStock) - Number(a.inStock) || a.priceMYR - b.priceMYR)
-  }
+  const byAvailability = (a: StockProduct, b: StockProduct) =>
+    Number(b.inStock) - Number(a.inStock) || a.priceMYR - b.priceMYR
+  for (const list of listings.values()) list.sort(byAvailability)
+  for (const list of byProductCode.values()) list.sort(byAvailability)
 
   return {
     contents: (product) => contents.get(product.slug) ?? [],
     listingsFor: (part) => listings.get(`${part.cat}|${part.key}`) ?? [],
+    listingsForCode: (code) => byProductCode.get(normalize(code)) ?? [],
   }
 }
 

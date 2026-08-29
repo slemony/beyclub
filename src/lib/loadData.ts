@@ -8,7 +8,7 @@ import partSpecs from '../data/partSpecs.json'
 import setContents from '../data/setContents.json'
 import { calculateBuyRec } from './buyRec'
 import { blendRating, tournamentScore } from './rating'
-import { baseName, normalize } from './text'
+import { baseName, normalize, productCode } from './text'
 import type {
   CreatorPick,
   CustomBuild,
@@ -473,7 +473,7 @@ export function merge(raw: Raw[], tournament: TournamentFile, japan: JapanFile):
    */
   const byBaseCode = new Map<string, Raw | null>()
   for (const p of blades) {
-    const base = p.id.split('-').slice(0, 2).join('-')
+    const base = productCode(p.id)
     if (!byBaseCode.has(base)) byBaseCode.set(base, p)
     else if (byBaseCode.get(base)?.key !== p.key) byBaseCode.set(base, null)
   }

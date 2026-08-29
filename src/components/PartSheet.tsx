@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import BitProfile from './BitProfile'
 import PartChip from './PartChip'
 import PartImage from './PartImage'
@@ -5,12 +6,14 @@ import PartSpecRow from './PartSpecRow'
 import RatingBreakdown from './RatingBreakdown'
 import Sheet from './Sheet'
 import sourceNotes from '../data/sourceNotes.json'
+import type { AcquireRoute } from '../lib/acquire'
 import { BUY_VERDICTS, explainVerdict } from '../lib/buyRec'
 import { parseCombo, type Build } from '../lib/combo'
 import { formatMYR } from '../lib/stock'
+import { productCode } from '../lib/text'
 import { TIER_COLORS, TYPE_COLORS, TYPE_LABELS, tierLabel } from '../lib/tiers'
 import type { PartIndex } from '../lib/partIndex'
-import type { CustomBuild, Part, PartNotes, StockProduct } from '../lib/types'
+import type { CustomBuild, Part, PartNotes } from '../lib/types'
 
 const NOTE_TRANSLATIONS = sourceNotes as Record<string, string>
 
@@ -37,8 +40,14 @@ type Props = {
   stack: Part[]
   index: PartIndex | null
   notes: Record<string, PartNotes>
-  /** KGB listings that carry this blade. Empty when the shop feed is unavailable. */
-  listings?: (part: Part) => StockProduct[]
+  /** Every box this part can be got from, easiest first. Empty when the shop feed is unavailable. */
+  routes?: (part: Part) => AcquireRoute[]
+  /**
+   * Whether anything here can honestly speak to what is on the shelf. False
+   * while KGB's shop is members-only, and then a price is the last one we saw
+   * and "Sold out" would be an invention — the same rule the Stock page keeps.
+   */
+  stockKnown?: boolean
   onOpen: (part: Part) => void
   onBack: () => void
   onClose: () => void
@@ -165,7 +174,7 @@ function CustomBuildCard({
  * against a base product code rather than each colour variant.
  */
 function lookupNotes(notes: Record<string, PartNotes>, part: Part): PartNotes | undefined {
-  const base = part.id.split('-').slice(0, 2).join('-')
+  const base = productCode(part.id)
   const wanted = [`${part.cat}:${part.id}`, `${part.cat}:${base}`]
 
   for (const key of wanted) {
@@ -177,12 +186,119 @@ function lookupNotes(notes: Record<string, PartNotes>, part: Part): PartNotes | 
   return hit ? notes[hit] : undefined
 }
 
+/**
+ * A sheet is a page to read, not a catalogue. Six boxes answer "where do I get
+ * one" for every part in the game; ratchet 3-60 alone has twenty-one, and the
+ * tail of them is unlisted collab boxes nobody can buy. The count of what is
+ * left out is shown, so the cut is visible rather than silent.
+ */
+const MAX_ROUTES = 6
+
+/** "1 in 6" reads as odds; "0.167" reads as homework. */
+const oneIn = (chance: number) => Math.round(1 / chance)
+
+/** What this box gives you, in the words the reader would use. */
+function routeSub(route: AcquireRoute, part: Part): string {
+  if (route.kind === 'inBox') return 'Loose in the box'
+
+  if (route.kind === 'assembled') {
+    if (part.cat === 'blade') return 'Comes in this box'
+    const via = route.via ? ` · on ${route.via.nameEn ?? route.via.name}` : ''
+    return `Comes built with it${via}`
+  }
+
+  const odds = route.odds
+  // An estimate says what it counted and admits what it could not: the sheet
+  // under-lists some boxes, so this denominator is a floor, and a bare
+  // percentage here would be a claim we cannot support.
+  if (route.estimated) {
+    return odds
+      ? `${odds.hits} of the ${odds.of} beys we know it holds — ratios aren't published`
+      : "A random pull — ratios aren't published"
+  }
+  return odds ? `${odds.hits} of ${odds.of} pulls · about 1 in ${oneIn(route.chance)}` : 'A random pull'
+}
+
+/** The headline verdict — the same sentence, short enough to lead with. */
+function routeHeadline(route: AcquireRoute, part: Part): string {
+  if (route.kind === 'inBox') return 'Loose in the box'
+  if (route.kind === 'assembled') {
+    return part.cat === 'blade' ? 'Comes in this box' : 'Comes built with it'
+  }
+  return `About 1 in ${oneIn(route.chance)} boxes${route.estimated ? ' (our estimate)' : ''}`
+}
+
+/**
+ * One box you could get the part from: what it is, what it gives you and what
+ * KGB wants for it.
+ *
+ * A row with a listing is a link to that listing, exactly as the old "Where to
+ * buy" rows were. One without is a plain div — there is nothing to open, and a
+ * link that goes nowhere is worse than none.
+ */
+function RouteRow({
+  route,
+  part,
+  stockKnown,
+}: {
+  route: AcquireRoute
+  part: Part
+  stockKnown: boolean
+}) {
+  const body = (
+    <>
+      <span className="buy-row-main">
+        <span className="chip-code">{route.label}</span>
+        <span className="buy-row-sub">{routeSub(route, part)}</span>
+      </span>
+      <span className="buy-row-end">
+        {route.listing ? (
+          <span className="stock-price">{formatMYR(route.listing.priceMYR)}</span>
+        ) : (
+          <span className="buy-row-sub">Not sold at KGB</span>
+        )}
+        {/* The status word only exists when the shop can actually be read. */}
+        {stockKnown && route.listing && (
+          <span className={route.listing.inStock ? 'stock-status in' : 'stock-status out'}>
+            {route.listing.inStock ? 'In stock' : 'Sold out'}
+          </span>
+        )}
+        {/* What the part costs when the box picks, not the shelf price — a
+            statement about money, so an unreadable shop does not silence it. */}
+        {route.expectedMYR !== undefined && (
+          <span className="buy-row-sub">≈ {formatMYR(route.expectedMYR)} a pull</span>
+        )}
+      </span>
+    </>
+  )
+
+  return (
+    <div className="route">
+      {route.listing ? (
+        <a className="buy-row" href={route.listing.url} target="_blank" rel="noopener noreferrer">
+          {body}
+        </a>
+      ) : (
+        <div className="buy-row">{body}</div>
+      )}
+      {/* What a box holds is a curated claim like any other here, so it carries
+          the page it was read from. */}
+      {route.source && (
+        <a className="route-source" href={route.source} target="_blank" rel="noopener noreferrer">
+          What's in this box ↗
+        </a>
+      )}
+    </div>
+  )
+}
+
 /** iOS-style detail sheet with a navigation stack between related parts. */
 export default function PartSheet({
   stack,
   index,
   notes,
-  listings,
+  routes,
+  stockKnown = false,
   onOpen,
   onBack,
   onClose,
@@ -213,7 +329,8 @@ export default function PartSheet({
   ]
   const sourceComments = [...recommended.notes, ...community.notes]
   const previous = stack.length > 1 ? stack[stack.length - 2] : null
-  const forSale = listings?.(part) ?? []
+  const ways = routes?.(part) ?? []
+  const shownWays = ways.slice(0, MAX_ROUTES)
 
   return (
     <Sheet
@@ -481,30 +598,43 @@ export default function PartSheet({
       )}
 
       {/* A grade a reader cannot act on is trivia. This is the one place the
-          ranking meets a price, so it follows straight after our own notes. */}
-      {forSale.length > 0 && (
+          ranking meets a price, so it follows straight after our own notes.
+          A ratchet has no listing of its own and never will — what you buy is
+          a box — so the question this answers is "which box", not "where". */}
+      {ways.length > 0 && (
         <section className="sheet-block">
-          <h3>Where to buy</h3>
-          {forSale.map((product) => (
-            <a
-              className="buy-row"
-              key={product.slug}
-              href={product.url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span className="buy-row-main">
-                <span className="chip-code">{product.code ?? product.title}</span>
-                <span className="buy-row-sub">{product.kgbCategory} · Kelab Gasing Beyblade</span>
-              </span>
-              <span className="buy-row-end">
-                <span className="stock-price">{formatMYR(product.priceMYR)}</span>
-                <span className={product.inStock ? 'stock-status in' : 'stock-status out'}>
-                  {product.inStock ? 'In stock' : 'Sold out'}
-                </span>
-              </span>
-            </a>
+          <h3>How to get it</h3>
+
+          <div className="route-best">
+            <strong>{ways[0].label}</strong>
+            <span>
+              {routeHeadline(ways[0], part)}
+              {ways[0].listing ? ` · ${formatMYR(ways[0].listing.priceMYR)}` : ' · not sold at KGB'}
+              {stockKnown && ways[0].listing && (ways[0].listing.inStock ? ' · in stock' : ' · sold out')}
+            </span>
+          </div>
+
+          {shownWays.map((route) => (
+            <RouteRow key={route.code} route={route} part={part} stockKnown={stockKnown} />
           ))}
+
+          {ways.length > shownWays.length && (
+            <p className="route-note">
+              {ways.length - shownWays.length} more {ways.length - shownWays.length === 1 ? 'box' : 'boxes'} can
+              give you this part — mostly collab and older releases KGB doesn't list.
+            </p>
+          )}
+
+          {/* KGB has been members-only since 6 Aug 2026, so the feed is frozen.
+              Said once under the block rather than on each row: "Sold out"
+              would be as much of an invention as "In stock", and so would a
+              silent omission the reader cannot see. */}
+          {!stockKnown && ways.some((r) => r.listing) && (
+            <p className="route-note">
+              KGB's shop is members-only, so these are the last prices we saw — we can't tell what's
+              on the shelf today. <Link to="/stock">Check Stock ›</Link>
+            </p>
+          )}
         </section>
       )}
 

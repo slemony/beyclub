@@ -6,6 +6,7 @@ import Sheet from '../components/Sheet'
 import StockCard from '../components/StockCard'
 import { SyncButton, SyncNotice } from '../components/SyncControls'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
+import { acquireRoutes } from '../lib/acquire'
 import { buildPartIndex } from '../lib/partIndex'
 import {
   buildStockIndex,
@@ -338,6 +339,16 @@ export default function StockPage() {
 
   /** The denominator of "N of M shown" — the same rows `visible` may draw from. */
   const available = useMemo(() => view.products.filter(inGroup).length, [view, inGroup])
+
+  /**
+   * Every box a part can be got from. A live grab can speak to the shelf, so
+   * this page passes its own `knowsAvailability` rather than reading the
+   * published file's health — the routes then rank on what the grab just saw.
+   */
+  const routesFor = useCallback(
+    (part: Part) => acquireRoutes(part, parts, partIndex, stockIndex, knowsAvailability),
+    [parts, partIndex, stockIndex, knowsAvailability],
+  )
 
   const openPart = useCallback((part: Part) => {
     setStack((prev) => {
@@ -707,7 +718,8 @@ export default function StockPage() {
         stack={stack}
         index={partIndex}
         notes={notes}
-        listings={stockIndex.listingsFor}
+        routes={routesFor}
+        stockKnown={knowsAvailability}
         onOpen={openPart}
         onBack={() => setStack((prev) => prev.slice(0, -1))}
         onClose={() => setStack([])}
