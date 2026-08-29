@@ -1,12 +1,80 @@
 {
-  "_note": "What a customize set actually contains, keyed by the sheet's own product string.\n\nA set is one box holding several blades and a pile of loose ratchets and bits, but the sheet has only per-blade columns — so it spreads the loose parts across the blade rows, gives whichever blade is left over nothing, and parks the remainder on rows that are not blades at all. UX-10 is the worked example: three of its four blades carry one ratchet and one bit each, Hells Hammer carries nothing, bits R and P sit on two phantom 騎士圓甲改造組 rows (dropped via `skip` in partOverrides.json), and Metal Needle is missing entirely.\n\nSo the box is described here once and attached to every blade sharing that product string. `ratchets` and `bits` are the full contents; the detail sheet shows a blade's own assembled parts first and the rest under \"Also in the box\", so nothing here claims a blade ships built with all of them.\n\nSourced from the retailer's own assortment listing, which spells the contents out where the sheet does not.",
-  "updatedAt": "2026-08-21",
+  "_note": "What a multi-bey box actually contains, keyed by the retail product code.\n\nA deck set, battle entry set or customize set is one box holding several beys, but the sheet has only per-blade columns — so a blade's row shows the ratchet and bit that blade comes built with and nothing about the rest of the box. Reading UX-15-01 you cannot tell that 1-70, L, 3-60 and GF are already in your hands. That is what this file supplies: the box is described once and attached to every blade in it, and the detail sheet shows the blade's own assembled parts first with the remainder under \"Also in the box\".\n\nFor most sets the contents are just the union of the sheet's own rows, and the entry is a restatement of them in one place. Two things make that untrue and are the reason each entry is checked against the retail listing rather than computed:\n\n- A customize set carries loose parts beyond the assembled beys. UX-10 is the worked example: three of its four blades carry one ratchet and one bit each, Hells Hammer carries nothing, bits R and P sit on two phantom 騎士圓甲改造組 rows (dropped via `skip` in partOverrides.json), and Metal Needle is missing from the sheet entirely.\n- A blank ratchet column is sometimes correct. UX-21's Hells Nether Z is a ratchet-integrated blade and CX-11's EmperorMight HOp a ratchet-integrated bit — neither has a ratchet to list, so those boxes hold two ratchets against three beys. Do not \"fix\" them.\n\n`ratchets` and `bits` are the full contents, so nothing here claims a blade ships built with all of them. Assist blades and lock chips are not modelled; a CX bey in a deck set shows only its own, from the sheet.\n\nHow an entry finds its blades — a set needs at least one of these, and may carry both:\n\n- `products`: the sheet's own 來源產品 strings. Matched exactly, and more than one is allowed because the sheet does not always spell a product the same way twice — CX-11 is written both `CX-11帝王威能改造組` and `CX-11 帝王威能改造組`, and an entry listing only the first would leave SharkGill out of its own box.\n- `ids`: the sheet's product ids, for a box whose rows carry no usable product string at all. BX-08's three rows leave 來源產品 blank, and the Evangelion set's three each carry their own id as the product. Never write `\"\"` into `products` to reach the first case — the blank is shared by 166 unrelated rows.\n\nContents are taken from the retail listing, not from the sheet. Kelab Gasing Beyblade's shop is the source where it still carries a set; it has been behind a members-only sign-in since 6 Aug 2026, so newer entries cite the Beyblade Wiki's set page instead.",
+  "updatedAt": "2026-08-27",
   "sets": {
-    "UX-10 騎士圓甲改造組": {
+    "UX-10": {
       "label": "UX-10 Customize Set U",
       "source": "https://kelabgasingbeyblade.my/products/ux-10-customize-set-u",
+      "products": ["UX-10 騎士圓甲改造組"],
       "ratchets": ["3-85", "1-60", "7-70"],
       "bits": ["BS", "B", "MN", "P", "RA", "R"]
+    },
+    "BX-08": {
+      "label": "BX-08 3on3 Deck Set",
+      "source": "https://beyblade.fandom.com/wiki/3on3_Deck_Set",
+      "note": "All three rows leave the sheet's product column blank, so this box is reached by id.",
+      "ids": ["BX-08-01", "BX-08-02", "BX-08-03"],
+      "ratchets": ["3-80", "4-80", "4-60"],
+      "bits": ["B", "T", "N"]
+    },
+    "BX-21": {
+      "label": "BX-21 HellsChain Deck Set",
+      "source": "https://beyblade.fandom.com/wiki/HellsChain_Deck_Set",
+      "products": ["BX-21 惡魔鎖鏈改造組"],
+      "ratchets": ["5-60", "3-60", "4-80"],
+      "bits": ["HT", "LF", "N"]
+    },
+    "UX-04": {
+      "label": "UX-04 Battle Entry Set U",
+      "source": "https://beyblade.fandom.com/wiki/Battle_Entry_Set_U",
+      "products": ["UX-04 極限衝擊對戰組U"],
+      "ratchets": ["1-60", "5-70"],
+      "bits": ["A", "DB"]
+    },
+    "UX-07": {
+      "label": "UX-07 PhoenixRudder Deck Set",
+      "source": "https://beyblade.fandom.com/wiki/PhoenixRudder_Deck_Set",
+      "products": ["UX-07 鳳凰尾翼改造組"],
+      "ratchets": ["9-70", "2-60", "1-80"],
+      "bits": ["G", "S", "GF"]
+    },
+    "UX-15": {
+      "label": "UX-15 SharkScale Deck Set",
+      "source": "https://beyblade.fandom.com/wiki/SharkScale_Deck_Set",
+      "products": ["UX-15 鮫鯊狂鱗改造組"],
+      "ratchets": ["4-50", "1-70", "3-60"],
+      "bits": ["UF", "L", "GF"]
+    },
+    "UX-21": {
+      "label": "UX-21 HellsNether Deck Set",
+      "source": "https://beyblade.fandom.com/wiki/HellsNether_Deck_Set",
+      "note": "Three beys but two ratchets: Hells Nether Z is a ratchet-integrated blade. The label keeps the wiki's own spelling of the product; the blade is Hells Nether here.",
+      "products": ["UX-21"],
+      "ratchets": ["9-70", "8-80"],
+      "bits": ["Z", "R", "B"]
+    },
+    "CX-04": {
+      "label": "CX-04 Battle Entry Set C",
+      "source": "https://beyblade.fandom.com/wiki/Battle_Entry_Set_C",
+      "products": ["戰鬥入門套裝C"],
+      "ratchets": ["6-60", "6-80"],
+      "bits": ["V", "W"]
+    },
+    "CX-11": {
+      "label": "CX-11 EmperorMight Deck Set",
+      "source": "https://beyblade.fandom.com/wiki/EmperorMight_Deck_Set",
+      "note": "Three beys but two ratchets: EmperorMight's Op is a ratchet-integrated bit. The sheet spells the product two ways, hence both strings.",
+      "products": ["CX-11帝王威能改造組", "CX-11 帝王威能改造組"],
+      "ratchets": ["M-85", "5-60"],
+      "bits": ["OP", "HN", "FB"]
+    },
+    "CX-00": {
+      "label": "CX-00 Evangelion Deck Set",
+      "source": "https://beyblade.fandom.com/wiki/Evangelion_Deck_Set",
+      "note": "Each row carries its own id as the product string, so this box is reached by id. Sold as BXG-57.",
+      "ids": ["BXG-57-01", "BXG-57-02", "BXG-57-03"],
+      "ratchets": ["0-70", "1-70", "2-70"],
+      "bits": ["E", "V", "A"]
     }
   }
 }
