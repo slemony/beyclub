@@ -32,6 +32,18 @@ export function baseName(name: string): string {
 }
 
 /**
+ * The retail product a code belongs to — "BX-35-04" to "BX-35".
+ *
+ * The sheet files everything a box contains under sub-codes of the box's own
+ * code, so this is how a blade row finds the thing you actually buy. Two
+ * segments and no more: BXG-54 and BXC-13 are whole products already, and a
+ * third segment never carries meaning the first two do not.
+ */
+export function productCode(id: string): string {
+  return id.split('-').slice(0, 2).join('-')
+}
+
+/**
  * Damerau-Levenshtein distance, bailing out once it exceeds `max`.
  *
  * Used for typo tolerance in search, and to fold misspellings in the

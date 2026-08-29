@@ -6,6 +6,7 @@ import PartCard from '../components/PartCard'
 import PartSheet from '../components/PartSheet'
 import Sheet from '../components/Sheet'
 import TierTable from '../components/TierTable'
+import { acquireRoutes } from '../lib/acquire'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
 import { searchParts } from '../lib/search'
@@ -23,7 +24,7 @@ import {
   type SortDir,
   type SpecSort,
 } from '../lib/tiers'
-import type { Dataset, Part, PartCategory, PartNotes, StockProduct } from '../lib/types'
+import type { Dataset, Part, PartCategory, PartNotes, StockFile } from '../lib/types'
 
 type Filter = PartCategory | 'all'
 
@@ -44,7 +45,7 @@ export default function TierPage() {
   const [query, setQuery] = useState('')
   const [stack, setStack] = useState<Part[]>([])
   const [showSources, setShowSources] = useState(false)
-  const [listings, setListings] = useState<StockProduct[]>([])
+  const [stock, setStock] = useState<StockFile | null>(null)
 
   // Tapping the tab you are already on should hand back a clean list rather
   // than the search you left behind. Keyed on the location rather than the
@@ -80,8 +81,8 @@ export default function TierPage() {
   // "Where to buy" block and nothing else.
   useEffect(() => {
     loadStock()
-      .then((s) => setListings(s.products))
-      .catch(() => setListings([]))
+      .then(setStock)
+      .catch(() => setStock(null))
   }, [])
 
   /**
@@ -100,7 +101,23 @@ export default function TierPage() {
   }, [data, notes])
 
   const index = useMemo(() => buildPartIndex(parts), [parts])
-  const stockIndex = useMemo(() => buildStockIndex(listings, parts), [listings, parts])
+  const stockIndex = useMemo(
+    () => buildStockIndex(stock?.products ?? [], parts),
+    [stock, parts],
+  )
+
+  /**
+   * Whether this page may speak to what is on the shelf. There is no live grab
+   * here — that lives on the Stock page — so a published file frozen behind
+   * KGB's members-only wall means prices only, and no status word. Same rule,
+   * same wording as `knowsAvailability` there.
+   */
+  const knowsAvailability = stock?.health === 'ok'
+
+  const routesFor = useCallback(
+    (part: Part) => acquireRoutes(part, parts, index, stockIndex, knowsAvailability),
+    [parts, index, stockIndex, knowsAvailability],
+  )
 
   const visible = useMemo(() => {
     const inCategory = category === 'all' ? parts : parts.filter((p) => p.cat === category)
@@ -281,7 +298,8 @@ export default function TierPage() {
         stack={stack}
         index={index}
         notes={notes}
-        listings={stockIndex.listingsFor}
+        routes={routesFor}
+        stockKnown={knowsAvailability}
         onOpen={openPart}
         onBack={() => setStack((prev) => prev.slice(0, -1))}
         onClose={() => setStack([])}

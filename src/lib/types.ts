@@ -159,6 +159,42 @@ export type CustomBuild = {
 }
 
 /**
+ * What a blind box can pull, and how often — authored in randomBoosters.json.
+ *
+ * A random booster is one product code holding several beys, and which one you
+ * get is not yours to choose. The catalogue can say what is inside; only this
+ * can say how likely each is, so it is the only thing entitled to put a number
+ * on the odds.
+ */
+export type RandomBooster = {
+  /** English name of the box, e.g. "BX-35 Random Booster Vol.4". */
+  label: string
+  /** Where the contents were read — required, like every curated claim here. */
+  source: string
+  pulls: RandomPull[]
+  /**
+   * True when the shares below are an assumption rather than a published
+   * inclusion rate. Takara Tomy does not publish ratios for most boxes, and a
+   * page that shows "1 in 8" has to be able to say whether it knows that or is
+   * dividing by the number of beys it can see.
+   */
+  assumedEven?: boolean
+}
+
+export type RandomPull = {
+  /** The sheet's product id, e.g. "BX-35-04" — its ratchet and bit are read from the catalogue row. */
+  blade: string
+  /**
+   * Relative frequency, not a percentage: a pull's chance is its share over the
+   * sum of them. An even box is all 1s, so the common case needs no arithmetic
+   * to write down and none to check.
+   */
+  share: number
+  /** Bare codes of loose parts in this pull that the blade row does not name. */
+  extra?: string[]
+}
+
+/**
  * What a part measures, as opposed to how good it is.
  *
  * A grade tells you whether to use a part; these tell you what it is — why a
