@@ -31,7 +31,7 @@
     },
     "BX-08": {
       "tier": "C+",
-      "buy": "maybe"
+      "buy": "no"
     },
     "BX-13": {
       "tier": "D+",
@@ -231,7 +231,7 @@
     },
     "CX-10": {
       "tier": "C+",
-      "buy": "no"
+      "buy": "maybe"
     },
     "CX-11": {
       "tier": "A",
