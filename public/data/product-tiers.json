@@ -282,8 +282,8 @@
       "buy": "yes"
     },
     "UX-04": {
-      "tier": "S",
-      "buy": "maybe"
+      "tier": "X",
+      "buy": "yes"
     },
     "UX-05": {
       "tier": "D+",
@@ -326,7 +326,7 @@
       "buy": "maybe"
     },
     "UX-15": {
-      "tier": "X",
+      "tier": "S+",
       "buy": "yes"
     },
     "UX-16": {
