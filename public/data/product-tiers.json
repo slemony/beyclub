@@ -6,7 +6,7 @@
       "buy": "yes"
     },
     "BX-02": {
-      "tier": "C",
+      "tier": "B",
       "buy": "maybe"
     },
     "BX-03": {
@@ -30,8 +30,8 @@
       "buy": "yes"
     },
     "BX-08": {
-      "tier": "C+",
-      "buy": "no"
+      "tier": "B",
+      "buy": "maybe"
     },
     "BX-13": {
       "tier": "D+",
@@ -86,7 +86,7 @@
       "buy": "no"
     },
     "BX-31": {
-      "tier": "A+",
+      "tier": "A",
       "buy": "yes"
     },
     "BX-33": {
@@ -98,7 +98,7 @@
       "buy": "maybe"
     },
     "BX-35": {
-      "tier": "S+",
+      "tier": "X",
       "buy": "yes"
     },
     "BX-36": {
@@ -122,8 +122,8 @@
       "buy": "no"
     },
     "BX-45": {
-      "tier": "A",
-      "buy": "maybe"
+      "tier": "B+",
+      "buy": "no"
     },
     "BX-46": {
       "tier": "B",
@@ -194,7 +194,7 @@
       "buy": "no"
     },
     "BXG-45": {
-      "tier": "A+",
+      "tier": "S",
       "buy": "maybe"
     },
     "CX-01": {
@@ -235,14 +235,14 @@
     },
     "CX-10": {
       "tier": "C+",
-      "buy": "no"
+      "buy": "maybe"
     },
     "CX-11": {
       "tier": "A",
       "buy": "maybe"
     },
     "CX-12": {
-      "tier": "B+",
+      "tier": "B",
       "buy": "no"
     },
     "CX-13": {
@@ -302,12 +302,12 @@
       "buy": "yes"
     },
     "UX-09": {
-      "tier": "B+",
+      "tier": "A",
       "buy": "maybe"
     },
     "UX-10": {
-      "tier": "A+",
-      "buy": "yes"
+      "tier": "A",
+      "buy": "maybe"
     },
     "UX-11": {
       "tier": "A",
@@ -322,11 +322,11 @@
       "buy": "yes"
     },
     "UX-14": {
-      "tier": "A",
+      "tier": "A+",
       "buy": "maybe"
     },
     "UX-15": {
-      "tier": "S+",
+      "tier": "X",
       "buy": "yes"
     },
     "UX-16": {
