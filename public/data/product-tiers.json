@@ -34,7 +34,7 @@
       "buy": "maybe"
     },
     "BX-13": {
-      "tier": "D+",
+      "tier": "C",
       "buy": "no"
     },
     "BX-14": {
@@ -54,7 +54,7 @@
       "buy": "yes"
     },
     "BX-19": {
-      "tier": "D+",
+      "tier": "D",
       "buy": "no"
     },
     "BX-20": {
@@ -151,7 +151,7 @@
     },
     "BXG-13": {
       "tier": "D+",
-      "buy": "no"
+      "buy": "maybe"
     },
     "BXG-22": {
       "tier": "D",
@@ -178,7 +178,7 @@
       "buy": "no"
     },
     "BXG-36": {
-      "tier": "C+",
+      "tier": "B",
       "buy": "maybe"
     },
     "BXG-37": {
@@ -203,7 +203,7 @@
     },
     "CX-02": {
       "tier": "C+",
-      "buy": "maybe"
+      "buy": "no"
     },
     "CX-03": {
       "tier": "C+",
@@ -307,7 +307,7 @@
     },
     "UX-10": {
       "tier": "A",
-      "buy": "maybe"
+      "buy": "no"
     },
     "UX-11": {
       "tier": "A",
