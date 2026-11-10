@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import CollectionAddSheet from '../components/CollectionAddSheet'
 import CollectionCard from '../components/CollectionCard'
 import CollectionDetailSheet from '../components/CollectionDetailSheet'
+import Modal from '../components/Modal'
 import PageHeader from '../components/PageHeader'
 import { SyncButton, SyncNotice } from '../components/SyncControls'
 import PartSheet from '../components/PartSheet'
@@ -9,6 +10,7 @@ import { addParts, entryKey, removeEntry, removeSource, setSourceQty, totalQty }
 import { applyDelete, applyLocal, useUserData } from '../lib/userSync'
 import { loadDataset, loadPartNotes } from '../lib/loadData'
 import { buildPartIndex } from '../lib/partIndex'
+import { collectionPartsText } from '../lib/collectionExport'
 import {
   CATEGORY_LABELS,
   compareBySpec,
@@ -36,6 +38,9 @@ export default function CollectionPage() {
   const [showAdd, setShowAdd] = useState(false)
   const [detail, setDetail] = useState<CollectionEntry | null>(null)
   const [stack, setStack] = useState<Part[]>([])
+  const [showExport, setShowExport] = useState(false)
+  const [exportText, setExportText] = useState('')
+  const [copied, setCopied] = useState(false)
   useEffect(() => {
     let cancelled = false
     loadDataset()
@@ -98,6 +103,10 @@ export default function CollectionPage() {
   }, [entries, filter, bySpec, sort, dir, partFor])
 
   const owned = useMemo(() => entries.reduce((n, e) => n + totalQty(e), 0), [entries])
+  const comboText = useMemo(
+    () => collectionPartsText(entries, (code, cat) => index.resolve(code, cat)),
+    [entries, index],
+  )
 
   /** Feeds the add sheet's "have N" badge, so a duplicate buy is visible before it's made. */
   const ownedCounts = useMemo(
@@ -155,6 +164,18 @@ export default function CollectionPage() {
         action={
           <div className="page-actions">
             <SyncButton />
+            {entries.some((entry) => entry.cat === 'blade') && (
+              <button
+                className="info-toggle"
+                onClick={() => {
+                  setExportText(comboText)
+                  setCopied(false)
+                  setShowExport(true)
+                }}
+              >
+                Export parts
+              </button>
+            )}
             <button className="info-toggle" onClick={() => setShowAdd(true)}>
               + Add
             </button>
@@ -163,6 +184,42 @@ export default function CollectionPage() {
       />
 
       <SyncNotice />
+
+      {showExport && (
+        <Modal label="Export collection parts" onClose={() => setShowExport(false)}>
+          <h2 className="modal-title">Export collection</h2>
+          <p className="modal-body">
+            Recorded pack names appear first. Parts are grouped by category, with one part per line; copies you own are shown as a quantity.
+          </p>
+          <textarea
+            className="collection-export-textarea"
+            aria-label="Collection export text"
+            value={exportText}
+            onChange={(event) => {
+              setExportText(event.target.value)
+              setCopied(false)
+            }}
+            rows={Math.min(12, Math.max(5, exportText.split('\n').length))}
+            spellCheck={false}
+          />
+          <div className="modal-actions">
+            <button className="modal-btn" onClick={() => setShowExport(false)}>Close</button>
+            <button
+              className="modal-btn primary"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(exportText)
+                  setCopied(true)
+                } catch {
+                  setCopied(false)
+                }
+              }}
+            >
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+        </Modal>
+      )}
 
       {entries.length > 0 && (
         <div className="chip-row" role="tablist" aria-label="Category">

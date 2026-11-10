@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import BuildCard, { PartStrip } from '../components/BuildCard'
 import BuildEditorSheet from '../components/BuildEditorSheet'
+import DeckSuggestSheet from '../components/DeckSuggestSheet'
 import ConfirmDelete from '../components/ConfirmDelete'
 import PageHeader from '../components/PageHeader'
 import Sheet from '../components/Sheet'
@@ -36,9 +37,14 @@ export default function BuildsPage() {
   const [tab, setTab] = useState<Tab>('builds')
   const [editing, setEditing] = useState<SavedBuild | null>(null)
   const [deckOpen, setDeckOpen] = useState<Deck | null>(null)
+  const [suggestOpen, setSuggestOpen] = useState<{ startingBuilds?: SavedBuild[]; startingName?: string } | null>(null)
 
   /** Which catalogue parts are owned, for the build editor's "only parts I own" filter. */
   const owned = useMemo(() => ownedKeys(entries), [entries])
+  const ownedBladeCount = useMemo(
+    () => new Set(entries.filter((entry) => entry.cat === 'blade' && entry.code).map((entry) => entry.code!.toLowerCase())).size,
+    [entries],
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -81,6 +87,11 @@ export default function BuildsPage() {
         action={
           <div className="page-actions">
             <SyncButton />
+            {tab === 'decks' && (
+              <button className="info-toggle" onClick={() => setSuggestOpen({ startingName: 'Suggested deck' })}>
+                Suggest deck
+              </button>
+            )}
             <button
               className="info-toggle"
               onClick={() => {
@@ -132,6 +143,11 @@ export default function BuildsPage() {
 
       {tab === 'decks' && (
         <>
+          {ownedBladeCount < 3 && (
+            <div className="glass notice notice-stale deck-warning">
+              Deck suggestions need at least 3 different owned blades. Your collection has {ownedBladeCount}.
+            </div>
+          )}
           {decks.length === 0 && <div className="glass notice">No decks yet — tap "+ New" to start one.</div>}
           <div className="build-grid">
             {decks.map((deck) => {
@@ -194,6 +210,10 @@ export default function BuildsPage() {
           deck={deckOpen}
           builds={builds}
           index={index}
+          onSuggest={(startingBuilds, startingName) => {
+            setDeckOpen(null)
+            setSuggestOpen({ startingBuilds, startingName })
+          }}
           onChange={(deck) => {
             commit(saveDeck(deck, readBuilds()))
             setDeckOpen(deck)
@@ -205,6 +225,41 @@ export default function BuildsPage() {
           onClose={() => setDeckOpen(null)}
         />
       )}
+
+      {suggestOpen && (
+        <DeckSuggestSheet
+          parts={parts}
+          entries={entries}
+          index={index}
+          startingBuilds={suggestOpen.startingBuilds}
+          startingName={suggestOpen.startingName}
+          onSave={(suggestion, name, allowDuplicates) => {
+            let file = readBuilds()
+            const generated: SavedBuild[] = suggestion.builds.map(({ build }) => {
+              const fresh = newBuild()
+              return { ...build, id: fresh.id, createdAt: fresh.createdAt, updatedAt: fresh.updatedAt }
+            })
+            for (const build of generated) file = saveBuild(build, file)
+            const created = newDeck(name)
+            const notes = [
+              `Competitive suggestion · score ${Math.round(suggestion.score)}/100.`,
+              ...suggestion.explanation,
+              ...suggestion.builds.flatMap((build, i) => [`Bey ${i + 1}:`, ...build.explanation]),
+            ].join('\n')
+            const saved = saveDeck({
+              ...created,
+              buildIds: generated.map((build) => build.id),
+              allowDuplicates,
+              notes,
+            }, file)
+            commit(saved)
+            setSuggestOpen(null)
+            setDeckOpen(saved.decks.find((deck) => deck.id === created.id) ?? null)
+            setTab('decks')
+          }}
+          onClose={() => setSuggestOpen(null)}
+        />
+      )}
     </>
   )
 }
@@ -213,6 +268,7 @@ function DeckSheet({
   deck,
   builds,
   index,
+  onSuggest,
   onChange,
   onDelete,
   onClose,
@@ -220,6 +276,7 @@ function DeckSheet({
   deck: Deck
   builds: SavedBuild[]
   index: PartIndex
+  onSuggest: (builds: SavedBuild[], name: string) => void
   onChange: (deck: Deck) => void
   onDelete: () => void
   onClose: () => void
@@ -249,6 +306,10 @@ function DeckSheet({
           onChange={(e) => onChange({ ...deck, name: e.target.value })}
         />
       </div>
+
+      <button className="collection-back" onClick={() => onSuggest(chosen, `${deck.name} suggestion`)}>
+        Suggest improvements from these blades
+      </button>
 
       {/* A warning, never a block: a repeated part is only wrong if you own
           one of it, and only the owner knows that. The deck saves either way. */}
